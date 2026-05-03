@@ -32,15 +32,20 @@ textarea.intake-input{resize:vertical;min-height:64px;line-height:1.45}
 .loading-spinner.small{width:28px;height:28px;border-width:3px;margin-bottom:12px}
 
 #game{display:none}
-.hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
-.app-name{font-size:14px;font-weight:600;color:#1A1A2E}
+.hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:8px}
+.app-name{font-size:14px;font-weight:600;color:#1A1A2E;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hdr-right{display:flex;gap:8px;align-items:center;flex-shrink:0}
 .streak-badge{background:#FEF3C7;color:#B45309;font-size:13px;font-weight:600;padding:4px 12px;border-radius:20px}
+.pc-btn{background:#EDE9FE;color:#5B21B6;font-size:12px;font-weight:700;padding:5px 11px;border-radius:20px;border:none;cursor:pointer;font-family:inherit;transition:all 0.15s}
+.pc-btn:hover{background:#DDD6FE}
 .chapter-tag{font-size:11px;color:#9CA3AF;font-weight:600;letter-spacing:0.05em;text-transform:uppercase}
+.module-banner{font-size:11px;color:#6B7280;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px}
+.module-banner strong{color:#5B21B6}
 
 .card{background:#fff;border-radius:16px;padding:18px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
 
-.party-row{display:flex;gap:8px;margin-bottom:12px}
-.party-card{flex:1;background:#fff;border-radius:14px;padding:8px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:2px solid transparent;transition:all 0.3s ease}
+.party-row{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.party-card{flex:1;min-width:calc(33% - 6px);background:#fff;border-radius:14px;padding:8px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:2px solid transparent;transition:all 0.3s ease}
 .party-card.active{border-color:#1A1A2E}
 .party-card.ready{border-color:#F59E0B;box-shadow:0 0 0 3px rgba(245,158,11,0.18),0 2px 8px rgba(0,0,0,0.06);animation:ready-pulse 2s ease-in-out infinite}
 .party-name{font-size:11px;font-weight:700;color:#1A1A2E;margin-top:2px;line-height:1.2}
@@ -64,6 +69,7 @@ textarea.intake-input{resize:vertical;min-height:64px;line-height:1.45}
 .tagr{background:#D1FAE5;color:#065F46}
 .tags{background:#FEF3C7;color:#92400E}
 .tagc{background:#FCE7F3;color:#9D174D}
+.tagp{background:#EDE9FE;color:#5B21B6}
 .qtext{font-size:16px;color:#1A1A2E;line-height:1.6;margin-bottom:16px;font-weight:500}
 
 .story-starter-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:18px 0 4px}
@@ -119,17 +125,13 @@ textarea.intake-input{resize:vertical;min-height:64px;line-height:1.45}
 .nxt-btn{width:100%;background:#1A1A2E;color:white;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
 .nxt-btn:hover{opacity:0.85}
 
-.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
-.stat-card{background:#fff;border-radius:12px;padding:10px 8px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+.stats-row{margin-bottom:12px}
+.stat-card{background:#fff;border-radius:12px;padding:10px 14px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
 .stat-subj{font-size:11px;color:#6B7280;font-weight:600;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.04em}
-.stat-lvl{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;margin-bottom:5px}
-.lv1{background:#DBEAFE;color:#1D4ED8}
-.lv2{background:#FEF3C7;color:#92400E}
-.lv3{background:#D1FAE5;color:#065F46}
 .stat-acc{font-size:15px;font-weight:700;color:#1A1A2E}
 .stat-denom{font-size:11px;color:#9CA3AF;font-weight:400}
 .stat-bar{height:4px;background:#F3F4F6;border-radius:999px;margin-top:6px;overflow:hidden}
-.stat-fill{height:100%;border-radius:999px;background:#60A5FA;transition:width 0.5s ease}
+.stat-fill{height:100%;border-radius:999px;background:#A78BFA;transition:width 0.5s ease}
 
 .chapter-end-card{background:#fff;border-radius:16px;padding:28px 22px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
 .chapter-end-icon{font-size:40px;margin-bottom:8px}
@@ -139,6 +141,50 @@ textarea.intake-input{resize:vertical;min-height:64px;line-height:1.45}
 .transition-card{background:#fff;border-radius:16px;padding:36px 22px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
 .transition-text{font-size:15px;color:#374151;font-weight:500;line-height:1.5}
 .gen-error-card{background:#fff;border-radius:16px;padding:24px 22px;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+
+/* Region Select */
+.region-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0 4px}
+.region-card{background:#F9FAFB;border:2px solid #E5E7EB;border-radius:14px;padding:14px 6px 10px;text-align:center;cursor:pointer;transition:all 0.15s;font-family:inherit;position:relative}
+.region-card:hover:not(.done){border-color:#FF5722;background:#FFF3E0;transform:translateY(-2px);box-shadow:0 4px 12px rgba(255,87,34,0.18)}
+.region-card.done{opacity:0.55;cursor:default;background:#F3F4F6}
+.region-card .rc-img{width:64px;height:64px;margin:0 auto 4px;object-fit:contain}
+.region-card .rc-name{font-size:13px;font-weight:700;color:#1A1A2E;margin-top:2px}
+.region-card .rc-prof{font-size:10px;color:#6B7280;margin-top:2px;font-weight:600;letter-spacing:0.02em}
+.region-card .rc-check{position:absolute;top:6px;right:6px;font-size:18px;color:#10B981}
+.region-card .rc-mod{font-size:9px;color:#5B21B6;margin-top:4px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase}
+.progress-summary{font-size:12px;color:#6B7280;margin-top:14px;padding:10px;background:#F9FAFB;border-radius:10px;line-height:1.5}
+.progress-summary strong{color:#1A1A2E}
+
+/* PC Box */
+.pc-section-title{font-size:12px;font-weight:700;color:#374151;margin:14px 0 8px;text-transform:uppercase;letter-spacing:0.05em;text-align:left}
+.pc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px}
+.pc-card{background:#F9FAFB;border:2px solid #E5E7EB;border-radius:12px;padding:10px 4px;text-align:center;cursor:pointer;transition:all 0.15s;font-family:inherit;position:relative}
+.pc-card:hover{border-color:#FF5722;background:#FFF3E0}
+.pc-card.selected{border-color:#5B21B6;background:#EDE9FE;box-shadow:0 0 0 3px rgba(91,33,182,0.18)}
+.pc-card .pc-sprite{display:flex;justify-content:center;align-items:center;height:52px}
+.pc-card .pc-name{font-size:11px;font-weight:700;color:#1A1A2E;margin-top:2px;line-height:1.2}
+.pc-card .pc-meta{font-size:9px;color:#9CA3AF;margin-top:1px;font-weight:600}
+.pc-empty{text-align:center;color:#9CA3AF;font-size:13px;padding:18px;font-style:italic}
+.pc-prompt{background:#EDE9FE;color:#5B21B6;border-radius:10px;padding:10px 14px;font-size:13px;font-weight:600;margin-bottom:10px;text-align:center;animation:fade-in 0.25s ease}
+
+/* Swap Overlay */
+#swap-overlay{display:none;position:fixed;inset:0;background:rgba(15,15,30,0.78);z-index:600;align-items:center;justify-content:center;padding:18px}
+#swap-overlay.active{display:flex}
+.swap-card{background:white;border-radius:18px;padding:22px;max-width:480px;width:100%;max-height:92vh;overflow-y:auto;box-shadow:0 8px 40px rgba(0,0,0,0.3)}
+.swap-title{font-size:18px;font-weight:700;color:#1A1A2E;text-align:center;margin-bottom:6px}
+.swap-sub{font-size:13px;color:#6B7280;text-align:center;margin-bottom:14px;line-height:1.45}
+.swap-newcomer{display:flex;justify-content:center;align-items:center;flex-direction:column;background:#FFF3E0;border:2px solid #FED7AA;border-radius:14px;padding:14px;margin-bottom:14px}
+.swap-newcomer .sw-name{font-size:14px;font-weight:700;color:#9A3412;margin-top:4px}
+
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes ready-pulse{0%,100%{box-shadow:0 0 0 3px rgba(245,158,11,0.18),0 2px 8px rgba(0,0,0,0.06)}50%{box-shadow:0 0 0 6px rgba(245,158,11,0.35),0 2px 12px rgba(0,0,0,0.1)}}
+@keyframes fade-in{0%{opacity:0;transform:translateY(6px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes evo-spin{to{transform:rotate(360deg)}}
+@keyframes evo-label-in{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes ball-fly{0%{transform:translateX(-50%) translateY(170px) scale(0.3) rotate(-540deg);opacity:0}65%{opacity:1}100%{transform:translateX(-50%) translateY(0) scale(1) rotate(0deg);opacity:1}}
+@keyframes ball-wobble{0%,100%{transform:translateX(-50%) rotate(0deg)}20%{transform:translateX(-50%) rotate(-22deg)}40%{transform:translateX(-50%) rotate(22deg)}60%{transform:translateX(-50%) rotate(-14deg)}80%{transform:translateX(-50%) rotate(14deg)}}
+@keyframes starter-pop{0%{transform:scale(0.2);opacity:0}60%{transform:scale(1.1);opacity:1}100%{transform:scale(1);opacity:1}}
 
 #catch-overlay{display:none;position:fixed;inset:0;background:linear-gradient(180deg,#0d2b0d,#1a4a1a 55%,#2a5e2a);z-index:999;flex-direction:column;align-items:center;justify-content:center}
 #catch-overlay.active{display:flex}
@@ -161,16 +207,6 @@ textarea.intake-input{resize:vertical;min-height:64px;line-height:1.45}
 #starter-celebrate-img{width:200px;height:200px;object-fit:contain;animation:starter-pop 0.5s cubic-bezier(0.34,1.56,0.64,1)}
 #starter-celebrate-label{margin-top:18px;font-size:22px;font-weight:700;color:#9A3412;text-align:center;padding:0 24px;animation:evo-label-in 0.4s ease 0.2s both}
 #starter-celebrate-sub{margin-top:8px;font-size:14px;color:#92400E;font-style:italic;animation:evo-label-in 0.4s ease 0.5s both}
-
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-@keyframes ready-pulse{0%,100%{box-shadow:0 0 0 3px rgba(245,158,11,0.18),0 2px 8px rgba(0,0,0,0.06)}50%{box-shadow:0 0 0 6px rgba(245,158,11,0.35),0 2px 12px rgba(0,0,0,0.1)}}
-@keyframes fade-in{0%{opacity:0;transform:translateY(6px)}100%{opacity:1;transform:translateY(0)}}
-@keyframes spin{to{transform:rotate(360deg)}}
-@keyframes evo-spin{to{transform:rotate(360deg)}}
-@keyframes evo-label-in{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}
-@keyframes ball-fly{0%{transform:translateX(-50%) translateY(170px) scale(0.3) rotate(-540deg);opacity:0}65%{opacity:1}100%{transform:translateX(-50%) translateY(0) scale(1) rotate(0deg);opacity:1}}
-@keyframes ball-wobble{0%,100%{transform:translateX(-50%) rotate(0deg)}20%{transform:translateX(-50%) rotate(-22deg)}40%{transform:translateX(-50%) rotate(22deg)}60%{transform:translateX(-50%) rotate(-14deg)}80%{transform:translateX(-50%) rotate(14deg)}}
-@keyframes starter-pop{0%{transform:scale(0.2);opacity:0}60%{transform:scale(1.1);opacity:1}100%{transform:scale(1);opacity:1}}
 </style>
 </head>
 <body>
@@ -196,7 +232,7 @@ textarea.intake-input{resize:vertical;min-height:64px;line-height:1.45}
   </div>
 </div>
 
-<!-- Intake screen -->
+<!-- Intake screen (first launch only — name + goal) -->
 <div id="intake-screen" style="display:none">
   <div class="intake-card">
     <svg class="logo-ball" viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg">
@@ -207,42 +243,40 @@ textarea.intake-input{resize:vertical;min-height:64px;line-height:1.45}
       <circle cx="36" cy="36" r="5" fill="#F3F4F6"/>
     </svg>
     <div class="app-title">Pokémon Learning Adventure</div>
-    <div class="app-sub">Tell us a few things, then begin. The story is written as you go — your choices shape what comes next.</div>
+    <div class="app-sub">A 9-region journey that teaches kindergarten skills. Travel from one region to the next, build your team, and master each module to graduate to 1st grade.</div>
 
     <label class="intake-label" for="intake-name">What's your name?</label>
     <input type="text" class="intake-input" id="intake-name" placeholder="Your name" maxlength="20" autocomplete="off">
 
-    <label class="intake-label" for="intake-region">Pick a Pokémon region</label>
-    <select class="intake-input" id="intake-region">
-      <option value="">— Choose a region —</option>
-      <option value="Kanto">Kanto</option>
-      <option value="Johto">Johto</option>
-      <option value="Hoenn">Hoenn</option>
-      <option value="Sinnoh">Sinnoh</option>
-      <option value="Unova">Unova</option>
-      <option value="Kalos">Kalos</option>
-      <option value="Alola">Alola</option>
-      <option value="Galar">Galar</option>
-      <option value="Paldea">Paldea</option>
-    </select>
-
-    <label class="intake-label" for="intake-goal">What's your goal in this adventure?</label>
-    <textarea class="intake-input" id="intake-goal" rows="2" placeholder="e.g., Become a Gym Leader. Find a legendary Pokémon. Catch every Water type."></textarea>
+    <label class="intake-label" for="intake-goal">What's your big dream as a trainer?</label>
+    <textarea class="intake-input" id="intake-goal" rows="2" placeholder="e.g., Become a Champion. Find a legendary Pokémon. Catch every type."></textarea>
 
     <div id="intake-error" class="form-error" style="display:none"></div>
 
-    <button class="start-btn" id="intake-submit">Begin Adventure &#8594;</button>
+    <button class="start-btn" id="intake-submit">Start the Journey &#8594;</button>
     <button class="skip-btn" id="change-key-btn">Change API key</button>
   </div>
 </div>
 
-<!-- Loading screen (initial scene 1 generation) -->
+<!-- Region select screen -->
+<div id="region-select-screen" style="display:none">
+  <div class="intake-card">
+    <div class="app-title" id="region-select-title">Choose Your Next Region</div>
+    <div class="app-sub" id="region-select-sub">Each region teaches a new module. Pick where you want to go next.</div>
+    <div class="region-grid" id="region-grid"></div>
+    <div class="progress-summary" id="region-progress-summary"></div>
+    <button class="skip-btn" id="region-pc-btn">Open PC Storage</button>
+    <button class="skip-btn" id="region-reset-btn" style="margin-top:8px">Start Over (Erase Save)</button>
+  </div>
+</div>
+
+<!-- Loading screen -->
 <div id="loading-screen" style="display:none">
   <div class="intake-card">
     <div id="loading-active">
       <div class="loading-spinner"></div>
-      <div class="app-title">Writing your first scene...</div>
-      <div class="app-sub">Claude is starting a brand-new story just for you.</div>
+      <div class="app-title" id="loading-title">Writing your first scene...</div>
+      <div class="app-sub" id="loading-sub">Claude is starting a brand-new story just for you.</div>
     </div>
     <div id="loading-failed" style="display:none">
       <div class="app-title">Something went wrong</div>
@@ -251,6 +285,30 @@ textarea.intake-input{resize:vertical;min-height:64px;line-height:1.45}
       <button class="skip-btn" id="loading-back">Back</button>
     </div>
   </div>
+</div>
+
+<!-- PC Box screen -->
+<div id="pc-box-screen" style="display:none">
+  <div class="intake-card" id="pc-box-card">
+    <div class="app-title">PC Storage</div>
+    <div class="app-sub">Your team holds up to 6. Stored Pokémon are safe here. Tap a stored Pokémon to swap with someone in your team.</div>
+    <div id="pc-prompt-area"></div>
+    <div class="pc-section-title">Your Team</div>
+    <div class="pc-grid" id="pc-party-grid"></div>
+    <div class="pc-section-title">PC Storage</div>
+    <div id="pc-storage-area"></div>
+    <button class="skip-btn" id="pc-close-btn" style="margin-top:14px">Close</button>
+  </div>
+</div>
+
+<!-- Region end screen -->
+<div id="region-end-screen" style="display:none">
+  <div class="intake-card" id="region-end-card"></div>
+</div>
+
+<!-- Endgame screen -->
+<div id="endgame-screen" style="display:none">
+  <div class="intake-card" id="endgame-card"></div>
 </div>
 
 <!-- Game -->
@@ -276,6 +334,10 @@ textarea.intake-input{resize:vertical;min-height:64px;line-height:1.45}
   <img id="starter-celebrate-img" src="" alt="">
   <div id="starter-celebrate-label"></div>
   <div id="starter-celebrate-sub"></div>
+</div>
+
+<div id="swap-overlay">
+  <div class="swap-card" id="swap-card-content"></div>
 </div>
 
 <script>
@@ -453,68 +515,267 @@ const REGIONS={
   Paldea:{professor:"Professor Sada",starters:["Sprigatito","Fuecoco","Quaxly"],wildPool:["Lechonk","Pawmi","Tarountula","Fidough","Smoliv"]},
 };
 
+const REGION_ORDER=["Kanto","Johto","Hoenn","Sinnoh","Unova","Kalos","Alola","Galar","Paldea"];
+
+// ============== KINDERGARTEN MODULES (Utah core, sequenced) ==============
+const MODULES=[
+  {
+    name:"Books & Sounds",
+    short:"Print & Phonological Awareness",
+    concepts:[
+      "How books work: pages turn left to right, words read top to bottom",
+      "The difference between a letter and a whole word",
+      "Blending two syllables together (e.g., 'rain' + 'bow' = 'rainbow')",
+      "Hearing the FIRST sound, MIDDLE sound, and LAST sound in a short word",
+    ],
+    questionGuidance:"Use 'mc' or 'sequence' formats. Ask about the first or last sound in a short word, identify which is a letter vs. a word, or put syllables in order.",
+  },
+  {
+    name:"Letters & Phonics",
+    short:"Consonants, Short Vowels, Digraphs",
+    concepts:[
+      "Each consonant letter makes its sound (b=/b/, m=/m/, s=/s/, t=/t/, etc.)",
+      "Short vowel sounds: a as in 'cat', e as in 'bed', i as in 'sit', o as in 'hot', u as in 'cup'",
+      "Digraphs — two letters that make one sound: sh, ch, th, wh",
+    ],
+    questionGuidance:"Use 'lettertap' or 'mc'. Show a 3-letter word with one letter blanked, and the child picks the right letter. Or ask which sound a letter or digraph makes.",
+  },
+  {
+    name:"Counting & Numbers",
+    short:"Count to 100, Numerals 0–20",
+    concepts:[
+      "Counting forward to 100 by ones (1, 2, 3...) and by tens (10, 20, 30...)",
+      "Starting a count from any number (counting on from 7: 8, 9, 10...)",
+      "Recognizing and writing numerals 0 through 20",
+      "Counting a group of objects up to 20 and matching the count to the right numeral",
+    ],
+    questionGuidance:"Use 'numpad' or 'mc'. Count Pokémon or items in the story scene, identify a numeral, or continue a counting sequence.",
+  },
+  {
+    name:"Word Building",
+    short:"Phonemes & Sight Words",
+    concepts:[
+      "Blending individual sounds into a word (/k/ /æ/ /t/ → 'cat')",
+      "Breaking a word into its individual sounds",
+      "Common sight words to recognize on sight: the, a, I, is, it, in, on, and, can, see, we, go, do, my, to, like, big, no, you, are",
+    ],
+    questionGuidance:"Use 'lettertap', 'sequence', or 'mc'. Build a word from sounds, identify a sight word among options, or sequence the sounds in a word.",
+  },
+  {
+    name:"Shapes & Space",
+    short:"2D & 3D Geometry",
+    concepts:[
+      "2D shapes: circle, square, rectangle, triangle, hexagon",
+      "3D shapes: cube, cone, cylinder, sphere",
+      "Comparing shapes by size, number of sides, and orientation",
+      "Putting smaller shapes together to make a bigger shape",
+    ],
+    questionGuidance:"Use 'mc' or 'sequence'. Identify shapes seen in the story environment, sort shapes by attribute, or pick which shapes combine to make another.",
+  },
+  {
+    name:"Stories & Comprehension",
+    short:"Key Details, Retelling, Author/Illustrator",
+    concepts:[
+      "Key story details: WHO is in the story, WHAT happened, WHERE it took place",
+      "Retelling a story's beginning, middle, and end IN ORDER",
+      "The AUTHOR writes the words; the ILLUSTRATOR draws the pictures",
+      "The MAIN TOPIC of an informational text is what it is mostly about",
+    ],
+    questionGuidance:"Use 'mc' or 'sequence'. Ask about details from the narrative just told in this scene, put scene events in order, or identify the main topic.",
+  },
+  {
+    name:"Adding & Subtracting",
+    short:"Operations Within 10",
+    concepts:[
+      "Adding two groups together (3 + 4 = 7)",
+      "Taking away from a group (5 − 2 = 3)",
+      "Decomposing numbers up to 10 into pairs (8 = 5 + 3)",
+      "Finding the number that makes 10 (6 + ? = 10)",
+      "Quickly adding and subtracting within 5",
+    ],
+    questionGuidance:"Use 'numpad' or 'mc'. Embed math in the story (4 Wingull join 3 more — how many in all?). Keep totals within 10.",
+  },
+  {
+    name:"Writing & Language",
+    short:"Capitalization, Punctuation, Parts of Speech",
+    concepts:[
+      "Every sentence starts with a CAPITAL letter",
+      "The word 'I' is always written as a capital letter",
+      "Sentences end with a period (.), question mark (?), or exclamation point (!)",
+      "Nouns name people/places/things; verbs are action words; adjectives describe",
+    ],
+    questionGuidance:"Use 'mc' or 'sequence'. Pick the correctly capitalized sentence, choose the right end punctuation, or identify which word is a noun/verb/adjective.",
+  },
+  {
+    name:"Measuring & Place Value",
+    short:"Compare, Classify, Teen Numbers",
+    concepts:[
+      "Comparing measurable attributes: longer/shorter, heavier/lighter, taller/shorter",
+      "Sorting objects into categories and counting how many in each",
+      "Numbers 11–19 are made of one ten and some leftover ones (13 = 10 + 3)",
+      "Comparing two numerals 1–10: greater than, less than, equal to",
+    ],
+    questionGuidance:"Use 'mc', 'numpad', or 'sequence'. Compare sizes of things in the story, sort items into categories, or build a teen number from ten + ones.",
+  },
+];
+
+const TARGET_SCENES=6;
+const PARTY_MAX=6;
+const SAVE_KEY="pkmn_adventure_save_v2";
+
 function starterLine(name){const out=[];let cur=name;while(cur){out.push(cur);cur=POKEMON_DB[cur]?.evolvesTo;}return out;}
 function pkImg(id,s){return`<img src="${BASE}${id}.png" width="${s}" height="${s}" alt="" style="object-fit:contain;display:block">`}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 
-// PKM is built from POKEMON_DB at intake time (preloads all relevant Pokémon for the chosen region).
+// PKM is the runtime sprite/data lookup — preloaded with ALL pokemon since the party persists across regions
 let PKM={};
 let STORY=null;
 let STORY_TITLE="Pokémon Learning Adventure";
-const TARGET_SCENES=6;
 
-function preloadRegionPKM(region){
+function preloadAllPKM(){
+  PKM={};
+  for(const[n,d]of Object.entries(POKEMON_DB)){
+    PKM[n]={n,num:d.num,type:d.type,xpTo:d.xpTo,evolvesTo:d.evolvesTo};
+  }
+}
+function preloadRegionImages(region){
   const r=REGIONS[region];
   const all=new Set([...r.wildPool]);
   r.starters.forEach(s=>starterLine(s).forEach(n=>all.add(n)));
-  PKM={};
-  for(const n of all){
-    const d=POKEMON_DB[n];
-    if(!d)continue;
-    PKM[n]={n,num:d.num,type:d.type,xpTo:d.xpTo,evolvesTo:d.evolvesTo};
-    const im=new Image();im.src=`${BASE}${d.num}.png`;
-  }
+  for(const n of all){const d=POKEMON_DB[n];if(!d)continue;const im=new Image();im.src=`${BASE}${d.num}.png`;}
 }
+function pkSprite(name,size){return PKM[name]?pkImg(PKM[name].num,size):"";}
+
+// ============== SAVE STATE (persists across regions) ==============
+function mkSave(){return{
+  characterName:"",
+  characterGoal:"",
+  completedRegions:[],         // ordered list, e.g. ["Kanto","Hoenn"]
+  party:[],                    // [{name,xp,xpTo,ready}]
+  storage:[],                  // PC box
+  moduleStats:{},              // {0:{cor:0,att:0}, 1:{...}, ...}
+};}
+let SAVE=mkSave();
+function loadSave(){
+  try{
+    const raw=localStorage.getItem(SAVE_KEY);
+    if(raw){
+      const parsed=JSON.parse(raw);
+      SAVE={...mkSave(),...parsed};
+      if(!Array.isArray(SAVE.completedRegions))SAVE.completedRegions=[];
+      if(!Array.isArray(SAVE.party))SAVE.party=[];
+      if(!Array.isArray(SAVE.storage))SAVE.storage=[];
+      if(!SAVE.moduleStats||typeof SAVE.moduleStats!=="object")SAVE.moduleStats={};
+    }
+  }catch(e){SAVE=mkSave();}
+}
+function persistSave(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(SAVE));}catch(e){}}
+function eraseSave(){try{localStorage.removeItem(SAVE_KEY);}catch(e){}SAVE=mkSave();}
+
+// ============== SESSION STATE (resets each region) ==============
+function mkPartyMember(name){return{name,xp:0,xpTo:POKEMON_DB[name]?.xpTo??null,ready:false};}
+function mkState(){return{
+  phase:"story",
+  ch:0,sc:0,st:0,
+  activeIdx:0,
+  qDone:false,qCor:false,qAnswer:null,
+  seqOrder:[],
+  starterPicked:null,
+  streak:0,
+  lvc:null,
+  pendingXP:null,pendingReady:null,
+  genError:null,
+  pendingPartyAdd:null,
+  pcSelected:null,             // pc box selected storage idx
+  gen:{
+    region:"",
+    moduleIndex:0,             // 0..8
+    starter:null,              // starter chosen this region
+    scenes:[],                 // [{summary,isFinal}]
+    isFinalScene:false,
+    formatsUsed:[],
+    conceptsTaught:[],         // concept descriptions pre-taught this region
+  },
+};}
+let S=mkState();
+const gameEl=document.getElementById("game");
+
+function curChapter(){return STORY?.chapters[S.ch];}
+function curScene(){return curChapter()?.scenes[S.sc];}
+function curStep(){return curScene()?.steps[S.st];}
+function partyByName(name){return SAVE.party.find(p=>p.name===name);}
+function storageByName(name){return SAVE.storage.find(p=>p.name===name);}
+
+function curModule(){return MODULES[S.gen.moduleIndex];}
+function curModuleStats(){
+  const mi=S.gen.moduleIndex;
+  if(!SAVE.moduleStats[mi])SAVE.moduleStats[mi]={cor:0,att:0};
+  return SAVE.moduleStats[mi];
+}
+function modAccPct(mi){const s=SAVE.moduleStats[mi];if(!s||!s.att)return 0;return Math.min(100,Math.round(s.cor/s.att*100));}
+function updModuleStats(ok){
+  const s=curModuleStats();
+  s.att++;if(ok)s.cor++;
+  persistSave();
+}
+
+const MODULE_TAG_CLASS=["tagm","tagr","tagm","tagr","tagc","tagr","tagm","tagr","tagm"];
 
 // ============== LLM CALL ==============
 function buildScenePrompt(){
   const g=S.gen;
-  const r=REGIONS[g.intake.region];
+  const region=g.region;
+  const r=REGIONS[region];
   const sceneNum=g.scenes.length+1;
   const allFmts=["mc","numpad","lettertap","sequence"];
   const fmtRemaining=allFmts.filter(f=>!g.formatsUsed.includes(f));
+  const mod=MODULES[g.moduleIndex];
+  const isFirstRegion=SAVE.completedRegions.length===0;
+  const traveled=SAVE.completedRegions;
 
   let sceneGuidance="";
   if(sceneNum===1){
-    sceneGuidance=`SCENE 1 REQUIREMENTS:
-- Open at ${r.professor}'s lab. Brief setup of who ${g.intake.name} is and the day ahead.
+    if(isFirstRegion){
+      sceneGuidance=`SCENE 1 REQUIREMENTS (very first adventure ever):
+- Open at ${r.professor}'s lab in ${region}. Brief setup of who ${SAVE.characterName} is and the day ahead.
 - Include EXACTLY ONE step of type "starterChoice" near the end of the scene. The engine renders the three starter options and handles the choice — you do NOT pick.
 - DO NOT add any "question" or "catch" steps in scene 1.
 - DO NOT add a "partyAdd" step for the starter — the engine adds it after the choice automatically.
 - After "starterChoice" you may include 0–1 closing narrative beats. Refer to the chosen Pokémon generically (e.g., "their new partner") since you don't know which one was picked.
 - Aim for 6–10 steps total.
-- Also output a "title" field at the top level — a short evocative title for this whole adventure (e.g., "${g.intake.name}'s ${g.intake.region} Journey").`;
+- Output a "title" field at the top — a short evocative title for THIS REGION's chapter (e.g., "${SAVE.characterName}'s ${region} Journey").`;
+    }else{
+      sceneGuidance=`SCENE 1 REQUIREMENTS (arriving in a new region — ${SAVE.characterName} is an experienced trainer):
+- Open with ${SAVE.characterName} ARRIVING in ${region} (by boat, train, plane, or other travel — your choice). They have already journeyed through: ${traveled.join(", ")}.
+- ${SAVE.characterName} meets ${r.professor} for the first time. The professor is delighted to meet a trainer of their reputation and offers a starter Pokémon as a welcome gift.
+- Include EXACTLY ONE step of type "starterChoice" — the professor presents the three regional starters. The engine handles the pick and adding to the team.
+- DO NOT add any "question" or "catch" steps in scene 1.
+- DO NOT add a "partyAdd" step for the starter — the engine handles it.
+- Reference the existing party warmly: their first partner is now visible/named, and the new starter joins the team.
+- Aim for 6–10 steps total.
+- Output a "title" field — a short evocative title for THIS REGION's chapter (e.g., "${SAVE.characterName} in ${region}").`;
+    }
   }else if(sceneNum>=2&&sceneNum<=4){
-    const subjOrder=Object.entries(g.subjectsUsed).sort((a,b)=>a[1]-b[1]).map(x=>x[0]);
     sceneGuidance=`SCENE ${sceneNum} REQUIREMENTS:
-- ${g.intake.name} travels to a new location. The chosen starter (${S.gen.starter}) is now their visible partner — name it.
+- ${SAVE.characterName} travels to a new location within ${region}. The chosen starter (${g.starter||"their new partner"}) is now their visible partner — name it.
 - Include EXACTLY ONE "question" step. NO catch, NO evolutionEligible, NO chapterEnd.
-- Subject preference (least-used first): ${subjOrder.join(", ")}.
+- The question MUST test a concept from this region's module (see MODULE OBJECTIVES below).
 - Format preference (not yet used first): ${fmtRemaining.length?fmtRemaining.join(", "):"any"}.
-- Pre-teach the concept in 1–3 narrative beats BEFORE the question. The teaching should be diegetic — a remembered lesson from ${r.professor} or a note ${g.intake.name} recalls from their notebook.
+- Pre-teach the concept in 1–3 narrative beats BEFORE the question. The teaching should be diegetic — a remembered lesson from ${r.professor}, a note ${SAVE.characterName} recalls, or something a Pokémon shows them.
 - Aim for 5–8 steps total.`;
   }else if(sceneNum===5){
     sceneGuidance=`SCENE 5 REQUIREMENTS:
-- ${g.intake.name} (with ${S.gen.starter}) encounters a wild Pokémon from the wildPool.
-- Include EXACTLY ONE "catch" step. The catch's question must test a science/observation concept that was pre-taught in 1–3 narrative beats just before.
+- ${SAVE.characterName} (with their team) encounters a wild Pokémon from this region's wildPool.
+- Include EXACTLY ONE "catch" step. The catch's question must test a concept from this region's module.
 - Add a "partyAdd" step for the caught Pokémon immediately after the catch.
 - NO regular "question" steps in this scene.
 - Aim for 6–9 steps total.`;
   }else{
     sceneGuidance=`SCENE ${sceneNum} (FINAL) REQUIREMENTS:
-- A reflective scene at sundown / quiet moment. ${g.intake.name} reviews the day with their team.
+- A reflective scene at sundown / quiet moment. ${SAVE.characterName} reviews the day with their team and prepares to move on.
 - Optionally one final easy "question" step (or no question — your call). If you include one, pre-teach.
 - Include EXACTLY ONE "evolutionEligible" step (the engine animates evolution if XP is full; otherwise it's just a quiet moment).
-- End with EXACTLY ONE "chapterEnd" step.
+- End with EXACTLY ONE "chapterEnd" step. The subtitle should hint at the journey continuing on to the next region.
 - Set "isFinal": true at the top level.
 - Aim for 5–8 steps total.`;
   }
@@ -523,70 +784,92 @@ function buildScenePrompt(){
     ?"(no scenes yet — this is scene 1)"
     :g.scenes.map((s,i)=>`Scene ${i+1}: ${s.summary}`).join("\n");
 
-  const partyDesc=S.party.length===0
+  const partyDesc=SAVE.party.length===0
     ?"(none yet — starter is picked in scene 1)"
-    :S.party.map(m=>{
-      const p=PKM[m.name];
+    :SAVE.party.map(m=>{
+      const p=PKM[m.name];if(!p)return`- ${m.name}`;
       const xp=p.xpTo?`${m.xp}/${p.xpTo} XP${m.ready?" (READY TO EVOLVE)":""}`:"MAX";
       return `- ${m.name} (${p.type}, ${xp})`;
     }).join("\n");
 
+  const storageDesc=SAVE.storage.length===0
+    ?"(empty)"
+    :SAVE.storage.map(m=>`- ${m.name}`).join("\n");
+
+  const conceptsList=mod.concepts.map((c,i)=>`  ${i+1}. ${c}`).join("\n");
+  const conceptsTaughtSoFar=g.conceptsTaught.length?g.conceptsTaught.join("; "):"(none yet — this is the first teaching scene)";
+
   return `You are writing Scene ${sceneNum} of ${TARGET_SCENES} in an interactive Pokémon educational adventure for a 5-year-old child who is starting kindergarten in 4 months and is a strong reader for their age.
 
-THE CHILD:
-- Name: ${g.intake.name} (the protagonist — use this exact name throughout)
-- Region: ${g.intake.region}
-- Their stated goal in this adventure: ${g.intake.goal}
+THE CHILD-PROTAGONIST:
+- Name: ${SAVE.characterName} (the protagonist — use this exact name throughout)
+- Big trainer dream: ${SAVE.characterGoal}
+- Current region of adventure: ${region}
+- Regions previously completed: ${traveled.length?traveled.join(", "):"(this is their very first adventure)"}
 
-ALLOWED POKÉMON (use ONLY these names, never invent):
+EDUCATIONAL OBJECTIVE — REGION ${SAVE.completedRegions.length+1} OF 9 — MODULE: "${mod.name}"
+This region of the journey teaches the kindergarten module: "${mod.name}" (${mod.short}).
+
+CONCEPTS TO COVER ACROSS THIS REGION (the 6 scenes here together teach ALL of these):
+${conceptsList}
+
+Concepts already pre-taught in this region: ${conceptsTaughtSoFar}
+
+QUESTION GUIDANCE FOR THIS MODULE:
+${mod.questionGuidance}
+
+ALLOWED POKÉMON IN ${region} (use ONLY these names for new starters and wild catches — never invent):
 - Mentor character: ${r.professor}
-- Starter line possibilities (${g.starter?`chosen line: ${starterLine(g.starter).join(" → ")}`:`one of these chains, depending on player choice in scene 1: ${r.starters.map(s=>starterLine(s).join(" → ")).join("; ")}`})
+- Starter line possibilities${g.starter?` (chosen line: ${starterLine(g.starter).join(" → ")})`:`: ${r.starters.map(s=>starterLine(s).join(" → ")).join("; ")}`}
 - Wild Pokémon for catches and cameos: ${r.wildPool.join(", ")}
 
-CURRENT PARTY:
+CURRENT PARTY (these Pokémon travel with ${SAVE.characterName} and may be referenced by name in narrative):
 ${partyDesc}
 
-STORY SO FAR:
+PC STORAGE (Pokémon left at the lab — may be referenced briefly but not in narrative as present):
+${storageDesc}
+
+STORY SO FAR (this region):
 ${story}
 
-EDUCATION TRACKING:
-- Math questions used: ${g.subjectsUsed.math}, Reading: ${g.subjectsUsed.reading}, Science: ${g.subjectsUsed.science}
-- Formats used so far: ${g.formatsUsed.length?g.formatsUsed.join(", "):"(none)"}
+FORMAT TRACKING:
+- Question formats used so far this region: ${g.formatsUsed.length?g.formatsUsed.join(", "):"(none)"}
 - Formats not yet used: ${fmtRemaining.length?fmtRemaining.join(", "):"all four covered"}
 
 ${sceneGuidance}
 
 PEDAGOGICAL RULE — CRITICAL:
-Every "question" or "catch" step MUST be preceded by 1–3 narrative steps that explicitly TEACH the concept being assessed. Frame the teaching diegetically — as a remembered lesson from ${r.professor}, or as ${g.intake.name} recalling a note from their notebook. NEVER assess a concept that wasn't first introduced in the story this same scene.
+Every "question" or "catch" step MUST be preceded by 1–3 narrative steps that explicitly TEACH the concept being assessed. Frame the teaching diegetically — as a remembered lesson from ${r.professor}, a note ${SAVE.characterName} recalls, or a moment of observation. NEVER assess a concept that wasn't first introduced in the story this same scene.
 
 OUTPUT FORMAT: a single JSON object inside \`\`\`json fences. NO prose outside the fences.
 
 JSON SHAPE:
 {
-${sceneNum===1?'  "title": "Adventure title shown in the header",\n':""}  "scene": {
+${sceneNum===1?'  "title": "Adventure title shown in the header for this region",\n':""}  "scene": {
     "id": "short-scene-id",
     "loc": "LOCATION LABEL",
     "steps": [ ...step objects... ]
   },
   "summary": "1–2 sentence recap of what happened in this scene (used to brief the writer of the next scene)",
+  "conceptsTaught": ["short label of each concept pre-taught in this scene's narrative"],
   "isFinal": ${sceneNum===TARGET_SCENES?"true":"false"}
 }
 
 STEP OBJECT TYPES:
 1) Narrative:
-   {"type":"narrative","text":"...HTML allowed: <strong>X</strong> for emphasis, <em>X</em> for thoughts/recalled lessons, <span class=\\"dialog-line\\">\\"X\\"</span> for spoken dialogue..."}
+   {"type":"narrative","text":"...HTML allowed: <strong>X</strong>, <em>X</em>, <span class=\\"dialog-line\\">\\"X\\"</span>..."}
 
 2) Narrative with sprite reveal (shows the Pokémon's image alongside the text):
    {"type":"narrative","text":"...","pkmReveal":"PokémonName"}
 
 3) Starter choice (scene 1 only — engine renders the three region starter cards and handles party add):
-   {"type":"starterChoice","intro":"Optional short setup beat, e.g., \\"${r.professor} smiled and held out three Poké Balls.\\"","prompt":"Professor's words inviting the choice (e.g., \\"Which one calls to you?\\")"}
+   {"type":"starterChoice","intro":"Optional setup beat","prompt":"Professor's words inviting the choice"}
 
 4) Party add (silent — adds Pokémon to party). Use ONLY after a "catch" step (do NOT use after starterChoice).
    {"type":"partyAdd","pkm":"NameFromWildPool"}
 
 5) Question:
-   {"type":"question","subject":"math|reading|science","format":"mc|numpad|lettertap|sequence","prompt":"Story-grounded question text","encouragement":"Short praise on correct","hint":"Short helpful nudge on wrong","xpReward":10,"onCorrect":"One sentence of story continuation on correct","onWrong":"One sentence of story continuation on wrong (still moves story forward — no failure)", ...format-specific fields...}
+   {"type":"question","subject":"module","format":"mc|numpad|lettertap|sequence","prompt":"Story-grounded question text","encouragement":"Short praise on correct","hint":"Short helpful nudge on wrong","xpReward":10,"onCorrect":"One sentence of story continuation on correct","onWrong":"One sentence of story continuation on wrong (still moves story forward — no failure)", ...format-specific fields...}
    Format-specific fields:
    - mc: "options":[4 strings], "correctIndex":0..3
    - numpad: "correctValue":0..9, "maxDigits":1
@@ -594,17 +877,17 @@ STEP OBJECT TYPES:
    - sequence: "items":[{"id":"egg","label":"Tiny egg"},...], "correctOrder":["egg","larva","pupa","adult"]
 
 6) Catch (same as question + pkm + preCatch + postCatch):
-   {"type":"catch","pkm":"NameFromWildPool","subject":"science","format":"mc","prompt":"...","encouragement":"...","hint":"...","xpReward":10,"preCatch":"Sentence right before throwing the ball","postCatch":"Sentence after the catch animation", ...formatFields...}
+   {"type":"catch","pkm":"NameFromWildPool","subject":"module","format":"mc","prompt":"...","encouragement":"...","hint":"...","xpReward":10,"preCatch":"Sentence right before throwing the ball","postCatch":"Sentence after the catch animation", ...formatFields...}
 
 7) Evolution eligible:
    {"type":"evolutionEligible","narration":"Lead-in story beat — gentle, reflective"}
 
 8) Chapter end (final step of final scene):
-   {"type":"chapterEnd","title":"End of Chapter 1","subtitle":"One-sentence teaser for Chapter 2"}
+   {"type":"chapterEnd","title":"End of the ${region} chapter","subtitle":"One-sentence teaser hinting at the journey to the next region"}
 
 TONE:
 - Sentences are short. The reader is 5.
-- Concrete sensory details — what ${g.intake.name} sees, hears, feels.
+- Concrete sensory details — what ${SAVE.characterName} sees, hears, feels.
 - Questions are obstacles in the story, not pop quizzes. The "onWrong" text still advances the story — no shaming, no failing.
 - MC distractors are plausible, never silly.
 
@@ -649,19 +932,22 @@ function extractJSON(text){
 
 function validateScene(payload,sceneNum,region){
   if(!payload?.scene?.steps||!Array.isArray(payload.scene.steps))throw new Error("Scene payload missing scene.steps.");
-  const allowed=new Set([
+  // pkmReveal can be ANY known pokemon (current region OR party from previous regions)
+  // pkm (catch/partyAdd target) MUST be from current region only
+  const currentRegionAllowed=new Set([
     ...REGIONS[region].starters.flatMap(s=>starterLine(s)),
     ...REGIONS[region].wildPool,
   ]);
-  let starterChoiceCount=0,catchCount=0,endCount=0,evoCount=0,questionCount=0;
+  const partyNames=new Set(SAVE.party.map(m=>m.name));
+  const knownAll=new Set([...currentRegionAllowed,...partyNames,...Object.keys(POKEMON_DB)]);
+  let starterChoiceCount=0,catchCount=0,endCount=0,evoCount=0;
   for(const step of payload.scene.steps){
-    if(step.pkmReveal&&!allowed.has(step.pkmReveal))throw new Error(`Story references "${step.pkmReveal}" which isn't allowed in ${region}.`);
-    if(step.pkm&&!allowed.has(step.pkm))throw new Error(`Story references "${step.pkm}" which isn't allowed in ${region}.`);
+    if(step.pkmReveal&&!knownAll.has(step.pkmReveal))throw new Error(`Story references "${step.pkmReveal}" which isn't a known Pokémon.`);
+    if(step.pkm&&!currentRegionAllowed.has(step.pkm))throw new Error(`Story references "${step.pkm}" for catch/party-add — must be from ${region}.`);
     if(step.type==="starterChoice")starterChoiceCount++;
     if(step.type==="catch")catchCount++;
     if(step.type==="chapterEnd")endCount++;
     if(step.type==="evolutionEligible")evoCount++;
-    if(step.type==="question")questionCount++;
   }
   if(sceneNum===1&&starterChoiceCount!==1)throw new Error(`Scene 1 must have exactly 1 starterChoice (got ${starterChoiceCount}).`);
   if(sceneNum>1&&starterChoiceCount>0)throw new Error(`starterChoice only allowed in scene 1.`);
@@ -679,68 +965,74 @@ async function generateNextScene(){
   const json=extractJSON(text);
   let payload;
   try{payload=JSON.parse(json);}catch(e){throw new Error("Couldn't parse the scene JSON. Try again.");}
-  validateScene(payload,sceneNum,S.gen.intake.region);
+  validateScene(payload,sceneNum,S.gen.region);
   return payload;
 }
 
-function recordSceneStats(sceneObj){
+function recordSceneStats(sceneObj,payloadConceptsTaught){
   for(const step of sceneObj.steps){
     if(step.type==="question"||step.type==="catch"){
-      if(step.subject&&S.gen.subjectsUsed[step.subject]!=null)S.gen.subjectsUsed[step.subject]++;
       if(step.format&&!S.gen.formatsUsed.includes(step.format))S.gen.formatsUsed.push(step.format);
     }
   }
+  if(Array.isArray(payloadConceptsTaught)){
+    for(const c of payloadConceptsTaught){if(c&&!S.gen.conceptsTaught.includes(c))S.gen.conceptsTaught.push(c);}
+  }
 }
+
+// ============== PARTY MANAGEMENT (with PC overflow & swap) ==============
+function tryAddPokemonToTeam(name,onDone){
+  if(!POKEMON_DB[name]){onDone&&onDone();return;}
+  if(partyByName(name)||storageByName(name)){onDone&&onDone();return;}
+  if(SAVE.party.length<PARTY_MAX){
+    SAVE.party.push(mkPartyMember(name));
+    if(SAVE.party.length===1)S.activeIdx=0;
+    persistSave();
+    onDone&&onDone();
+  }else{
+    showSwapOverlay(name,onDone);
+  }
+}
+function showSwapOverlay(newPkmName,onDone){
+  const ov=document.getElementById("swap-overlay");
+  const card=document.getElementById("swap-card-content");
+  const newSprite=pkSprite(newPkmName,110);
+  let h=`<div class="swap-title">${escapeHtml(newPkmName)} wants to join your team!</div>`;
+  h+=`<div class="swap-sub">Your team is full. Pick a Pokémon to send to the PC, or send ${escapeHtml(newPkmName)} to the PC instead.</div>`;
+  h+=`<div class="swap-newcomer">${newSprite}<div class="sw-name">${escapeHtml(newPkmName)} <span style="color:#9A3412;font-weight:500">(${POKEMON_DB[newPkmName].type})</span></div></div>`;
+  h+=`<div class="pc-section-title" style="text-align:center">Tap a Pokémon to send to PC</div>`;
+  h+=`<div class="pc-grid">`;
+  SAVE.party.forEach((m,i)=>{
+    const p=PKM[m.name];
+    h+=`<button class="pc-card" data-swap-bench="${i}"><div class="pc-sprite">${pkSprite(m.name,46)}</div><div class="pc-name">${escapeHtml(m.name)}</div><div class="pc-meta">${p?.type||""}</div></button>`;
+  });
+  h+=`</div>`;
+  h+=`<button class="skip-btn" id="swap-store-newcomer" style="margin-top:14px">Send ${escapeHtml(newPkmName)} to PC instead</button>`;
+  card.innerHTML=h;
+  ov.classList.add("active");
+  card.querySelectorAll("[data-swap-bench]").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      const idx=+btn.dataset.swapBench;
+      const benched=SAVE.party[idx];
+      SAVE.storage.push(benched);
+      SAVE.party[idx]=mkPartyMember(newPkmName);
+      if(S.activeIdx>=SAVE.party.length)S.activeIdx=SAVE.party.length-1;
+      persistSave();
+      hideSwapOverlay();
+      onDone&&onDone();
+    });
+  });
+  document.getElementById("swap-store-newcomer").addEventListener("click",()=>{
+    SAVE.storage.push(mkPartyMember(newPkmName));
+    persistSave();
+    hideSwapOverlay();
+    onDone&&onDone();
+  });
+}
+function hideSwapOverlay(){document.getElementById("swap-overlay").classList.remove("active");}
 
 // ============== HELPERS ==============
-const SUBS=["math","reading","science"];
-const SNAME={math:"Math",reading:"Reading",science:"Science"};
-const SCLS={math:"tagm",reading:"tagr",science:"tags"};
-function pkSprite(name,size){return PKM[name]?pkImg(PKM[name].num,size):"";}
-
-// ============== STATE ==============
-function mkStat(){return{cor:0,att:0,level:1,cs:0,ws:0};}
-function mkPartyMember(name){return{name,xp:0,xpTo:PKM[name].xpTo,ready:false};}
-function mkState(){return{
-  phase:"story",                         // story | generating | genError | done
-  ch:0,sc:0,st:0,
-  party:[],
-  activeIdx:0,
-  qDone:false,qCor:false,qAnswer:null,
-  seqOrder:[],
-  starterPicked:null,                    // tracks the in-flight starterChoice selection
-  streak:0,
-  stats:{math:mkStat(),reading:mkStat(),science:mkStat()},
-  lvc:null,
-  pendingXP:null,pendingReady:null,
-  genError:null,
-  gen:{                                   // story-generation state
-    intake:{name:"",region:"",goal:""},
-    starter:null,                         // chosen starter (set when starterChoice resolved)
-    scenes:[],                            // [{summary, isFinal}]
-    isFinalScene:false,
-    subjectsUsed:{math:0,reading:0,science:0},
-    formatsUsed:[],
-  },
-};}
-
-let S=mkState();
-const gameEl=document.getElementById("game");
-
-function curChapter(){return STORY?.chapters[S.ch];}
-function curScene(){return curChapter()?.scenes[S.sc];}
-function curStep(){return curScene()?.steps[S.st];}
-function partyByName(name){return S.party.find(p=>p.name===name);}
-
-function accPct(s){return s.att===0?0:Math.min(100,Math.round(s.cor/s.att*100));}
-function updStats(sub,ok){
-  const s=S.stats[sub];s.att++;const pv=s.level;
-  if(ok){s.cor++;s.cs++;s.ws=0;if(s.cs>=3&&s.level<3){s.level++;s.cs=0;}}
-  else{s.ws++;s.cs=0;if(s.ws>=2&&s.level>1){s.level--;s.ws=0;}}
-  S.lvc=s.level>pv?"up":s.level<pv?"down":null;
-}
-const LVLU={math:"Math level up! Trickier puzzles ahead.",reading:"Reading level up! Harder words coming.",science:"Science level up! Bigger questions next."};
-const LVLD={math:"Trying easier math next time.",reading:"Easier reading coming up.",science:"Easier science next time."};
+function accPctParty(s){return s.att===0?0:Math.min(100,Math.round(s.cor/s.att*100));}
 
 // ============== STORY ADVANCE ==============
 function advanceStep(){
@@ -755,11 +1047,8 @@ function advanceStep(){
   const step=curStep();
   if(!step){endOrGenerate();return;}
   if(step.type==="partyAdd"){
-    if(!partyByName(step.pkm)&&PKM[step.pkm]){
-      S.party.push(mkPartyMember(step.pkm));
-      if(S.party.length===1)S.activeIdx=0;
-    }
-    advanceStep();return;
+    tryAddPokemonToTeam(step.pkm,()=>advanceStep());
+    return;
   }
   render();
 }
@@ -778,7 +1067,7 @@ async function generateAndAppendScene(){
     STORY.chapters[0].scenes.push(payload.scene);
     S.gen.scenes.push({summary:payload.summary||"",isFinal:!!payload.isFinal});
     if(payload.isFinal)S.gen.isFinalScene=true;
-    recordSceneStats(payload.scene);
+    recordSceneStats(payload.scene,payload.conceptsTaught);
     S.phase="story";
     S.sc=STORY.chapters[0].scenes.length-1;
     S.st=-1;
@@ -790,18 +1079,19 @@ async function generateAndAppendScene(){
 
 // ============== ANSWER HANDLING ==============
 function awardXP(amount){
-  const m=S.party[S.activeIdx];
+  const m=SAVE.party[S.activeIdx];
   if(!m||m.xpTo===null)return;
   const before=m.xp;
   m.xp=Math.min(m.xpTo,m.xp+amount);
   S.pendingXP=`+${m.xp-before} XP for ${m.name}!`;
   if(!m.ready&&m.xp>=m.xpTo){m.ready=true;S.pendingReady=`${m.name} is glowing softly... something is about to happen!`;}
+  persistSave();
 }
 function onAnswer(correct){
   if(S.qDone)return;
   S.qDone=true;S.qCor=correct;
   const step=curStep();
-  updStats(step.subject,correct);
+  updModuleStats(correct);
   if(correct){S.streak++;if(step.xpReward)awardXP(step.xpReward);}
   else{S.streak=0;}
   render();
@@ -817,10 +1107,9 @@ function onContinueAfterQuestion(){
 function onStarterPicked(name){
   if(!PKM[name]){console.error("Picked unknown starter:",name);return;}
   S.gen.starter=name;
-  // Add to party silently
-  if(!partyByName(name)){S.party.push(mkPartyMember(name));S.activeIdx=S.party.length-1;}
-  // Celebrate via overlay
-  playStarterCelebration(name,()=>advanceStep());
+  tryAddPokemonToTeam(name,()=>{
+    playStarterCelebration(name,()=>advanceStep());
+  });
 }
 
 function playStarterCelebration(name,onDone){
@@ -840,12 +1129,13 @@ function playStarterCelebration(name,onDone){
 
 // ============== EVOLUTION ==============
 function fireEvolutionForReady(narration,onDone){
-  const ready=S.party.find(m=>m.ready&&PKM[m.name]?.evolvesTo);
+  const ready=SAVE.party.find(m=>m.ready&&PKM[m.name]?.evolvesTo);
   if(!ready){onDone();return;}
   const fromName=ready.name,toName=PKM[ready.name].evolvesTo;
   if(!PKM[toName]){onDone();return;}
   ready.name=toName;ready.xp=0;ready.xpTo=PKM[toName].xpTo;ready.ready=false;
   if(S.gen.starter===fromName)S.gen.starter=toName;
+  persistSave();
   playEvolution(fromName,toName,narration,onDone);
 }
 
@@ -925,13 +1215,13 @@ function playCatch(pkmName,onDone){
 
 // ============== RENDERERS ==============
 function partyRowHTML(){
-  if(S.party.length===0)return"";
+  if(SAVE.party.length===0)return"";
   let h=`<div class="party-row">`;
-  S.party.forEach((m,i)=>{
+  SAVE.party.forEach((m,i)=>{
     const p=PKM[m.name];if(!p)return;
     const pct=p.xpTo?Math.round((m.xp/p.xpTo)*100):100;
     const cls=`party-card${i===S.activeIdx?' active':''}${m.ready?' ready':''}`;
-    h+=`<div class="${cls}"><div class="party-sprite">${pkSprite(m.name,46)}</div><div class="party-name">${m.name}</div>`;
+    h+=`<div class="${cls}"><div class="party-sprite">${pkSprite(m.name,46)}</div><div class="party-name">${escapeHtml(m.name)}</div>`;
     if(p.xpTo)h+=`<div class="party-xp-row"><span>XP</span><span>${m.xp}/${p.xpTo}</span></div><div class="party-xp-track"><div class="party-xp-fill${m.ready?' ready':''}" style="width:${pct}%"></div></div>`;
     else h+=`<div class="party-xp-row" style="justify-content:center"><span>MAX</span></div>`;
     h+=`</div>`;
@@ -939,16 +1229,18 @@ function partyRowHTML(){
   return h+`</div>`;
 }
 
-function statsHTML(){
-  let h=`<div class="stats-row">`;
-  SUBS.forEach(sub=>{const s=S.stats[sub];const p2=accPct(s);const lc=['','lv1','lv2','lv3'][s.level];h+=`<div class="stat-card"><div class="stat-subj">${SNAME[sub]}</div><div class="stat-lvl ${lc}">Level ${s.level}</div><div class="stat-acc">${s.cor}<span class="stat-denom">/${s.att}</span></div><div class="stat-bar"><div class="stat-fill" style="width:${p2}%"></div></div></div>`;});
-  return h+`</div>`;
+function moduleProgressHTML(){
+  const mi=S.gen.moduleIndex;
+  const stats=SAVE.moduleStats[mi]||{cor:0,att:0};
+  const mod=MODULES[mi];
+  const pct=stats.att?Math.round(stats.cor/stats.att*100):0;
+  return `<div class="stats-row"><div class="stat-card"><div class="stat-subj">Module ${mi+1}/9 · ${escapeHtml(mod.name)}</div><div class="stat-acc">${stats.cor}<span class="stat-denom">/${stats.att} correct</span></div><div class="stat-bar"><div class="stat-fill" style="width:${pct}%"></div></div></div></div>`;
 }
 
 function renderNarrative(step){
   const loc=step.loc||curScene().loc||"";
   let h=`<div class="scene-card">`;
-  if(loc)h+=`<div class="scene-loc">${loc}</div>`;
+  if(loc)h+=`<div class="scene-loc">${escapeHtml(loc)}</div>`;
   if(step.pkmReveal&&PKM[step.pkmReveal]){
     h+=`<div style="display:flex;justify-content:center;margin-bottom:14px">${pkSprite(step.pkmReveal,120)}</div>`;
   }
@@ -958,11 +1250,11 @@ function renderNarrative(step){
 }
 
 function renderStarterChoice(step){
-  const region=S.gen.intake.region;
+  const region=S.gen.region;
   const starters=REGIONS[region].starters;
   const loc=curScene().loc||"";
   let h=`<div class="scene-card">`;
-  if(loc)h+=`<div class="scene-loc">${loc}</div>`;
+  if(loc)h+=`<div class="scene-loc">${escapeHtml(loc)}</div>`;
   h+=`<div class="subj-tag tagc">Choose your partner</div>`;
   if(step.intro)h+=`<div class="scene-text" style="margin-bottom:14px">${step.intro}</div>`;
   h+=`<div class="qtext">${step.prompt||"Which Pokémon will be your partner?"}</div>`;
@@ -979,17 +1271,18 @@ function renderStarterChoice(step){
 }
 
 function renderQuestionShell(step,inner){
-  const subjLabel=`<div class="subj-tag ${SCLS[step.subject]||'tagm'}">${SNAME[step.subject]||step.subject} &bull; Level ${S.stats[step.subject]?.level||1}</div>`;
+  const mod=curModule();
+  const tagCls=MODULE_TAG_CLASS[S.gen.moduleIndex]||"tagm";
+  const subjLabel=`<div class="subj-tag ${tagCls}">${escapeHtml(mod.name)}</div>`;
   const loc=curScene().loc||"";
   let h=`<div class="scene-card">`;
-  if(loc)h+=`<div class="scene-loc">${loc}</div>`;
+  if(loc)h+=`<div class="scene-loc">${escapeHtml(loc)}</div>`;
   h+=subjLabel+`<div class="qtext">${step.prompt}</div>${inner}`;
   if(S.qDone){
     const msg=S.qCor?(step.onCorrect||step.encouragement):(step.onWrong||step.hint);
     h+=`<div class="result-msg ${S.qCor?'ok':'no'}">${msg}</div>`;
-    if(S.pendingXP)h+=`<div class="xp-toast">${S.pendingXP}</div>`;
-    if(S.pendingReady)h+=`<div class="ready-toast">&#9889; ${S.pendingReady}</div>`;
-    if(S.lvc){const m=S.lvc==='up'?LVLU[step.subject]:LVLD[step.subject];if(m)h+=`<div class="lvl-toast">${m}</div>`;}
+    if(S.pendingXP)h+=`<div class="xp-toast">${escapeHtml(S.pendingXP)}</div>`;
+    if(S.pendingReady)h+=`<div class="ready-toast">&#9889; ${escapeHtml(S.pendingReady)}</div>`;
     const btnLabel=step.type==="catch"&&!S.qCor?"Try again &#8594;":"Continue &#8594;";
     h+=`<button class="nxt-btn" id="nxt-btn">${btnLabel}</button>`;
   }
@@ -1074,8 +1367,8 @@ function renderQuestion(step){
 function renderEvolutionEligible(step){
   let h=`<div class="scene-card">`;
   const loc=curScene().loc||"";
-  if(loc)h+=`<div class="scene-loc">${loc}</div>`;
-  const ready=S.party.find(m=>m.ready&&PKM[m.name]?.evolvesTo);
+  if(loc)h+=`<div class="scene-loc">${escapeHtml(loc)}</div>`;
+  const ready=SAVE.party.find(m=>m.ready&&PKM[m.name]?.evolvesTo);
   if(ready){
     h+=`<div style="display:flex;justify-content:center;margin-bottom:14px">${pkSprite(ready.name,100)}</div>`;
     h+=`<div class="scene-text">${step.narration||""}</div>`;
@@ -1091,14 +1384,15 @@ function renderEvolutionEligible(step){
 function renderChapterEnd(step){
   let h=`<div class="chapter-end-card">`;
   h+=`<div class="chapter-end-icon">&#127775;</div>`;
-  h+=`<div class="chapter-end-title">${step.title||"End of Chapter 1"}</div>`;
+  h+=`<div class="chapter-end-title">${step.title||"End of the Chapter"}</div>`;
   h+=`<div class="chapter-end-sub">${step.subtitle||""}</div>`;
-  if(S.party.length>0){
-    h+=`<div style="display:flex;justify-content:center;gap:14px;margin-bottom:18px">`;
-    S.party.forEach(m=>{h+=`<div style="text-align:center">${pkSprite(m.name,72)}<div style="font-size:11px;font-weight:700;color:#374151;margin-top:4px">${m.name}</div></div>`;});
+  if(SAVE.party.length>0){
+    h+=`<div style="display:flex;justify-content:center;gap:14px;margin-bottom:18px;flex-wrap:wrap">`;
+    SAVE.party.forEach(m=>{h+=`<div style="text-align:center">${pkSprite(m.name,72)}<div style="font-size:11px;font-weight:700;color:#374151;margin-top:4px">${escapeHtml(m.name)}</div></div>`;});
     h+=`</div>`;
   }
-  h+=`<button class="start-btn" id="restart-btn">Start a New Adventure</button>`;
+  const isLast=SAVE.completedRegions.length+1>=9;
+  h+=`<button class="start-btn" id="finish-region-btn">${isLast?"See the Ending &#8594;":"Continue the Journey &#8594;"}</button>`;
   h+=`</div>`;
   return h;
 }
@@ -1107,27 +1401,28 @@ function renderGenerating(){
   return `<div class="transition-card"><div class="loading-spinner small"></div><div class="transition-text">Continuing the story...</div></div>`;
 }
 function renderGenError(){
-  return `<div class="gen-error-card"><div style="font-size:15px;font-weight:700;color:#1A1A2E;margin-bottom:8px">Couldn't continue the story</div><div style="font-size:13px;color:#6B7280;margin-bottom:14px;line-height:1.5">${S.genError||"Unknown error"}</div><button class="continue-btn" id="retry-gen">Try again</button><button class="skip-btn" id="back-to-intake-from-error" style="margin-top:10px">Back to start</button></div>`;
+  return `<div class="gen-error-card"><div style="font-size:15px;font-weight:700;color:#1A1A2E;margin-bottom:8px">Couldn't continue the story</div><div style="font-size:13px;color:#6B7280;margin-bottom:14px;line-height:1.5">${escapeHtml(S.genError||"Unknown error")}</div><button class="continue-btn" id="retry-gen">Try again</button><button class="skip-btn" id="back-to-region-from-error" style="margin-top:10px">Back to region select</button></div>`;
 }
 
 function render(){
   const ch=curChapter();
-  const hdr=`<div class="hdr"><span class="app-name">${STORY_TITLE}</span>${S.streak>1?`<span class="streak-badge">Streak: ${S.streak}</span>`:""}</div>`;
+  const pcBtn=SAVE.storage.length>0?`<button class="pc-btn" id="pc-btn">PC (${SAVE.storage.length})</button>`:"";
+  const streakBadge=S.streak>1?`<span class="streak-badge">Streak: ${S.streak}</span>`:"";
+  const hdr=`<div class="hdr"><span class="app-name">${escapeHtml(STORY_TITLE)}</span><div class="hdr-right">${pcBtn}${streakBadge}</div></div>`;
   let h=hdr;
-  if(ch)h+=`<div style="font-size:11px;color:#9CA3AF;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px">Chapter ${ch.id} &bull; ${ch.title||"Adventure"}</div>`;
+  const mod=curModule();
+  h+=`<div class="module-banner">Region ${SAVE.completedRegions.length+1} of 9 &middot; <strong>Module ${S.gen.moduleIndex+1}: ${escapeHtml(mod.name)}</strong></div>`;
   h+=partyRowHTML();
 
   if(S.phase==="generating"){gameEl.innerHTML=h+renderGenerating();return;}
   if(S.phase==="genError"){
     gameEl.innerHTML=h+renderGenError();
     document.getElementById('retry-gen').addEventListener('click',generateAndAppendScene);
-    document.getElementById('back-to-intake-from-error').addEventListener('click',backToIntake);
+    document.getElementById('back-to-region-from-error').addEventListener('click',()=>showRegionSelect());
     return;
   }
   if(S.phase==="done"){
-    h+=`<div class="chapter-end-card"><div class="chapter-end-icon">&#127942;</div><div class="chapter-end-title">Adventure Complete!</div><div class="chapter-end-sub">Start a brand-new adventure with a different region or goal.</div><button class="start-btn" id="restart-btn">Start a New Adventure</button></div>`;
-    gameEl.innerHTML=h;
-    document.getElementById('restart-btn').addEventListener('click',backToIntake);
+    showRegionEnd();
     return;
   }
 
@@ -1140,7 +1435,7 @@ function render(){
   else if(step.type==="evolutionEligible")h+=renderEvolutionEligible(step);
   else if(step.type==="chapterEnd")h+=renderChapterEnd(step);
 
-  if(S.party.length>0)h+=statsHTML();
+  if(SAVE.party.length>0)h+=moduleProgressHTML();
 
   gameEl.innerHTML=h;
   bindStepEvents(step);
@@ -1151,14 +1446,16 @@ function bindStepEvents(step){
   if(cont)cont.addEventListener('click',advanceStep);
   const next=document.getElementById('nxt-btn');
   if(next)next.addEventListener('click',onContinueAfterQuestion);
-  const restart=document.getElementById('restart-btn');
-  if(restart)restart.addEventListener('click',backToIntake);
+  const finish=document.getElementById('finish-region-btn');
+  if(finish)finish.addEventListener('click',completeCurrentRegion);
+  const pcBtn=document.getElementById('pc-btn');
+  if(pcBtn)pcBtn.addEventListener('click',()=>showPCBox("game"));
 
-  if(step.type==="starterChoice"){
+  if(step&&step.type==="starterChoice"){
     gameEl.querySelectorAll('[data-pick]').forEach(b=>b.addEventListener('click',()=>onStarterPicked(b.dataset.pick)));
   }
 
-  if(step.type==="question"||step.type==="catch"){
+  if(step&&(step.type==="question"||step.type==="catch")){
     if(step.format==="mc"){
       gameEl.querySelectorAll('[data-mc]').forEach(b=>b.addEventListener('click',()=>{
         if(S.qDone)return;const i=+b.dataset.mc;S.qAnswer=i;onAnswer(i===step.correctIndex);
@@ -1186,55 +1483,180 @@ function bindStepEvents(step){
     }
   }
 
-  if(step.type==="evolutionEligible"){
+  if(step&&step.type==="evolutionEligible"){
     const evb=document.getElementById('evo-continue');
     if(evb)evb.addEventListener('click',()=>fireEvolutionForReady(step.narration,advanceStep));
   }
 }
 
-// ============== SCREENS ==============
-const SCREENS=["api-key-screen","intake-screen","loading-screen","game"];
-function showScreen(id){
-  SCREENS.forEach(s=>{const el=document.getElementById(s);if(el)el.style.display=s===id?"block":"none";});
+// ============== PC BOX ==============
+let pcReturnScreen="region-select-screen";
+function showPCBox(returnTo){
+  pcReturnScreen=returnTo==="game"?"game":"region-select-screen";
+  S.pcSelected=null;
+  renderPCBox();
+  showScreen("pc-box-screen");
+}
+function renderPCBox(){
+  const promptArea=document.getElementById("pc-prompt-area");
+  if(S.pcSelected!=null&&SAVE.storage[S.pcSelected]){
+    const sel=SAVE.storage[S.pcSelected];
+    promptArea.innerHTML=`<div class="pc-prompt">Tap a teammate below to swap with <strong>${escapeHtml(sel.name)}</strong>${SAVE.party.length<PARTY_MAX?", or just bring them onto the team":""}.</div>`;
+    if(SAVE.party.length<PARTY_MAX){
+      promptArea.innerHTML+=`<button class="continue-btn" id="pc-add-direct" style="margin-bottom:10px">Add ${escapeHtml(sel.name)} to team</button>`;
+    }
+    promptArea.innerHTML+=`<button class="skip-btn" id="pc-cancel-sel">Cancel</button>`;
+  }else{
+    promptArea.innerHTML="";
+  }
+
+  const partyGrid=document.getElementById("pc-party-grid");
+  if(SAVE.party.length===0){
+    partyGrid.innerHTML=`<div class="pc-empty" style="grid-column:1/-1">Your team is empty.</div>`;
+  }else{
+    let h="";
+    SAVE.party.forEach((m,i)=>{
+      const p=PKM[m.name];
+      h+=`<button class="pc-card" data-party-idx="${i}"><div class="pc-sprite">${pkSprite(m.name,46)}</div><div class="pc-name">${escapeHtml(m.name)}</div><div class="pc-meta">${p?.type||""}</div></button>`;
+    });
+    partyGrid.innerHTML=h;
+  }
+
+  const storageArea=document.getElementById("pc-storage-area");
+  if(SAVE.storage.length===0){
+    storageArea.innerHTML=`<div class="pc-empty">No Pokémon in storage yet.</div>`;
+  }else{
+    let h=`<div class="pc-grid">`;
+    SAVE.storage.forEach((m,i)=>{
+      const p=PKM[m.name];
+      const sel=S.pcSelected===i?" selected":"";
+      h+=`<button class="pc-card${sel}" data-storage-idx="${i}"><div class="pc-sprite">${pkSprite(m.name,46)}</div><div class="pc-name">${escapeHtml(m.name)}</div><div class="pc-meta">${p?.type||""}</div></button>`;
+    });
+    h+=`</div>`;
+    storageArea.innerHTML=h;
+  }
+
+  // Bind events
+  document.querySelectorAll("[data-storage-idx]").forEach(btn=>{
+    btn.addEventListener("click",()=>{S.pcSelected=+btn.dataset.storageIdx;renderPCBox();});
+  });
+  document.querySelectorAll("[data-party-idx]").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      if(S.pcSelected==null)return;
+      const partyIdx=+btn.dataset.partyIdx;
+      const benched=SAVE.party[partyIdx];
+      const incoming=SAVE.storage[S.pcSelected];
+      SAVE.party[partyIdx]=incoming;
+      SAVE.storage[S.pcSelected]=benched;
+      S.pcSelected=null;
+      persistSave();
+      renderPCBox();
+    });
+  });
+  const addDirect=document.getElementById("pc-add-direct");
+  if(addDirect)addDirect.addEventListener("click",()=>{
+    if(S.pcSelected==null)return;
+    if(SAVE.party.length>=PARTY_MAX)return;
+    const incoming=SAVE.storage[S.pcSelected];
+    SAVE.storage.splice(S.pcSelected,1);
+    SAVE.party.push(incoming);
+    S.pcSelected=null;
+    persistSave();
+    renderPCBox();
+  });
+  const cancelSel=document.getElementById("pc-cancel-sel");
+  if(cancelSel)cancelSel.addEventListener("click",()=>{S.pcSelected=null;renderPCBox();});
+}
+document.getElementById("pc-close-btn").addEventListener("click",()=>{
+  S.pcSelected=null;
+  showScreen(pcReturnScreen);
+  if(pcReturnScreen==="region-select-screen")renderRegionSelect();
+});
+
+// ============== REGION SELECT ==============
+function renderRegionSelect(){
+  const grid=document.getElementById("region-grid");
+  let h="";
+  REGION_ORDER.forEach(rname=>{
+    const done=SAVE.completedRegions.includes(rname);
+    const cls=done?"region-card done":"region-card";
+    const r=REGIONS[rname];
+    const moduleIdx=done?SAVE.completedRegions.indexOf(rname):SAVE.completedRegions.length;
+    const moduleLabel=done?`Module ${moduleIdx+1} ✓`:"";
+    const starterPreview=POKEMON_DB[r.starters[0]].num;
+    h+=`<button class="${cls}" ${done?'disabled':''} data-region="${rname}">
+      ${done?'<span class="rc-check">&#10004;</span>':''}
+      <img class="rc-img" src="${BASE}${starterPreview}.png" alt="">
+      <div class="rc-name">${rname}</div>
+      <div class="rc-prof">${r.professor.replace("Professor ","Prof. ")}</div>
+      ${moduleLabel?`<div class="rc-mod">${moduleLabel}</div>`:""}
+    </button>`;
+  });
+  grid.innerHTML=h;
+  grid.querySelectorAll("[data-region]").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      if(btn.disabled)return;
+      onRegionChosen(btn.dataset.region);
+    });
+  });
+
+  const titleEl=document.getElementById("region-select-title");
+  const subEl=document.getElementById("region-select-sub");
+  const summaryEl=document.getElementById("region-progress-summary");
+  const completed=SAVE.completedRegions.length;
+  const nextModule=completed<9?MODULES[completed]:null;
+  if(completed===0){
+    titleEl.textContent=`Welcome, ${SAVE.characterName}! Pick your starting region`;
+    subEl.textContent=`This region's adventure will teach: ${nextModule?nextModule.name:""}.`;
+  }else if(completed>=9){
+    titleEl.textContent="All 9 regions complete!";
+    subEl.textContent="You've mastered the whole journey.";
+  }else{
+    titleEl.textContent=`Pick your next region, ${SAVE.characterName}`;
+    subEl.textContent=`Next module: ${nextModule.name} — ${nextModule.short}.`;
+  }
+
+  let summary=`<strong>${completed}/9 regions complete.</strong> `;
+  summary+=`Team: ${SAVE.party.length} Pokémon. PC storage: ${SAVE.storage.length}.`;
+  if(completed>0){
+    summary+=`<br>Modules mastered: `;
+    const mods=SAVE.completedRegions.map((rn,i)=>`${MODULES[i].name}`).join(", ");
+    summary+=mods;
+  }
+  summaryEl.innerHTML=summary;
 }
 
-function backToIntake(){
-  S=mkState();
-  STORY=null;PKM={};STORY_TITLE="Pokémon Learning Adventure";
-  showScreen("intake-screen");
+function showRegionSelect(){
+  if(SAVE.completedRegions.length>=9){showEndgame();return;}
+  renderRegionSelect();
+  showScreen("region-select-screen");
 }
 
-async function onIntakeSubmit(){
-  const name=document.getElementById("intake-name").value.trim();
-  const region=document.getElementById("intake-region").value;
-  const goal=document.getElementById("intake-goal").value.trim();
-
-  const errEl=document.getElementById("intake-error");
-  errEl.style.display="none";
-  const missing=[];
-  if(!name)missing.push("your name");
-  if(!region)missing.push("a region");
-  if(!goal)missing.push("a goal");
-  if(missing.length){errEl.textContent="Please fill in: "+missing.join(", ");errEl.style.display="block";return;}
-
-  // Initialize state for a new adventure
+function onRegionChosen(region){
   S=mkState();
-  S.gen.intake={name,region,goal};
-  preloadRegionPKM(region);
-  STORY={chapters:[{id:1,title:"Chapter 1",scenes:[]}]};
-  STORY_TITLE=`${name}'s ${region} Adventure`;
+  S.gen.region=region;
+  S.gen.moduleIndex=SAVE.completedRegions.length;
+  preloadRegionImages(region);
+  STORY={chapters:[{id:1,title:`Chapter ${SAVE.completedRegions.length+1}`,scenes:[]}]};
+  STORY_TITLE=`${SAVE.characterName}'s ${region} Chapter`;
 
   showScreen("loading-screen");
   document.getElementById("loading-active").style.display="block";
   document.getElementById("loading-failed").style.display="none";
+  document.getElementById("loading-title").textContent=`Writing Scene 1 in ${region}...`;
+  document.getElementById("loading-sub").textContent=`Module ${S.gen.moduleIndex+1}: ${MODULES[S.gen.moduleIndex].name}`;
 
+  generateScene1ForRegion();
+}
+
+async function generateScene1ForRegion(){
   try{
     const payload=await generateNextScene();
     if(payload.title)STORY_TITLE=payload.title;
     STORY.chapters[0].scenes.push(payload.scene);
     S.gen.scenes.push({summary:payload.summary||"",isFinal:!!payload.isFinal});
     if(payload.isFinal)S.gen.isFinalScene=true;
-    recordSceneStats(payload.scene);
+    recordSceneStats(payload.scene,payload.conceptsTaught);
     S.phase="story";S.ch=0;S.sc=0;S.st=-1;
     showScreen("game");
     advanceStep();
@@ -1242,12 +1664,120 @@ async function onIntakeSubmit(){
     document.getElementById("loading-active").style.display="none";
     document.getElementById("loading-failed").style.display="block";
     document.getElementById("loading-error").textContent=String(e.message||e);
-    document.getElementById("loading-retry").onclick=onIntakeSubmit;
-    document.getElementById("loading-back").onclick=()=>showScreen("intake-screen");
+    document.getElementById("loading-retry").onclick=generateScene1ForRegion;
+    document.getElementById("loading-back").onclick=()=>showRegionSelect();
   }
 }
 
+// ============== REGION END ==============
+function completeCurrentRegion(){
+  const region=S.gen.region;
+  if(!SAVE.completedRegions.includes(region))SAVE.completedRegions.push(region);
+  persistSave();
+  showRegionEnd();
+}
+
+function showRegionEnd(){
+  const region=S.gen.region;
+  const mod=curModule();
+  const stats=SAVE.moduleStats[S.gen.moduleIndex]||{cor:0,att:0};
+  const card=document.getElementById("region-end-card");
+  const isLast=SAVE.completedRegions.length>=9;
+  // If we're rendering this from S.phase==="done" before the click, mark complete now too:
+  if(!SAVE.completedRegions.includes(region)){
+    SAVE.completedRegions.push(region);persistSave();
+  }
+  let h=`<div class="chapter-end-icon" style="font-size:48px;margin-bottom:8px">&#127942;</div>`;
+  h+=`<div class="app-title">${escapeHtml(region)} complete!</div>`;
+  h+=`<div class="app-sub">You mastered <strong>Module ${S.gen.moduleIndex+1}: ${escapeHtml(mod.name)}</strong>.</div>`;
+  h+=`<div style="font-size:14px;color:#374151;margin:10px 0;font-weight:600">${stats.cor} of ${stats.att} questions correct</div>`;
+  if(SAVE.party.length>0){
+    h+=`<div class="pc-section-title" style="text-align:center">Your Team</div>`;
+    h+=`<div style="display:flex;justify-content:center;gap:10px;margin-bottom:10px;flex-wrap:wrap">`;
+    SAVE.party.forEach(m=>{
+      h+=`<div style="text-align:center;width:60px">${pkSprite(m.name,52)}<div style="font-size:10px;font-weight:700;color:#374151;margin-top:2px">${escapeHtml(m.name)}</div></div>`;
+    });
+    h+=`</div>`;
+  }
+  if(SAVE.storage.length>0){
+    h+=`<div style="font-size:12px;color:#6B7280;margin-bottom:10px">Plus ${SAVE.storage.length} in PC storage.</div>`;
+  }
+  h+=`<div class="progress-summary"><strong>${SAVE.completedRegions.length}/9 regions complete.</strong>${SAVE.completedRegions.length<9?` Next: <strong>Module ${SAVE.completedRegions.length+1}: ${escapeHtml(MODULES[SAVE.completedRegions.length].name)}</strong>.`:""}</div>`;
+  h+=`<button class="start-btn" id="region-end-continue">${isLast?"See the Ending &#8594;":"Choose Next Region &#8594;"}</button>`;
+  if(SAVE.storage.length>0)h+=`<button class="skip-btn" id="region-end-pc" style="margin-top:8px">Open PC Storage</button>`;
+  card.innerHTML=h;
+  showScreen("region-end-screen");
+  document.getElementById("region-end-continue").addEventListener("click",()=>{
+    if(SAVE.completedRegions.length>=9)showEndgame();
+    else showRegionSelect();
+  });
+  const pcb=document.getElementById("region-end-pc");
+  if(pcb)pcb.addEventListener("click",()=>showPCBox("region-select-screen"));
+}
+
+// ============== ENDGAME ==============
+function showEndgame(){
+  const card=document.getElementById("endgame-card");
+  let h=`<div style="font-size:64px;margin-bottom:8px">&#127881;</div>`;
+  h+=`<div class="app-title">${escapeHtml(SAVE.characterName)}, you've done it!</div>`;
+  h+=`<div class="app-sub">You journeyed through all 9 regions and mastered every kindergarten module. You're ready for 1st grade!</div>`;
+  h+=`<div class="pc-section-title" style="text-align:center;margin-top:18px">Modules Mastered</div>`;
+  h+=`<div style="text-align:left;margin-bottom:14px">`;
+  SAVE.completedRegions.forEach((rn,i)=>{
+    const stats=SAVE.moduleStats[i]||{cor:0,att:0};
+    const pct=stats.att?Math.round(stats.cor/stats.att*100):0;
+    h+=`<div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;border-bottom:1px solid #F3F4F6"><span><strong>${i+1}. ${escapeHtml(MODULES[i].name)}</strong> <span style="color:#9CA3AF">(${escapeHtml(rn)})</span></span><span style="color:#5B21B6;font-weight:700">${pct}%</span></div>`;
+  });
+  h+=`</div>`;
+  if(SAVE.party.length>0){
+    h+=`<div class="pc-section-title" style="text-align:center">Final Team</div>`;
+    h+=`<div style="display:flex;justify-content:center;gap:10px;margin-bottom:10px;flex-wrap:wrap">`;
+    SAVE.party.forEach(m=>{
+      h+=`<div style="text-align:center;width:60px">${pkSprite(m.name,52)}<div style="font-size:10px;font-weight:700;color:#374151;margin-top:2px">${escapeHtml(m.name)}</div></div>`;
+    });
+    h+=`</div>`;
+  }
+  h+=`<div style="font-size:13px;color:#6B7280;margin:14px 0;line-height:1.5">First-grade adventures coming soon! For now, enjoy looking back at the journey.</div>`;
+  h+=`<button class="skip-btn" id="endgame-pc">Open PC Storage</button>`;
+  h+=`<button class="skip-btn" id="endgame-reset" style="margin-top:8px">Start a Brand-New Journey</button>`;
+  card.innerHTML=h;
+  showScreen("endgame-screen");
+  document.getElementById("endgame-pc").addEventListener("click",()=>{pcReturnScreen="endgame-screen";showPCBox("endgame-screen");});
+  document.getElementById("endgame-reset").addEventListener("click",()=>{
+    if(confirm("This will erase your save and start a brand-new journey. Continue?")){
+      eraseSave();
+      showScreen("intake-screen");
+    }
+  });
+}
+
+// ============== SCREENS ==============
+const SCREENS=["api-key-screen","intake-screen","region-select-screen","loading-screen","pc-box-screen","region-end-screen","endgame-screen","game"];
+function showScreen(id){
+  SCREENS.forEach(s=>{const el=document.getElementById(s);if(el)el.style.display=s===id?"block":"none";});
+}
+
+async function onIntakeSubmit(){
+  const name=document.getElementById("intake-name").value.trim();
+  const goal=document.getElementById("intake-goal").value.trim();
+
+  const errEl=document.getElementById("intake-error");
+  errEl.style.display="none";
+  const missing=[];
+  if(!name)missing.push("your name");
+  if(!goal)missing.push("a dream");
+  if(missing.length){errEl.textContent="Please fill in: "+missing.join(", ");errEl.style.display="block";return;}
+
+  SAVE.characterName=name;
+  SAVE.characterGoal=goal;
+  persistSave();
+  showRegionSelect();
+}
+
 function init(){
+  preloadAllPKM();
+  loadSave();
+
   document.getElementById("api-key-save").addEventListener("click",()=>{
     const key=document.getElementById("api-key-input").value.trim();
     const errEl=document.getElementById("api-key-error");
@@ -1255,7 +1785,7 @@ function init(){
     if(!key||!key.startsWith("sk-")){errEl.textContent="That doesn't look like an Anthropic API key. Keys start with 'sk-ant-'.";errEl.style.display="block";return;}
     localStorage.setItem("pkmn_api_key",key);
     document.getElementById("api-key-input").value="";
-    showScreen("intake-screen");
+    routeAfterApiKey();
   });
 
   document.getElementById("intake-submit").addEventListener("click",onIntakeSubmit);
@@ -1263,9 +1793,22 @@ function init(){
     localStorage.removeItem("pkmn_api_key");
     showScreen("api-key-screen");
   });
+  document.getElementById("region-pc-btn").addEventListener("click",()=>showPCBox("region-select-screen"));
+  document.getElementById("region-reset-btn").addEventListener("click",()=>{
+    if(confirm("This will erase your saved progress, party, and PC storage. Are you sure?")){
+      eraseSave();
+      showScreen("intake-screen");
+    }
+  });
 
-  if(localStorage.getItem("pkmn_api_key"))showScreen("intake-screen");
-  else showScreen("api-key-screen");
+  if(!localStorage.getItem("pkmn_api_key"))showScreen("api-key-screen");
+  else routeAfterApiKey();
+}
+
+function routeAfterApiKey(){
+  if(!SAVE.characterName){showScreen("intake-screen");return;}
+  if(SAVE.completedRegions.length>=9){showEndgame();return;}
+  showRegionSelect();
 }
 
 init();
