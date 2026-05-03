@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pokémon Learning Adventure</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;background:#F0F4F8;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:20px 20px 80px}
+.wrap{width:100%;max-width:520px}
+
+.intake-card{background:#fff;border-radius:20px;padding:32px 24px;box-shadow:0 4px 24px rgba(0,0,0,0.08);text-align:center}
+.logo-ball{margin:0 auto 18px;width:64px;height:64px;display:block}
+.app-title{font-size:22px;font-weight:700;color:#1A1A2E;margin-bottom:6px}
+.app-sub{font-size:14px;color:#6B7280;margin-bottom:8px;line-height:1.5}
+.start-btn{margin-top:22px;width:100%;background:#FF5722;color:white;border:none;border-radius:12px;padding:14px;font-size:16px;font-weight:700;cursor:pointer;transition:background 0.15s;font-family:inherit}
+.start-btn:hover:not(:disabled){background:#E64A19}
+.start-btn:disabled{opacity:0.55;cursor:not-allowed}
+.skip-btn{margin-top:10px;width:100%;background:#F3F4F6;color:#374151;border:2px solid #E5E7EB;border-radius:12px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;transition:all 0.15s;font-family:inherit}
+.skip-btn:hover{background:#E5E7EB}
+
+.intake-label{display:block;text-align:left;font-size:13px;font-weight:600;color:#374151;margin-top:18px;margin-bottom:6px}
+.intake-input{width:100%;padding:12px;border:2px solid #E5E7EB;border-radius:10px;font-size:15px;font-family:inherit;background:#F9FAFB;color:#1A1A2E}
+.intake-input:focus{outline:none;border-color:#FF5722;background:#fff}
+textarea.intake-input{resize:vertical;min-height:64px;line-height:1.45}
+
+.api-help{font-size:12px;color:#6B7280;margin-top:8px;text-align:left;line-height:1.5}
+.api-help a{color:#FF5722;text-decoration:underline}
+.form-error{margin-top:14px;padding:10px 12px;border-radius:10px;background:#FEF2F2;color:#991B1B;font-size:13px;text-align:left;line-height:1.5}
+
+.loading-spinner{width:48px;height:48px;border:4px solid #E5E7EB;border-top-color:#FF5722;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 18px}
+.loading-spinner.small{width:28px;height:28px;border-width:3px;margin-bottom:12px}
+
+#game{display:none}
+.hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.app-name{font-size:14px;font-weight:600;color:#1A1A2E}
+.streak-badge{background:#FEF3C7;color:#B45309;font-size:13px;font-weight:600;padding:4px 12px;border-radius:20px}
+.chapter-tag{font-size:11px;color:#9CA3AF;font-weight:600;letter-spacing:0.05em;text-transform:uppercase}
+
+.card{background:#fff;border-radius:16px;padding:18px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+
+.party-row{display:flex;gap:8px;margin-bottom:12px}
+.party-card{flex:1;background:#fff;border-radius:14px;padding:8px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06);border:2px solid transparent;transition:all 0.3s ease}
+.party-card.active{border-color:#1A1A2E}
+.party-card.ready{border-color:#F59E0B;box-shadow:0 0 0 3px rgba(245,158,11,0.18),0 2px 8px rgba(0,0,0,0.06);animation:ready-pulse 2s ease-in-out infinite}
+.party-name{font-size:11px;font-weight:700;color:#1A1A2E;margin-top:2px;line-height:1.2}
+.party-xp-row{display:flex;justify-content:space-between;font-size:9px;color:#9CA3AF;margin-top:4px;font-weight:600}
+.party-xp-track{height:5px;background:#F3F4F6;border-radius:999px;overflow:hidden;margin-top:2px}
+.party-xp-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#FF5722,#FF8A65);transition:width 0.7s cubic-bezier(0.4,0,0.2,1)}
+.party-xp-fill.ready{background:linear-gradient(90deg,#F59E0B,#FCD34D)}
+.party-sprite{display:flex;justify-content:center;align-items:center;height:50px;transition:filter 0.3s ease}
+.party-card.ready .party-sprite{filter:drop-shadow(0 0 8px rgba(245,158,11,0.6))}
+
+.scene-card{background:#fff;border-radius:16px;padding:24px 22px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.06);min-height:180px;position:relative}
+.scene-loc{font-size:11px;color:#9CA3AF;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:14px}
+.scene-text{font-size:17px;line-height:1.65;color:#1A1A2E;font-weight:500;animation:fade-in 0.35s ease}
+.scene-text em{font-style:italic;color:#6B7280}
+.dialog-line{font-style:italic;color:#374151}
+.continue-btn{margin-top:18px;width:100%;background:#1A1A2E;color:white;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
+.continue-btn:hover{opacity:0.85}
+
+.subj-tag{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:10px;letter-spacing:0.03em}
+.tagm{background:#DBEAFE;color:#1D4ED8}
+.tagr{background:#D1FAE5;color:#065F46}
+.tags{background:#FEF3C7;color:#92400E}
+.tagc{background:#FCE7F3;color:#9D174D}
+.qtext{font-size:16px;color:#1A1A2E;line-height:1.6;margin-bottom:16px;font-weight:500}
+
+.story-starter-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:18px 0 4px}
+.story-starter-card{background:#F9FAFB;border:2px solid #E5E7EB;border-radius:14px;padding:14px 6px 10px;text-align:center;cursor:pointer;transition:all 0.15s;font-family:inherit}
+.story-starter-card img{display:block;margin:0 auto;object-fit:contain}
+.story-starter-card:hover{border-color:#FF5722;background:#FFF3E0;transform:translateY(-2px);box-shadow:0 4px 12px rgba(255,87,34,0.18)}
+.story-starter-card .ssc-name{font-size:13px;font-weight:700;color:#1A1A2E;margin-top:6px}
+.story-starter-card .ssc-type{font-size:10px;color:#6B7280;margin-top:2px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase}
+
+.ans-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.ans-btn{background:#F9FAFB;border:2px solid #E5E7EB;border-radius:12px;padding:14px 10px;font-size:15px;font-weight:600;color:#374151;cursor:pointer;text-align:center;transition:all 0.15s;line-height:1.3;font-family:inherit;width:100%}
+.ans-btn:hover:not(:disabled){border-color:#FF5722;color:#FF5722;background:#FFF3E0}
+.ans-btn.cor{background:#ECFDF5;border-color:#10B981;color:#065F46}
+.ans-btn.wrg{background:#FEF2F2;border-color:#EF4444;color:#991B1B}
+.ans-btn:disabled{cursor:default}
+
+.numpad{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:10px}
+.numpad-btn{background:#F9FAFB;border:2px solid #E5E7EB;border-radius:12px;padding:18px 0;font-size:22px;font-weight:700;color:#1A1A2E;cursor:pointer;font-family:inherit;transition:all 0.15s}
+.numpad-btn:hover:not(:disabled){border-color:#FF5722;color:#FF5722;background:#FFF3E0;transform:translateY(-1px)}
+.numpad-btn.cor{background:#ECFDF5;border-color:#10B981;color:#065F46}
+.numpad-btn.wrg{background:#FEF2F2;border-color:#EF4444;color:#991B1B}
+.numpad-btn:disabled{cursor:default}
+.numpad-display{text-align:center;font-size:34px;font-weight:700;color:#1A1A2E;margin-bottom:14px;font-family:'Menlo',monospace;letter-spacing:0.06em;min-height:42px}
+
+.letterpad{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px}
+.letterpad-btn{background:#F9FAFB;border:2px solid #E5E7EB;border-radius:12px;padding:18px 0;font-size:24px;font-weight:700;color:#1A1A2E;cursor:pointer;font-family:'Georgia',serif;transition:all 0.15s}
+.letterpad-btn:hover:not(:disabled){border-color:#FF5722;color:#FF5722;background:#FFF3E0;transform:translateY(-1px)}
+.letterpad-btn.cor{background:#ECFDF5;border-color:#10B981;color:#065F46}
+.letterpad-btn.wrg{background:#FEF2F2;border-color:#EF4444;color:#991B1B}
+.letterpad-btn:disabled{cursor:default}
+.word-display{text-align:center;font-size:34px;font-weight:700;color:#1A1A2E;margin-bottom:18px;font-family:'Georgia',serif;letter-spacing:0.18em}
+.word-display .blank{display:inline-block;border-bottom:3px solid #1A1A2E;min-width:30px;color:#FF5722}
+
+.seq-area{margin-bottom:12px}
+.seq-target{background:#F9FAFB;border:2px dashed #D1D5DB;border-radius:14px;padding:12px;min-height:84px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;margin-bottom:10px}
+.seq-target.full{border-style:solid;border-color:#1A1A2E;background:#fff}
+.seq-source{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.seq-chip{background:#fff;border:2px solid #E5E7EB;border-radius:10px;padding:10px 12px;font-size:14px;font-weight:600;color:#1A1A2E;cursor:pointer;transition:all 0.15s;font-family:inherit;display:inline-flex;align-items:center;gap:6px}
+.seq-chip:hover:not(.placed):not(.locked){border-color:#FF5722;color:#FF5722;background:#FFF3E0}
+.seq-chip.placed{visibility:hidden}
+.seq-chip-target{background:#1A1A2E;color:white;border:none;border-radius:10px;padding:10px 12px;font-size:14px;font-weight:600;display:inline-flex;align-items:center;gap:6px;min-width:60px;justify-content:center;animation:fade-in 0.25s ease}
+.seq-chip-target.cor{background:#10B981}
+.seq-chip-target.wrg{background:#EF4444}
+.seq-num{font-size:11px;background:rgba(255,255,255,0.25);padding:1px 6px;border-radius:10px;font-weight:700}
+.seq-clear{margin-bottom:10px;background:none;border:none;color:#6B7280;font-size:13px;cursor:pointer;font-family:inherit;text-decoration:underline}
+
+.result-msg{text-align:center;padding:11px 14px;border-radius:10px;font-size:14px;margin-bottom:8px;font-weight:500;animation:fade-in 0.3s ease}
+.result-msg.ok{background:#ECFDF5;color:#065F46}
+.result-msg.no{background:#FEF2F2;color:#991B1B}
+.lvl-toast{background:#FEF3C7;color:#92400E;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:600;margin-bottom:8px;text-align:center}
+.xp-toast{background:#FFF3E0;color:#9A3412;border-radius:10px;padding:8px 14px;font-size:13px;font-weight:600;margin-bottom:8px;text-align:center;animation:fade-in 0.4s ease}
+.ready-toast{background:#FEF3C7;color:#92400E;border-radius:10px;padding:10px 14px;font-size:13px;font-weight:700;margin-bottom:8px;text-align:center;animation:fade-in 0.4s ease}
+.nxt-btn{width:100%;background:#1A1A2E;color:white;border:none;border-radius:12px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
+.nxt-btn:hover{opacity:0.85}
+
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.stat-card{background:#fff;border-radius:12px;padding:10px 8px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,0.06)}
+.stat-subj{font-size:11px;color:#6B7280;font-weight:600;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.04em}
+.stat-lvl{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px;margin-bottom:5px}
+.lv1{background:#DBEAFE;color:#1D4ED8}
+.lv2{background:#FEF3C7;color:#92400E}
+.lv3{background:#D1FAE5;color:#065F46}
+.stat-acc{font-size:15px;font-weight:700;color:#1A1A2E}
+.stat-denom{font-size:11px;color:#9CA3AF;font-weight:400}
+.stat-bar{height:4px;background:#F3F4F6;border-radius:999px;margin-top:6px;overflow:hidden}
+.stat-fill{height:100%;border-radius:999px;background:#60A5FA;transition:width 0.5s ease}
+
+.chapter-end-card{background:#fff;border-radius:16px;padding:28px 22px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+.chapter-end-icon{font-size:40px;margin-bottom:8px}
+.chapter-end-title{font-size:22px;font-weight:700;color:#1A1A2E;margin-bottom:8px}
+.chapter-end-sub{font-size:14px;color:#6B7280;margin-bottom:18px;line-height:1.5}
+
+.transition-card{background:#fff;border-radius:16px;padding:36px 22px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+.transition-text{font-size:15px;color:#374151;font-weight:500;line-height:1.5}
+.gen-error-card{background:#fff;border-radius:16px;padding:24px 22px;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+
+#catch-overlay{display:none;position:fixed;inset:0;background:linear-gradient(180deg,#0d2b0d,#1a4a1a 55%,#2a5e2a);z-index:999;flex-direction:column;align-items:center;justify-content:center}
+#catch-overlay.active{display:flex}
+#catch-pkm{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;width:200px;height:200px}
+#catch-pkm img{display:block;object-fit:contain;width:180px;height:180px}
+#catch-ball{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);z-index:3;display:none}
+#catch-lbl{position:relative;z-index:2;color:white;font-size:18px;font-weight:700;margin-top:24px;text-align:center;padding:0 28px;text-shadow:0 0 20px rgba(255,255,255,0.4);animation:evo-label-in 0.3s ease}
+
+#evo-overlay{display:none;position:fixed;inset:0;background:#06061a;z-index:999;flex-direction:column;align-items:center;justify-content:center}
+#evo-overlay.active{display:flex}
+#evo-rays{position:absolute;width:160%;height:160%;top:-30%;left:-30%;background:repeating-conic-gradient(rgba(255,255,255,0.055) 0deg 5deg,transparent 5deg 10deg);animation:evo-spin 7s linear infinite;pointer-events:none}
+#evo-bg-white{position:absolute;inset:0;background:white;opacity:0;pointer-events:none}
+#evo-sprite-wrap{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;width:220px;height:220px}
+#evo-sprite-wrap img{display:block;object-fit:contain;width:200px;height:200px}
+#evo-label{position:relative;z-index:2;color:white;font-size:17px;font-weight:700;margin-top:28px;text-align:center;letter-spacing:0.02em;padding:0 24px;text-shadow:0 0 24px rgba(255,255,255,0.6);animation:evo-label-in 0.3s ease}
+#evo-narration{position:relative;z-index:2;color:rgba(255,255,255,0.85);font-size:14px;margin-top:14px;text-align:center;padding:0 32px;line-height:1.5;max-width:440px;animation:evo-label-in 0.4s ease 0.4s both}
+
+#starter-celebrate-overlay{display:none;position:fixed;inset:0;background:radial-gradient(ellipse at center,#fff7e6 0%,#ffe8c2 100%);z-index:999;flex-direction:column;align-items:center;justify-content:center}
+#starter-celebrate-overlay.active{display:flex}
+#starter-celebrate-img{width:200px;height:200px;object-fit:contain;animation:starter-pop 0.5s cubic-bezier(0.34,1.56,0.64,1)}
+#starter-celebrate-label{margin-top:18px;font-size:22px;font-weight:700;color:#9A3412;text-align:center;padding:0 24px;animation:evo-label-in 0.4s ease 0.2s both}
+#starter-celebrate-sub{margin-top:8px;font-size:14px;color:#92400E;font-style:italic;animation:evo-label-in 0.4s ease 0.5s both}
+
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes ready-pulse{0%,100%{box-shadow:0 0 0 3px rgba(245,158,11,0.18),0 2px 8px rgba(0,0,0,0.06)}50%{box-shadow:0 0 0 6px rgba(245,158,11,0.35),0 2px 12px rgba(0,0,0,0.1)}}
+@keyframes fade-in{0%{opacity:0;transform:translateY(6px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes evo-spin{to{transform:rotate(360deg)}}
+@keyframes evo-label-in{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes ball-fly{0%{transform:translateX(-50%) translateY(170px) scale(0.3) rotate(-540deg);opacity:0}65%{opacity:1}100%{transform:translateX(-50%) translateY(0) scale(1) rotate(0deg);opacity:1}}
+@keyframes ball-wobble{0%,100%{transform:translateX(-50%) rotate(0deg)}20%{transform:translateX(-50%) rotate(-22deg)}40%{transform:translateX(-50%) rotate(22deg)}60%{transform:translateX(-50%) rotate(-14deg)}80%{transform:translateX(-50%) rotate(14deg)}}
+@keyframes starter-pop{0%{transform:scale(0.2);opacity:0}60%{transform:scale(1.1);opacity:1}100%{transform:scale(1);opacity:1}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- API key screen -->
+<div id="api-key-screen" style="display:none">
+  <div class="intake-card">
+    <svg class="logo-ball" viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="36" cy="36" r="34" fill="#EF4444" stroke="#1A1A2E" stroke-width="3"/>
+      <rect x="2" y="33" width="68" height="6" fill="#1A1A2E"/>
+      <circle cx="36" cy="36" r="34" fill="none" stroke="#1A1A2E" stroke-width="3"/>
+      <circle cx="36" cy="36" r="11" fill="white" stroke="#1A1A2E" stroke-width="3"/>
+      <circle cx="36" cy="36" r="5" fill="#F3F4F6"/>
+    </svg>
+    <div class="app-title">Set up your API key</div>
+    <div class="app-sub">This app uses Claude to write a brand-new adventure as you play. Paste your Anthropic API key — it stays in your browser only and is never sent anywhere except to Anthropic.</div>
+    <label class="intake-label">Anthropic API key</label>
+    <input type="password" class="intake-input" id="api-key-input" placeholder="sk-ant-..." autocomplete="off">
+    <div class="api-help">Don't have one? Get a key at <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com/settings/keys</a></div>
+    <div id="api-key-error" class="form-error" style="display:none"></div>
+    <button class="start-btn" id="api-key-save">Save and continue &#8594;</button>
+  </div>
+</div>
+
+<!-- Intake screen -->
+<div id="intake-screen" style="display:none">
+  <div class="intake-card">
+    <svg class="logo-ball" viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="36" cy="36" r="34" fill="#EF4444" stroke="#1A1A2E" stroke-width="3"/>
+      <rect x="2" y="33" width="68" height="6" fill="#1A1A2E"/>
+      <circle cx="36" cy="36" r="34" fill="none" stroke="#1A1A2E" stroke-width="3"/>
+      <circle cx="36" cy="36" r="11" fill="white" stroke="#1A1A2E" stroke-width="3"/>
+      <circle cx="36" cy="36" r="5" fill="#F3F4F6"/>
+    </svg>
+    <div class="app-title">Pokémon Learning Adventure</div>
+    <div class="app-sub">Tell us a few things, then begin. The story is written as you go — your choices shape what comes next.</div>
+
+    <label class="intake-label" for="intake-name">What's your name?</label>
+    <input type="text" class="intake-input" id="intake-name" placeholder="Your name" maxlength="20" autocomplete="off">
+
+    <label class="intake-label" for="intake-region">Pick a Pokémon region</label>
+    <select class="intake-input" id="intake-region">
+      <option value="">— Choose a region —</option>
+      <option value="Kanto">Kanto</option>
+      <option value="Johto">Johto</option>
+      <option value="Hoenn">Hoenn</option>
+      <option value="Sinnoh">Sinnoh</option>
+      <option value="Unova">Unova</option>
+      <option value="Kalos">Kalos</option>
+      <option value="Alola">Alola</option>
+      <option value="Galar">Galar</option>
+      <option value="Paldea">Paldea</option>
+    </select>
+
+    <label class="intake-label" for="intake-goal">What's your goal in this adventure?</label>
+    <textarea class="intake-input" id="intake-goal" rows="2" placeholder="e.g., Become a Gym Leader. Find a legendary Pokémon. Catch every Water type."></textarea>
+
+    <div id="intake-error" class="form-error" style="display:none"></div>
+
+    <button class="start-btn" id="intake-submit">Begin Adventure &#8594;</button>
+    <button class="skip-btn" id="change-key-btn">Change API key</button>
+  </div>
+</div>
+
+<!-- Loading screen (initial scene 1 generation) -->
+<div id="loading-screen" style="display:none">
+  <div class="intake-card">
+    <div id="loading-active">
+      <div class="loading-spinner"></div>
+      <div class="app-title">Writing your first scene...</div>
+      <div class="app-sub">Claude is starting a brand-new story just for you.</div>
+    </div>
+    <div id="loading-failed" style="display:none">
+      <div class="app-title">Something went wrong</div>
+      <div id="loading-error" class="form-error" style="display:block;text-align:left"></div>
+      <button class="start-btn" id="loading-retry">Try again</button>
+      <button class="skip-btn" id="loading-back">Back</button>
+    </div>
+  </div>
+</div>
+
+<!-- Game -->
+<div id="game"></div>
+
+</div>
+
+<div id="catch-overlay">
+  <div id="catch-pkm"><img id="catch-pkm-img" src="" alt=""></div>
+  <div id="catch-ball"></div>
+  <div id="catch-lbl"></div>
+</div>
+
+<div id="evo-overlay">
+  <div id="evo-rays"></div>
+  <div id="evo-bg-white"></div>
+  <div id="evo-sprite-wrap"><img id="evo-img" src="" alt=""></div>
+  <div id="evo-label"></div>
+  <div id="evo-narration"></div>
+</div>
+
+<div id="starter-celebrate-overlay">
+  <img id="starter-celebrate-img" src="" alt="">
+  <div id="starter-celebrate-label"></div>
+  <div id="starter-celebrate-sub"></div>
+</div>
+
+<script>
+// ============== POKEMON DATA ==============
+const BASE="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/";
+
+const POKEMON_DB={
+  // ===== KANTO =====
+  Bulbasaur:{num:1,type:"Grass",evolvesTo:"Ivysaur",xpTo:40},
+  Ivysaur:{num:2,type:"Grass",evolvesTo:"Venusaur",xpTo:80},
+  Venusaur:{num:3,type:"Grass",evolvesTo:null,xpTo:null},
+  Charmander:{num:4,type:"Fire",evolvesTo:"Charmeleon",xpTo:40},
+  Charmeleon:{num:5,type:"Fire",evolvesTo:"Charizard",xpTo:80},
+  Charizard:{num:6,type:"Fire",evolvesTo:null,xpTo:null},
+  Squirtle:{num:7,type:"Water",evolvesTo:"Wartortle",xpTo:40},
+  Wartortle:{num:8,type:"Water",evolvesTo:"Blastoise",xpTo:80},
+  Blastoise:{num:9,type:"Water",evolvesTo:null,xpTo:null},
+  Caterpie:{num:10,type:"Bug",evolvesTo:null,xpTo:null},
+  Weedle:{num:13,type:"Bug",evolvesTo:null,xpTo:null},
+  Pidgey:{num:16,type:"Normal",evolvesTo:null,xpTo:null},
+  Rattata:{num:19,type:"Normal",evolvesTo:null,xpTo:null},
+  Spearow:{num:21,type:"Normal",evolvesTo:null,xpTo:null},
+  Pikachu:{num:25,type:"Electric",evolvesTo:null,xpTo:null},
+  Geodude:{num:74,type:"Rock",evolvesTo:null,xpTo:null},
+  Magikarp:{num:129,type:"Water",evolvesTo:null,xpTo:null},
+  Eevee:{num:133,type:"Normal",evolvesTo:null,xpTo:null},
+
+  // ===== JOHTO =====
+  Chikorita:{num:152,type:"Grass",evolvesTo:"Bayleef",xpTo:40},
+  Bayleef:{num:153,type:"Grass",evolvesTo:"Meganium",xpTo:80},
+  Meganium:{num:154,type:"Grass",evolvesTo:null,xpTo:null},
+  Cyndaquil:{num:155,type:"Fire",evolvesTo:"Quilava",xpTo:40},
+  Quilava:{num:156,type:"Fire",evolvesTo:"Typhlosion",xpTo:80},
+  Typhlosion:{num:157,type:"Fire",evolvesTo:null,xpTo:null},
+  Totodile:{num:158,type:"Water",evolvesTo:"Croconaw",xpTo:40},
+  Croconaw:{num:159,type:"Water",evolvesTo:"Feraligatr",xpTo:80},
+  Feraligatr:{num:160,type:"Water",evolvesTo:null,xpTo:null},
+  Sentret:{num:161,type:"Normal",evolvesTo:null,xpTo:null},
+  Hoothoot:{num:163,type:"Normal",evolvesTo:null,xpTo:null},
+  Mareep:{num:179,type:"Electric",evolvesTo:null,xpTo:null},
+  Marill:{num:183,type:"Water",evolvesTo:null,xpTo:null},
+  Wooper:{num:194,type:"Water",evolvesTo:null,xpTo:null},
+  Phanpy:{num:231,type:"Ground",evolvesTo:null,xpTo:null},
+
+  // ===== HOENN =====
+  Treecko:{num:252,type:"Grass",evolvesTo:"Grovyle",xpTo:40},
+  Grovyle:{num:253,type:"Grass",evolvesTo:"Sceptile",xpTo:80},
+  Sceptile:{num:254,type:"Grass",evolvesTo:null,xpTo:null},
+  Torchic:{num:255,type:"Fire",evolvesTo:"Combusken",xpTo:40},
+  Combusken:{num:256,type:"Fire",evolvesTo:"Blaziken",xpTo:80},
+  Blaziken:{num:257,type:"Fire",evolvesTo:null,xpTo:null},
+  Mudkip:{num:258,type:"Water",evolvesTo:"Marshtomp",xpTo:40},
+  Marshtomp:{num:259,type:"Water",evolvesTo:"Swampert",xpTo:80},
+  Swampert:{num:260,type:"Water",evolvesTo:null,xpTo:null},
+  Poochyena:{num:261,type:"Dark",evolvesTo:null,xpTo:null},
+  Zigzagoon:{num:263,type:"Normal",evolvesTo:null,xpTo:null},
+  Taillow:{num:276,type:"Flying",evolvesTo:null,xpTo:null},
+  Wingull:{num:278,type:"Water",evolvesTo:null,xpTo:null},
+  Ralts:{num:280,type:"Psychic",evolvesTo:null,xpTo:null},
+  Skitty:{num:300,type:"Normal",evolvesTo:null,xpTo:null},
+  Aron:{num:304,type:"Steel",evolvesTo:null,xpTo:null},
+
+  // ===== SINNOH =====
+  Turtwig:{num:387,type:"Grass",evolvesTo:"Grotle",xpTo:40},
+  Grotle:{num:388,type:"Grass",evolvesTo:"Torterra",xpTo:80},
+  Torterra:{num:389,type:"Grass",evolvesTo:null,xpTo:null},
+  Chimchar:{num:390,type:"Fire",evolvesTo:"Monferno",xpTo:40},
+  Monferno:{num:391,type:"Fire",evolvesTo:"Infernape",xpTo:80},
+  Infernape:{num:392,type:"Fire",evolvesTo:null,xpTo:null},
+  Piplup:{num:393,type:"Water",evolvesTo:"Prinplup",xpTo:40},
+  Prinplup:{num:394,type:"Water",evolvesTo:"Empoleon",xpTo:80},
+  Empoleon:{num:395,type:"Water",evolvesTo:null,xpTo:null},
+  Starly:{num:396,type:"Normal",evolvesTo:null,xpTo:null},
+  Bidoof:{num:399,type:"Normal",evolvesTo:null,xpTo:null},
+  Shinx:{num:403,type:"Electric",evolvesTo:null,xpTo:null},
+  Pachirisu:{num:417,type:"Electric",evolvesTo:null,xpTo:null},
+  Buizel:{num:418,type:"Water",evolvesTo:null,xpTo:null},
+  Cherubi:{num:420,type:"Grass",evolvesTo:null,xpTo:null},
+
+  // ===== UNOVA =====
+  Snivy:{num:495,type:"Grass",evolvesTo:"Servine",xpTo:40},
+  Servine:{num:496,type:"Grass",evolvesTo:"Serperior",xpTo:80},
+  Serperior:{num:497,type:"Grass",evolvesTo:null,xpTo:null},
+  Tepig:{num:498,type:"Fire",evolvesTo:"Pignite",xpTo:40},
+  Pignite:{num:499,type:"Fire",evolvesTo:"Emboar",xpTo:80},
+  Emboar:{num:500,type:"Fire",evolvesTo:null,xpTo:null},
+  Oshawott:{num:501,type:"Water",evolvesTo:"Dewott",xpTo:40},
+  Dewott:{num:502,type:"Water",evolvesTo:"Samurott",xpTo:80},
+  Samurott:{num:503,type:"Water",evolvesTo:null,xpTo:null},
+  Patrat:{num:504,type:"Normal",evolvesTo:null,xpTo:null},
+  Lillipup:{num:506,type:"Normal",evolvesTo:null,xpTo:null},
+  Purrloin:{num:509,type:"Dark",evolvesTo:null,xpTo:null},
+  Munna:{num:517,type:"Psychic",evolvesTo:null,xpTo:null},
+  Pidove:{num:519,type:"Normal",evolvesTo:null,xpTo:null},
+  Sewaddle:{num:540,type:"Bug",evolvesTo:null,xpTo:null},
+
+  // ===== KALOS =====
+  Chespin:{num:650,type:"Grass",evolvesTo:"Quilladin",xpTo:40},
+  Quilladin:{num:651,type:"Grass",evolvesTo:"Chesnaught",xpTo:80},
+  Chesnaught:{num:652,type:"Grass",evolvesTo:null,xpTo:null},
+  Fennekin:{num:653,type:"Fire",evolvesTo:"Braixen",xpTo:40},
+  Braixen:{num:654,type:"Fire",evolvesTo:"Delphox",xpTo:80},
+  Delphox:{num:655,type:"Fire",evolvesTo:null,xpTo:null},
+  Froakie:{num:656,type:"Water",evolvesTo:"Frogadier",xpTo:40},
+  Frogadier:{num:657,type:"Water",evolvesTo:"Greninja",xpTo:80},
+  Greninja:{num:658,type:"Water",evolvesTo:null,xpTo:null},
+  Bunnelby:{num:659,type:"Normal",evolvesTo:null,xpTo:null},
+  Fletchling:{num:661,type:"Normal",evolvesTo:null,xpTo:null},
+  Litleo:{num:667,type:"Fire",evolvesTo:null,xpTo:null},
+  Skiddo:{num:672,type:"Grass",evolvesTo:null,xpTo:null},
+  Pancham:{num:674,type:"Fighting",evolvesTo:null,xpTo:null},
+  Pumpkaboo:{num:710,type:"Ghost",evolvesTo:null,xpTo:null},
+
+  // ===== ALOLA =====
+  Rowlet:{num:722,type:"Grass",evolvesTo:"Dartrix",xpTo:40},
+  Dartrix:{num:723,type:"Grass",evolvesTo:"Decidueye",xpTo:80},
+  Decidueye:{num:724,type:"Grass",evolvesTo:null,xpTo:null},
+  Litten:{num:725,type:"Fire",evolvesTo:"Torracat",xpTo:40},
+  Torracat:{num:726,type:"Fire",evolvesTo:"Incineroar",xpTo:80},
+  Incineroar:{num:727,type:"Fire",evolvesTo:null,xpTo:null},
+  Popplio:{num:728,type:"Water",evolvesTo:"Brionne",xpTo:40},
+  Brionne:{num:729,type:"Water",evolvesTo:"Primarina",xpTo:80},
+  Primarina:{num:730,type:"Water",evolvesTo:null,xpTo:null},
+  Pikipek:{num:731,type:"Normal",evolvesTo:null,xpTo:null},
+  Yungoos:{num:734,type:"Normal",evolvesTo:null,xpTo:null},
+  Grubbin:{num:736,type:"Bug",evolvesTo:null,xpTo:null},
+  Crabrawler:{num:739,type:"Fighting",evolvesTo:null,xpTo:null},
+  Cutiefly:{num:742,type:"Bug",evolvesTo:null,xpTo:null},
+  Mudbray:{num:749,type:"Ground",evolvesTo:null,xpTo:null},
+
+  // ===== GALAR =====
+  Grookey:{num:810,type:"Grass",evolvesTo:"Thwackey",xpTo:40},
+  Thwackey:{num:811,type:"Grass",evolvesTo:"Rillaboom",xpTo:80},
+  Rillaboom:{num:812,type:"Grass",evolvesTo:null,xpTo:null},
+  Scorbunny:{num:813,type:"Fire",evolvesTo:"Raboot",xpTo:40},
+  Raboot:{num:814,type:"Fire",evolvesTo:"Cinderace",xpTo:80},
+  Cinderace:{num:815,type:"Fire",evolvesTo:null,xpTo:null},
+  Sobble:{num:816,type:"Water",evolvesTo:"Drizzile",xpTo:40},
+  Drizzile:{num:817,type:"Water",evolvesTo:"Inteleon",xpTo:80},
+  Inteleon:{num:818,type:"Water",evolvesTo:null,xpTo:null},
+  Skwovet:{num:819,type:"Normal",evolvesTo:null,xpTo:null},
+  Rookidee:{num:821,type:"Flying",evolvesTo:null,xpTo:null},
+  Blipbug:{num:824,type:"Bug",evolvesTo:null,xpTo:null},
+  Nickit:{num:827,type:"Dark",evolvesTo:null,xpTo:null},
+  Wooloo:{num:831,type:"Normal",evolvesTo:null,xpTo:null},
+  Chewtle:{num:833,type:"Water",evolvesTo:null,xpTo:null},
+  Yamper:{num:835,type:"Electric",evolvesTo:null,xpTo:null},
+
+  // ===== PALDEA =====
+  Sprigatito:{num:906,type:"Grass",evolvesTo:"Floragato",xpTo:40},
+  Floragato:{num:907,type:"Grass",evolvesTo:"Meowscarada",xpTo:80},
+  Meowscarada:{num:908,type:"Grass",evolvesTo:null,xpTo:null},
+  Fuecoco:{num:909,type:"Fire",evolvesTo:"Crocalor",xpTo:40},
+  Crocalor:{num:910,type:"Fire",evolvesTo:"Skeledirge",xpTo:80},
+  Skeledirge:{num:911,type:"Fire",evolvesTo:null,xpTo:null},
+  Quaxly:{num:912,type:"Water",evolvesTo:"Quaxwell",xpTo:40},
+  Quaxwell:{num:913,type:"Water",evolvesTo:"Quaquaval",xpTo:80},
+  Quaquaval:{num:914,type:"Water",evolvesTo:null,xpTo:null},
+  Lechonk:{num:915,type:"Normal",evolvesTo:null,xpTo:null},
+  Tarountula:{num:917,type:"Bug",evolvesTo:null,xpTo:null},
+  Pawmi:{num:921,type:"Electric",evolvesTo:null,xpTo:null},
+  Fidough:{num:926,type:"Fairy",evolvesTo:null,xpTo:null},
+  Smoliv:{num:928,type:"Grass",evolvesTo:null,xpTo:null},
+};
+
+const REGIONS={
+  Kanto:{professor:"Professor Oak",starters:["Bulbasaur","Charmander","Squirtle"],wildPool:["Pidgey","Rattata","Caterpie","Weedle","Pikachu","Eevee","Geodude","Magikarp","Spearow"]},
+  Johto:{professor:"Professor Elm",starters:["Chikorita","Cyndaquil","Totodile"],wildPool:["Hoothoot","Sentret","Mareep","Wooper","Marill","Phanpy"]},
+  Hoenn:{professor:"Professor Birch",starters:["Treecko","Torchic","Mudkip"],wildPool:["Poochyena","Zigzagoon","Taillow","Wingull","Ralts","Skitty","Aron"]},
+  Sinnoh:{professor:"Professor Rowan",starters:["Turtwig","Chimchar","Piplup"],wildPool:["Starly","Bidoof","Shinx","Buizel","Pachirisu","Cherubi"]},
+  Unova:{professor:"Professor Juniper",starters:["Snivy","Tepig","Oshawott"],wildPool:["Patrat","Lillipup","Purrloin","Pidove","Sewaddle","Munna"]},
+  Kalos:{professor:"Professor Sycamore",starters:["Chespin","Fennekin","Froakie"],wildPool:["Bunnelby","Fletchling","Litleo","Pancham","Skiddo","Pumpkaboo"]},
+  Alola:{professor:"Professor Kukui",starters:["Rowlet","Litten","Popplio"],wildPool:["Yungoos","Pikipek","Grubbin","Crabrawler","Cutiefly","Mudbray"]},
+  Galar:{professor:"Professor Magnolia",starters:["Grookey","Scorbunny","Sobble"],wildPool:["Skwovet","Rookidee","Nickit","Wooloo","Yamper","Blipbug","Chewtle"]},
+  Paldea:{professor:"Professor Sada",starters:["Sprigatito","Fuecoco","Quaxly"],wildPool:["Lechonk","Pawmi","Tarountula","Fidough","Smoliv"]},
+};
+
+function starterLine(name){const out=[];let cur=name;while(cur){out.push(cur);cur=POKEMON_DB[cur]?.evolvesTo;}return out;}
+function pkImg(id,s){return`<img src="${BASE}${id}.png" width="${s}" height="${s}" alt="" style="object-fit:contain;display:block">`}
+
+// PKM is built from POKEMON_DB at intake time (preloads all relevant Pokémon for the chosen region).
+let PKM={};
+let STORY=null;
+let STORY_TITLE="Pokémon Learning Adventure";
+const TARGET_SCENES=6;
+
+function preloadRegionPKM(region){
+  const r=REGIONS[region];
+  const all=new Set([...r.wildPool]);
+  r.starters.forEach(s=>starterLine(s).forEach(n=>all.add(n)));
+  PKM={};
+  for(const n of all){
+    const d=POKEMON_DB[n];
+    if(!d)continue;
+    PKM[n]={n,num:d.num,type:d.type,xpTo:d.xpTo,evolvesTo:d.evolvesTo};
+    const im=new Image();im.src=`${BASE}${d.num}.png`;
+  }
+}
+
+// ============== LLM CALL ==============
+function buildScenePrompt(){
+  const g=S.gen;
+  const r=REGIONS[g.intake.region];
+  const sceneNum=g.scenes.length+1;
+  const allFmts=["mc","numpad","lettertap","sequence"];
+  const fmtRemaining=allFmts.filter(f=>!g.formatsUsed.includes(f));
+
+  let sceneGuidance="";
+  if(sceneNum===1){
+    sceneGuidance=`SCENE 1 REQUIREMENTS:
+- Open at ${r.professor}'s lab. Brief setup of who ${g.intake.name} is and the day ahead.
+- Include EXACTLY ONE step of type "starterChoice" near the end of the scene. The engine renders the three starter options and handles the choice — you do NOT pick.
+- DO NOT add any "question" or "catch" steps in scene 1.
+- DO NOT add a "partyAdd" step for the starter — the engine adds it after the choice automatically.
+- After "starterChoice" you may include 0–1 closing narrative beats. Refer to the chosen Pokémon generically (e.g., "their new partner") since you don't know which one was picked.
+- Aim for 6–10 steps total.
+- Also output a "title" field at the top level — a short evocative title for this whole adventure (e.g., "${g.intake.name}'s ${g.intake.region} Journey").`;
+  }else if(sceneNum>=2&&sceneNum<=4){
+    const subjOrder=Object.entries(g.subjectsUsed).sort((a,b)=>a[1]-b[1]).map(x=>x[0]);
+    sceneGuidance=`SCENE ${sceneNum} REQUIREMENTS:
+- ${g.intake.name} travels to a new location. The chosen starter (${S.gen.starter}) is now their visible partner — name it.
+- Include EXACTLY ONE "question" step. NO catch, NO evolutionEligible, NO chapterEnd.
+- Subject preference (least-used first): ${subjOrder.join(", ")}.
+- Format preference (not yet used first): ${fmtRemaining.length?fmtRemaining.join(", "):"any"}.
+- Pre-teach the concept in 1–3 narrative beats BEFORE the question. The teaching should be diegetic — a remembered lesson from ${r.professor} or a note ${g.intake.name} recalls from their notebook.
+- Aim for 5–8 steps total.`;
+  }else if(sceneNum===5){
+    sceneGuidance=`SCENE 5 REQUIREMENTS:
+- ${g.intake.name} (with ${S.gen.starter}) encounters a wild Pokémon from the wildPool.
+- Include EXACTLY ONE "catch" step. The catch's question must test a science/observation concept that was pre-taught in 1–3 narrative beats just before.
+- Add a "partyAdd" step for the caught Pokémon immediately after the catch.
+- NO regular "question" steps in this scene.
+- Aim for 6–9 steps total.`;
+  }else{
+    sceneGuidance=`SCENE ${sceneNum} (FINAL) REQUIREMENTS:
+- A reflective scene at sundown / quiet moment. ${g.intake.name} reviews the day with their team.
+- Optionally one final easy "question" step (or no question — your call). If you include one, pre-teach.
+- Include EXACTLY ONE "evolutionEligible" step (the engine animates evolution if XP is full; otherwise it's just a quiet moment).
+- End with EXACTLY ONE "chapterEnd" step.
+- Set "isFinal": true at the top level.
+- Aim for 5–8 steps total.`;
+  }
+
+  const story=g.scenes.length===0
+    ?"(no scenes yet — this is scene 1)"
+    :g.scenes.map((s,i)=>`Scene ${i+1}: ${s.summary}`).join("\n");
+
+  const partyDesc=S.party.length===0
+    ?"(none yet — starter is picked in scene 1)"
+    :S.party.map(m=>{
+      const p=PKM[m.name];
+      const xp=p.xpTo?`${m.xp}/${p.xpTo} XP${m.ready?" (READY TO EVOLVE)":""}`:"MAX";
+      return `- ${m.name} (${p.type}, ${xp})`;
+    }).join("\n");
+
+  return `You are writing Scene ${sceneNum} of ${TARGET_SCENES} in an interactive Pokémon educational adventure for a 5-year-old child who is starting kindergarten in 4 months and is a strong reader for their age.
+
+THE CHILD:
+- Name: ${g.intake.name} (the protagonist — use this exact name throughout)
+- Region: ${g.intake.region}
+- Their stated goal in this adventure: ${g.intake.goal}
+
+ALLOWED POKÉMON (use ONLY these names, never invent):
+- Mentor character: ${r.professor}
+- Starter line possibilities (${g.starter?`chosen line: ${starterLine(g.starter).join(" → ")}`:`one of these chains, depending on player choice in scene 1: ${r.starters.map(s=>starterLine(s).join(" → ")).join("; ")}`})
+- Wild Pokémon for catches and cameos: ${r.wildPool.join(", ")}
+
+CURRENT PARTY:
+${partyDesc}
+
+STORY SO FAR:
+${story}
+
+EDUCATION TRACKING:
+- Math questions used: ${g.subjectsUsed.math}, Reading: ${g.subjectsUsed.reading}, Science: ${g.subjectsUsed.science}
+- Formats used so far: ${g.formatsUsed.length?g.formatsUsed.join(", "):"(none)"}
+- Formats not yet used: ${fmtRemaining.length?fmtRemaining.join(", "):"all four covered"}
+
+${sceneGuidance}
+
+PEDAGOGICAL RULE — CRITICAL:
+Every "question" or "catch" step MUST be preceded by 1–3 narrative steps that explicitly TEACH the concept being assessed. Frame the teaching diegetically — as a remembered lesson from ${r.professor}, or as ${g.intake.name} recalling a note from their notebook. NEVER assess a concept that wasn't first introduced in the story this same scene.
+
+OUTPUT FORMAT: a single JSON object inside \`\`\`json fences. NO prose outside the fences.
+
+JSON SHAPE:
+{
+${sceneNum===1?'  "title": "Adventure title shown in the header",\n':""}  "scene": {
+    "id": "short-scene-id",
+    "loc": "LOCATION LABEL",
+    "steps": [ ...step objects... ]
+  },
+  "summary": "1–2 sentence recap of what happened in this scene (used to brief the writer of the next scene)",
+  "isFinal": ${sceneNum===TARGET_SCENES?"true":"false"}
+}
+
+STEP OBJECT TYPES:
+1) Narrative:
+   {"type":"narrative","text":"...HTML allowed: <strong>X</strong> for emphasis, <em>X</em> for thoughts/recalled lessons, <span class=\\"dialog-line\\">\\"X\\"</span> for spoken dialogue..."}
+
+2) Narrative with sprite reveal (shows the Pokémon's image alongside the text):
+   {"type":"narrative","text":"...","pkmReveal":"PokémonName"}
+
+3) Starter choice (scene 1 only — engine renders the three region starter cards and handles party add):
+   {"type":"starterChoice","intro":"Optional short setup beat, e.g., \\"${r.professor} smiled and held out three Poké Balls.\\"","prompt":"Professor's words inviting the choice (e.g., \\"Which one calls to you?\\")"}
+
+4) Party add (silent — adds Pokémon to party). Use ONLY after a "catch" step (do NOT use after starterChoice).
+   {"type":"partyAdd","pkm":"NameFromWildPool"}
+
+5) Question:
+   {"type":"question","subject":"math|reading|science","format":"mc|numpad|lettertap|sequence","prompt":"Story-grounded question text","encouragement":"Short praise on correct","hint":"Short helpful nudge on wrong","xpReward":10,"onCorrect":"One sentence of story continuation on correct","onWrong":"One sentence of story continuation on wrong (still moves story forward — no failure)", ...format-specific fields...}
+   Format-specific fields:
+   - mc: "options":[4 strings], "correctIndex":0..3
+   - numpad: "correctValue":0..9, "maxDigits":1
+   - lettertap: "word":"STA_" (uppercase, _ at the blank), "blankIndex":0-based index of the _, "choices":[4 single uppercase letters], "correctLetter": one of choices
+   - sequence: "items":[{"id":"egg","label":"Tiny egg"},...], "correctOrder":["egg","larva","pupa","adult"]
+
+6) Catch (same as question + pkm + preCatch + postCatch):
+   {"type":"catch","pkm":"NameFromWildPool","subject":"science","format":"mc","prompt":"...","encouragement":"...","hint":"...","xpReward":10,"preCatch":"Sentence right before throwing the ball","postCatch":"Sentence after the catch animation", ...formatFields...}
+
+7) Evolution eligible:
+   {"type":"evolutionEligible","narration":"Lead-in story beat — gentle, reflective"}
+
+8) Chapter end (final step of final scene):
+   {"type":"chapterEnd","title":"End of Chapter 1","subtitle":"One-sentence teaser for Chapter 2"}
+
+TONE:
+- Sentences are short. The reader is 5.
+- Concrete sensory details — what ${g.intake.name} sees, hears, feels.
+- Questions are obstacles in the story, not pop quizzes. The "onWrong" text still advances the story — no shaming, no failing.
+- MC distractors are plausible, never silly.
+
+NOW GENERATE SCENE ${sceneNum}.`;
+}
+
+async function callClaude(prompt){
+  const apiKey=localStorage.getItem("pkmn_api_key");
+  if(!apiKey)throw new Error("No API key set");
+  const res=await fetch("https://api.anthropic.com/v1/messages",{
+    method:"POST",
+    headers:{
+      "content-type":"application/json",
+      "x-api-key":apiKey,
+      "anthropic-version":"2023-06-01",
+      "anthropic-dangerous-direct-browser-access":"true",
+    },
+    body:JSON.stringify({
+      model:"claude-sonnet-4-6",
+      max_tokens:6000,
+      messages:[{role:"user",content:prompt}],
+    }),
+  });
+  if(!res.ok){
+    const errText=await res.text();
+    if(res.status===401)throw new Error("Your API key was rejected. Click Change API key on the home screen and set a new one.");
+    let msg=`API error ${res.status}`;
+    try{const j=JSON.parse(errText);if(j.error?.message)msg=j.error.message;}catch(e){}
+    throw new Error(msg);
+  }
+  const data=await res.json();
+  return data.content?.[0]?.text||"";
+}
+
+function extractJSON(text){
+  const fence=text.match(/```json\s*([\s\S]*?)```/);
+  if(fence)return fence[1];
+  const first=text.indexOf("{");const last=text.lastIndexOf("}");
+  if(first>=0&&last>first)return text.slice(first,last+1);
+  throw new Error("Claude did not return JSON. Try again.");
+}
+
+function validateScene(payload,sceneNum,region){
+  if(!payload?.scene?.steps||!Array.isArray(payload.scene.steps))throw new Error("Scene payload missing scene.steps.");
+  const allowed=new Set([
+    ...REGIONS[region].starters.flatMap(s=>starterLine(s)),
+    ...REGIONS[region].wildPool,
+  ]);
+  let starterChoiceCount=0,catchCount=0,endCount=0,evoCount=0,questionCount=0;
+  for(const step of payload.scene.steps){
+    if(step.pkmReveal&&!allowed.has(step.pkmReveal))throw new Error(`Story references "${step.pkmReveal}" which isn't allowed in ${region}.`);
+    if(step.pkm&&!allowed.has(step.pkm))throw new Error(`Story references "${step.pkm}" which isn't allowed in ${region}.`);
+    if(step.type==="starterChoice")starterChoiceCount++;
+    if(step.type==="catch")catchCount++;
+    if(step.type==="chapterEnd")endCount++;
+    if(step.type==="evolutionEligible")evoCount++;
+    if(step.type==="question")questionCount++;
+  }
+  if(sceneNum===1&&starterChoiceCount!==1)throw new Error(`Scene 1 must have exactly 1 starterChoice (got ${starterChoiceCount}).`);
+  if(sceneNum>1&&starterChoiceCount>0)throw new Error(`starterChoice only allowed in scene 1.`);
+  if(sceneNum===5&&catchCount!==1)throw new Error(`Scene 5 must have exactly 1 catch (got ${catchCount}).`);
+  if(sceneNum===TARGET_SCENES){
+    if(endCount!==1)throw new Error(`Final scene must end with chapterEnd.`);
+    if(evoCount!==1)throw new Error(`Final scene must include evolutionEligible.`);
+  }
+}
+
+async function generateNextScene(){
+  const sceneNum=S.gen.scenes.length+1;
+  const prompt=buildScenePrompt();
+  const text=await callClaude(prompt);
+  const json=extractJSON(text);
+  let payload;
+  try{payload=JSON.parse(json);}catch(e){throw new Error("Couldn't parse the scene JSON. Try again.");}
+  validateScene(payload,sceneNum,S.gen.intake.region);
+  return payload;
+}
+
+function recordSceneStats(sceneObj){
+  for(const step of sceneObj.steps){
+    if(step.type==="question"||step.type==="catch"){
+      if(step.subject&&S.gen.subjectsUsed[step.subject]!=null)S.gen.subjectsUsed[step.subject]++;
+      if(step.format&&!S.gen.formatsUsed.includes(step.format))S.gen.formatsUsed.push(step.format);
+    }
+  }
+}
+
+// ============== HELPERS ==============
+const SUBS=["math","reading","science"];
+const SNAME={math:"Math",reading:"Reading",science:"Science"};
+const SCLS={math:"tagm",reading:"tagr",science:"tags"};
+function pkSprite(name,size){return PKM[name]?pkImg(PKM[name].num,size):"";}
+
+// ============== STATE ==============
+function mkStat(){return{cor:0,att:0,level:1,cs:0,ws:0};}
+function mkPartyMember(name){return{name,xp:0,xpTo:PKM[name].xpTo,ready:false};}
+function mkState(){return{
+  phase:"story",                         // story | generating | genError | done
+  ch:0,sc:0,st:0,
+  party:[],
+  activeIdx:0,
+  qDone:false,qCor:false,qAnswer:null,
+  seqOrder:[],
+  starterPicked:null,                    // tracks the in-flight starterChoice selection
+  streak:0,
+  stats:{math:mkStat(),reading:mkStat(),science:mkStat()},
+  lvc:null,
+  pendingXP:null,pendingReady:null,
+  genError:null,
+  gen:{                                   // story-generation state
+    intake:{name:"",region:"",goal:""},
+    starter:null,                         // chosen starter (set when starterChoice resolved)
+    scenes:[],                            // [{summary, isFinal}]
+    isFinalScene:false,
+    subjectsUsed:{math:0,reading:0,science:0},
+    formatsUsed:[],
+  },
+};}
+
+let S=mkState();
+const gameEl=document.getElementById("game");
+
+function curChapter(){return STORY?.chapters[S.ch];}
+function curScene(){return curChapter()?.scenes[S.sc];}
+function curStep(){return curScene()?.steps[S.st];}
+function partyByName(name){return S.party.find(p=>p.name===name);}
+
+function accPct(s){return s.att===0?0:Math.min(100,Math.round(s.cor/s.att*100));}
+function updStats(sub,ok){
+  const s=S.stats[sub];s.att++;const pv=s.level;
+  if(ok){s.cor++;s.cs++;s.ws=0;if(s.cs>=3&&s.level<3){s.level++;s.cs=0;}}
+  else{s.ws++;s.cs=0;if(s.ws>=2&&s.level>1){s.level--;s.ws=0;}}
+  S.lvc=s.level>pv?"up":s.level<pv?"down":null;
+}
+const LVLU={math:"Math level up! Trickier puzzles ahead.",reading:"Reading level up! Harder words coming.",science:"Science level up! Bigger questions next."};
+const LVLD={math:"Trying easier math next time.",reading:"Easier reading coming up.",science:"Easier science next time."};
+
+// ============== STORY ADVANCE ==============
+function advanceStep(){
+  S.qDone=false;S.qCor=false;S.qAnswer=null;S.seqOrder=[];S.lvc=null;S.pendingXP=null;S.pendingReady=null;S.starterPicked=null;
+  const sc=curScene();
+  if(!sc){endOrGenerate();return;}
+  S.st++;
+  if(S.st>=sc.steps.length){
+    S.sc++;S.st=0;
+    if(!curScene()){endOrGenerate();return;}
+  }
+  const step=curStep();
+  if(!step){endOrGenerate();return;}
+  if(step.type==="partyAdd"){
+    if(!partyByName(step.pkm)&&PKM[step.pkm]){
+      S.party.push(mkPartyMember(step.pkm));
+      if(S.party.length===1)S.activeIdx=0;
+    }
+    advanceStep();return;
+  }
+  render();
+}
+
+function endOrGenerate(){
+  if(S.gen.isFinalScene){S.phase="done";render();return;}
+  if(S.gen.scenes.length>=TARGET_SCENES){S.phase="done";render();return;}
+  generateAndAppendScene();
+}
+
+async function generateAndAppendScene(){
+  S.phase="generating";render();
+  try{
+    const payload=await generateNextScene();
+    if(payload.title&&S.gen.scenes.length===0)STORY_TITLE=payload.title;
+    STORY.chapters[0].scenes.push(payload.scene);
+    S.gen.scenes.push({summary:payload.summary||"",isFinal:!!payload.isFinal});
+    if(payload.isFinal)S.gen.isFinalScene=true;
+    recordSceneStats(payload.scene);
+    S.phase="story";
+    S.sc=STORY.chapters[0].scenes.length-1;
+    S.st=-1;
+    advanceStep();
+  }catch(e){
+    S.phase="genError";S.genError=e.message||String(e);render();
+  }
+}
+
+// ============== ANSWER HANDLING ==============
+function awardXP(amount){
+  const m=S.party[S.activeIdx];
+  if(!m||m.xpTo===null)return;
+  const before=m.xp;
+  m.xp=Math.min(m.xpTo,m.xp+amount);
+  S.pendingXP=`+${m.xp-before} XP for ${m.name}!`;
+  if(!m.ready&&m.xp>=m.xpTo){m.ready=true;S.pendingReady=`${m.name} is glowing softly... something is about to happen!`;}
+}
+function onAnswer(correct){
+  if(S.qDone)return;
+  S.qDone=true;S.qCor=correct;
+  const step=curStep();
+  updStats(step.subject,correct);
+  if(correct){S.streak++;if(step.xpReward)awardXP(step.xpReward);}
+  else{S.streak=0;}
+  render();
+}
+function onContinueAfterQuestion(){
+  const step=curStep();
+  if(step.type==="catch"&&S.qCor){playCatch(step.pkm,()=>advanceStep());return;}
+  if(step.type==="catch"&&!S.qCor){S.qDone=false;S.qCor=false;S.qAnswer=null;S.seqOrder=[];render();return;}
+  advanceStep();
+}
+
+// ============== STARTER CHOICE ==============
+function onStarterPicked(name){
+  if(!PKM[name]){console.error("Picked unknown starter:",name);return;}
+  S.gen.starter=name;
+  // Add to party silently
+  if(!partyByName(name)){S.party.push(mkPartyMember(name));S.activeIdx=S.party.length-1;}
+  // Celebrate via overlay
+  playStarterCelebration(name,()=>advanceStep());
+}
+
+function playStarterCelebration(name,onDone){
+  const ov=document.getElementById("starter-celebrate-overlay");
+  const img=document.getElementById("starter-celebrate-img");
+  const lbl=document.getElementById("starter-celebrate-label");
+  const sub=document.getElementById("starter-celebrate-sub");
+  img.src=`${BASE}${PKM[name].num}.png`;
+  lbl.textContent=`${name}, I choose you!`;
+  sub.textContent=`Type: ${PKM[name].type}`;
+  ov.classList.add("active");
+  setTimeout(()=>{
+    ov.style.transition="opacity 0.4s ease";ov.style.opacity="0";
+    setTimeout(()=>{ov.classList.remove("active");ov.style.cssText="";onDone();},400);
+  },2200);
+}
+
+// ============== EVOLUTION ==============
+function fireEvolutionForReady(narration,onDone){
+  const ready=S.party.find(m=>m.ready&&PKM[m.name]?.evolvesTo);
+  if(!ready){onDone();return;}
+  const fromName=ready.name,toName=PKM[ready.name].evolvesTo;
+  if(!PKM[toName]){onDone();return;}
+  ready.name=toName;ready.xp=0;ready.xpTo=PKM[toName].xpTo;ready.ready=false;
+  if(S.gen.starter===fromName)S.gen.starter=toName;
+  playEvolution(fromName,toName,narration,onDone);
+}
+
+function playEvolution(fromName,toName,narration,onDone){
+  const ov=document.getElementById('evo-overlay');
+  const img=document.getElementById('evo-img');
+  const lbl=document.getElementById('evo-label');
+  const nar=document.getElementById('evo-narration');
+  const bgw=document.getElementById('evo-bg-white');
+  const fromId=PKM[fromName].num,toId=PKM[toName].num;
+  ov.classList.add('active');
+  img.style.cssText='display:block;object-fit:contain;width:200px;height:200px;filter:none;transition:none';
+  img.src=`${BASE}${fromId}.png`;
+  lbl.textContent=`What?! ${fromName} is evolving!`;
+  nar.textContent=narration||"";
+  bgw.style.cssText='position:absolute;inset:0;background:white;opacity:0;pointer-events:none;transition:none';
+  const halfCycles=[170,150,130,110,90,75,60,50,42,38];
+  let hi=0,isWhite=false;
+  function flash(){
+    if(hi>=halfCycles.length){
+      img.style.filter='brightness(0) invert(1)';
+      bgw.style.transition='opacity 0.22s ease';bgw.style.opacity='1';
+      setTimeout(()=>{
+        img.src=`${BASE}${toId}.png`;img.style.transition='none';img.style.filter='brightness(0) invert(1)';
+        lbl.textContent=`${toName}!`;
+        bgw.style.transition='opacity 0.35s ease';bgw.style.opacity='0';
+        setTimeout(()=>{
+          img.style.transition='filter 1.3s ease-out';img.offsetWidth;img.style.filter='brightness(1) saturate(1)';
+          setTimeout(()=>{
+            ov.style.transition='opacity 0.45s ease';ov.style.opacity='0';
+            setTimeout(()=>{ov.classList.remove('active');ov.style.cssText='';img.style.cssText='';nar.textContent='';onDone();},450);
+          },1800);
+        },380);
+      },250);
+      return;
+    }
+    isWhite=!isWhite;
+    img.style.filter=isWhite?'brightness(0) invert(1)':'brightness(1) saturate(1)';
+    if(!isWhite)hi++;
+    setTimeout(flash,halfCycles[Math.min(hi,halfCycles.length-1)]);
+  }
+  flash();
+}
+
+function playCatch(pkmName,onDone){
+  const ballSVG=`<svg width="56" height="56" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><circle cx="30" cy="30" r="28" fill="#EF4444" stroke="#1A1A2E" stroke-width="3"/><rect x="2" y="27" width="56" height="6" fill="#1A1A2E"/><circle cx="30" cy="30" r="28" fill="none" stroke="#1A1A2E" stroke-width="3"/><circle cx="30" cy="30" r="10" fill="white" stroke="#1A1A2E" stroke-width="3"/><circle cx="30" cy="30" r="5" fill="#F3F4F6"/></svg>`;
+  const ov=document.getElementById('catch-overlay');
+  const pkmImg=document.getElementById('catch-pkm-img');
+  const ball=document.getElementById('catch-ball');
+  const lbl=document.getElementById('catch-lbl');
+  const pkId=PKM[pkmName]?.num;
+  if(!pkId){onDone();return;}
+  ov.style.cssText='';ov.style.opacity='1';ov.classList.add('active');
+  pkmImg.src=`${BASE}${pkId}.png`;
+  pkmImg.style.cssText='display:block;object-fit:contain;width:180px;height:180px;filter:none;transition:none';
+  ball.innerHTML=ballSVG;ball.style.display='none';ball.style.animation='none';
+  lbl.textContent=`A wild ${pkmName} appeared!`;
+  setTimeout(()=>{
+    ball.style.display='block';ball.offsetWidth;
+    ball.style.animation='ball-fly 0.75s cubic-bezier(0.15,0.5,0.5,1) forwards';
+    setTimeout(()=>{
+      pkmImg.style.cssText='display:block;object-fit:contain;width:180px;height:180px;transition:transform 0.3s ease,filter 0.15s ease,opacity 0.3s ease;transform:scale(0.05);filter:brightness(0) invert(1);opacity:0';
+      lbl.textContent='...';
+      setTimeout(()=>{
+        ball.style.animation='ball-wobble 0.5s ease 3 forwards';
+        setTimeout(()=>{
+          lbl.textContent=`Gotcha! ${pkmName} was caught!`;
+          setTimeout(()=>{
+            ov.style.transition='opacity 0.4s ease';ov.style.opacity='0';
+            setTimeout(()=>{ov.classList.remove('active');ov.style.cssText='';onDone();},400);
+          },1100);
+        },1600);
+      },380);
+    },750);
+  },500);
+}
+
+// ============== RENDERERS ==============
+function partyRowHTML(){
+  if(S.party.length===0)return"";
+  let h=`<div class="party-row">`;
+  S.party.forEach((m,i)=>{
+    const p=PKM[m.name];if(!p)return;
+    const pct=p.xpTo?Math.round((m.xp/p.xpTo)*100):100;
+    const cls=`party-card${i===S.activeIdx?' active':''}${m.ready?' ready':''}`;
+    h+=`<div class="${cls}"><div class="party-sprite">${pkSprite(m.name,46)}</div><div class="party-name">${m.name}</div>`;
+    if(p.xpTo)h+=`<div class="party-xp-row"><span>XP</span><span>${m.xp}/${p.xpTo}</span></div><div class="party-xp-track"><div class="party-xp-fill${m.ready?' ready':''}" style="width:${pct}%"></div></div>`;
+    else h+=`<div class="party-xp-row" style="justify-content:center"><span>MAX</span></div>`;
+    h+=`</div>`;
+  });
+  return h+`</div>`;
+}
+
+function statsHTML(){
+  let h=`<div class="stats-row">`;
+  SUBS.forEach(sub=>{const s=S.stats[sub];const p2=accPct(s);const lc=['','lv1','lv2','lv3'][s.level];h+=`<div class="stat-card"><div class="stat-subj">${SNAME[sub]}</div><div class="stat-lvl ${lc}">Level ${s.level}</div><div class="stat-acc">${s.cor}<span class="stat-denom">/${s.att}</span></div><div class="stat-bar"><div class="stat-fill" style="width:${p2}%"></div></div></div>`;});
+  return h+`</div>`;
+}
+
+function renderNarrative(step){
+  const loc=step.loc||curScene().loc||"";
+  let h=`<div class="scene-card">`;
+  if(loc)h+=`<div class="scene-loc">${loc}</div>`;
+  if(step.pkmReveal&&PKM[step.pkmReveal]){
+    h+=`<div style="display:flex;justify-content:center;margin-bottom:14px">${pkSprite(step.pkmReveal,120)}</div>`;
+  }
+  h+=`<div class="scene-text">${step.text}</div>`;
+  h+=`<button class="continue-btn" id="continue-btn">Continue &#8594;</button></div>`;
+  return h;
+}
+
+function renderStarterChoice(step){
+  const region=S.gen.intake.region;
+  const starters=REGIONS[region].starters;
+  const loc=curScene().loc||"";
+  let h=`<div class="scene-card">`;
+  if(loc)h+=`<div class="scene-loc">${loc}</div>`;
+  h+=`<div class="subj-tag tagc">Choose your partner</div>`;
+  if(step.intro)h+=`<div class="scene-text" style="margin-bottom:14px">${step.intro}</div>`;
+  h+=`<div class="qtext">${step.prompt||"Which Pokémon will be your partner?"}</div>`;
+  h+=`<div class="story-starter-grid">`;
+  starters.forEach(s=>{
+    const num=POKEMON_DB[s].num;const type=POKEMON_DB[s].type;
+    h+=`<button class="story-starter-card" data-pick="${s}">
+      <img src="${BASE}${num}.png" width="86" height="86" alt="${s}">
+      <div class="ssc-name">${s}</div><div class="ssc-type">${type}</div>
+    </button>`;
+  });
+  h+=`</div></div>`;
+  return h;
+}
+
+function renderQuestionShell(step,inner){
+  const subjLabel=`<div class="subj-tag ${SCLS[step.subject]||'tagm'}">${SNAME[step.subject]||step.subject} &bull; Level ${S.stats[step.subject]?.level||1}</div>`;
+  const loc=curScene().loc||"";
+  let h=`<div class="scene-card">`;
+  if(loc)h+=`<div class="scene-loc">${loc}</div>`;
+  h+=subjLabel+`<div class="qtext">${step.prompt}</div>${inner}`;
+  if(S.qDone){
+    const msg=S.qCor?(step.onCorrect||step.encouragement):(step.onWrong||step.hint);
+    h+=`<div class="result-msg ${S.qCor?'ok':'no'}">${msg}</div>`;
+    if(S.pendingXP)h+=`<div class="xp-toast">${S.pendingXP}</div>`;
+    if(S.pendingReady)h+=`<div class="ready-toast">&#9889; ${S.pendingReady}</div>`;
+    if(S.lvc){const m=S.lvc==='up'?LVLU[step.subject]:LVLD[step.subject];if(m)h+=`<div class="lvl-toast">${m}</div>`;}
+    const btnLabel=step.type==="catch"&&!S.qCor?"Try again &#8594;":"Continue &#8594;";
+    h+=`<button class="nxt-btn" id="nxt-btn">${btnLabel}</button>`;
+  }
+  h+=`</div>`;
+  return h;
+}
+
+function renderMC(step){
+  let h=`<div class="ans-grid">`;
+  step.options.forEach((a,i)=>{
+    let c='ans-btn';
+    if(S.qDone){if(i===step.correctIndex)c+=' cor';else if(i===S.qAnswer&&!S.qCor)c+=' wrg';}
+    h+=`<button class="${c}"${S.qDone?' disabled':''} data-mc="${i}">${a}</button>`;
+  });
+  h+=`</div>`;
+  return renderQuestionShell(step,h);
+}
+
+function renderNumpad(step){
+  const display=S.qAnswer===null?"_":String(S.qAnswer);
+  let h=`<div class="numpad-display">${display}</div><div class="numpad">`;
+  for(let n=0;n<=9;n++){
+    let c='numpad-btn';
+    if(S.qDone){if(n===step.correctValue)c+=' cor';else if(n===S.qAnswer&&!S.qCor)c+=' wrg';}
+    h+=`<button class="${c}"${S.qDone?' disabled':''} data-num="${n}">${n}</button>`;
+  }
+  h+=`</div>`;
+  return renderQuestionShell(step,h);
+}
+
+function renderLetterTap(step){
+  const chars=step.word.split("").map((c,i)=>{
+    if(i===step.blankIndex){
+      const filled=S.qDone?step.correctLetter:"_";
+      return `<span class="blank">${filled}</span>`;
+    }
+    return c;
+  }).join(" ");
+  let h=`<div class="word-display">${chars}</div><div class="letterpad">`;
+  step.choices.forEach(L=>{
+    let c='letterpad-btn';
+    if(S.qDone){if(L===step.correctLetter)c+=' cor';else if(L===S.qAnswer&&!S.qCor)c+=' wrg';}
+    h+=`<button class="${c}"${S.qDone?' disabled':''} data-letter="${L}">${L}</button>`;
+  });
+  h+=`</div>`;
+  return renderQuestionShell(step,h);
+}
+
+function renderSequence(step){
+  const placed=S.seqOrder;
+  const remaining=step.items.filter(it=>!placed.includes(it.id));
+  let targetH=`<div class="seq-target${placed.length===step.items.length?' full':''}">`;
+  if(placed.length===0){targetH+=`<div style="color:#9CA3AF;font-size:13px">Tap items below in order &#8594;</div>`;}
+  else{
+    placed.forEach((id,idx)=>{
+      const item=step.items.find(it=>it.id===id);
+      let cls='seq-chip-target';
+      if(S.qDone)cls+=(step.correctOrder[idx]===id)?' cor':' wrg';
+      targetH+=`<span class="${cls}"><span class="seq-num">${idx+1}</span>${item.label}</span>`;
+    });
+  }
+  targetH+=`</div>`;
+  let sourceH=`<div class="seq-source">`;
+  remaining.forEach(it=>{sourceH+=`<button class="seq-chip" data-seq="${it.id}"${S.qDone?' disabled':''}>${it.label}</button>`;});
+  sourceH+=`</div>`;
+  let inner=`<div class="seq-area">${targetH}${sourceH}`;
+  if(placed.length>0&&!S.qDone)inner+=`<button class="seq-clear" id="seq-clear">Clear and start over</button>`;
+  inner+=`</div>`;
+  return renderQuestionShell(step,inner);
+}
+
+function renderQuestion(step){
+  switch(step.format){
+    case "mc":return renderMC(step);
+    case "numpad":return renderNumpad(step);
+    case "lettertap":return renderLetterTap(step);
+    case "sequence":return renderSequence(step);
+  }
+  return `<div class="scene-card">Unknown format: ${step.format}</div>`;
+}
+
+function renderEvolutionEligible(step){
+  let h=`<div class="scene-card">`;
+  const loc=curScene().loc||"";
+  if(loc)h+=`<div class="scene-loc">${loc}</div>`;
+  const ready=S.party.find(m=>m.ready&&PKM[m.name]?.evolvesTo);
+  if(ready){
+    h+=`<div style="display:flex;justify-content:center;margin-bottom:14px">${pkSprite(ready.name,100)}</div>`;
+    h+=`<div class="scene-text">${step.narration||""}</div>`;
+    h+=`<button class="continue-btn" id="evo-continue">See what happens &#8594;</button>`;
+  }else{
+    h+=`<div class="scene-text">${step.narration||"<em>(A quiet moment.)</em>"}</div>`;
+    h+=`<button class="continue-btn" id="continue-btn">Continue &#8594;</button>`;
+  }
+  h+=`</div>`;
+  return h;
+}
+
+function renderChapterEnd(step){
+  let h=`<div class="chapter-end-card">`;
+  h+=`<div class="chapter-end-icon">&#127775;</div>`;
+  h+=`<div class="chapter-end-title">${step.title||"End of Chapter 1"}</div>`;
+  h+=`<div class="chapter-end-sub">${step.subtitle||""}</div>`;
+  if(S.party.length>0){
+    h+=`<div style="display:flex;justify-content:center;gap:14px;margin-bottom:18px">`;
+    S.party.forEach(m=>{h+=`<div style="text-align:center">${pkSprite(m.name,72)}<div style="font-size:11px;font-weight:700;color:#374151;margin-top:4px">${m.name}</div></div>`;});
+    h+=`</div>`;
+  }
+  h+=`<button class="start-btn" id="restart-btn">Start a New Adventure</button>`;
+  h+=`</div>`;
+  return h;
+}
+
+function renderGenerating(){
+  return `<div class="transition-card"><div class="loading-spinner small"></div><div class="transition-text">Continuing the story...</div></div>`;
+}
+function renderGenError(){
+  return `<div class="gen-error-card"><div style="font-size:15px;font-weight:700;color:#1A1A2E;margin-bottom:8px">Couldn't continue the story</div><div style="font-size:13px;color:#6B7280;margin-bottom:14px;line-height:1.5">${S.genError||"Unknown error"}</div><button class="continue-btn" id="retry-gen">Try again</button><button class="skip-btn" id="back-to-intake-from-error" style="margin-top:10px">Back to start</button></div>`;
+}
+
+function render(){
+  const ch=curChapter();
+  const hdr=`<div class="hdr"><span class="app-name">${STORY_TITLE}</span>${S.streak>1?`<span class="streak-badge">Streak: ${S.streak}</span>`:""}</div>`;
+  let h=hdr;
+  if(ch)h+=`<div style="font-size:11px;color:#9CA3AF;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px">Chapter ${ch.id} &bull; ${ch.title||"Adventure"}</div>`;
+  h+=partyRowHTML();
+
+  if(S.phase==="generating"){gameEl.innerHTML=h+renderGenerating();return;}
+  if(S.phase==="genError"){
+    gameEl.innerHTML=h+renderGenError();
+    document.getElementById('retry-gen').addEventListener('click',generateAndAppendScene);
+    document.getElementById('back-to-intake-from-error').addEventListener('click',backToIntake);
+    return;
+  }
+  if(S.phase==="done"){
+    h+=`<div class="chapter-end-card"><div class="chapter-end-icon">&#127942;</div><div class="chapter-end-title">Adventure Complete!</div><div class="chapter-end-sub">Start a brand-new adventure with a different region or goal.</div><button class="start-btn" id="restart-btn">Start a New Adventure</button></div>`;
+    gameEl.innerHTML=h;
+    document.getElementById('restart-btn').addEventListener('click',backToIntake);
+    return;
+  }
+
+  const step=curStep();
+  if(!step){gameEl.innerHTML=h+'<div class="scene-card"><div class="scene-text">...</div></div>';return;}
+
+  if(step.type==="narrative")h+=renderNarrative(step);
+  else if(step.type==="starterChoice")h+=renderStarterChoice(step);
+  else if(step.type==="question"||step.type==="catch")h+=renderQuestion(step);
+  else if(step.type==="evolutionEligible")h+=renderEvolutionEligible(step);
+  else if(step.type==="chapterEnd")h+=renderChapterEnd(step);
+
+  if(S.party.length>0)h+=statsHTML();
+
+  gameEl.innerHTML=h;
+  bindStepEvents(step);
+}
+
+function bindStepEvents(step){
+  const cont=document.getElementById('continue-btn');
+  if(cont)cont.addEventListener('click',advanceStep);
+  const next=document.getElementById('nxt-btn');
+  if(next)next.addEventListener('click',onContinueAfterQuestion);
+  const restart=document.getElementById('restart-btn');
+  if(restart)restart.addEventListener('click',backToIntake);
+
+  if(step.type==="starterChoice"){
+    gameEl.querySelectorAll('[data-pick]').forEach(b=>b.addEventListener('click',()=>onStarterPicked(b.dataset.pick)));
+  }
+
+  if(step.type==="question"||step.type==="catch"){
+    if(step.format==="mc"){
+      gameEl.querySelectorAll('[data-mc]').forEach(b=>b.addEventListener('click',()=>{
+        if(S.qDone)return;const i=+b.dataset.mc;S.qAnswer=i;onAnswer(i===step.correctIndex);
+      }));
+    }else if(step.format==="numpad"){
+      gameEl.querySelectorAll('[data-num]').forEach(b=>b.addEventListener('click',()=>{
+        if(S.qDone)return;const n=+b.dataset.num;S.qAnswer=n;onAnswer(n===step.correctValue);
+      }));
+    }else if(step.format==="lettertap"){
+      gameEl.querySelectorAll('[data-letter]').forEach(b=>b.addEventListener('click',()=>{
+        if(S.qDone)return;const L=b.dataset.letter;S.qAnswer=L;onAnswer(L===step.correctLetter);
+      }));
+    }else if(step.format==="sequence"){
+      gameEl.querySelectorAll('[data-seq]').forEach(b=>b.addEventListener('click',()=>{
+        if(S.qDone)return;const id=b.dataset.seq;
+        if(S.seqOrder.includes(id))return;
+        S.seqOrder.push(id);
+        if(S.seqOrder.length===step.items.length){
+          const correct=S.seqOrder.every((x,i)=>x===step.correctOrder[i]);
+          onAnswer(correct);
+        }else render();
+      }));
+      const clr=document.getElementById('seq-clear');
+      if(clr)clr.addEventListener('click',()=>{S.seqOrder=[];render();});
+    }
+  }
+
+  if(step.type==="evolutionEligible"){
+    const evb=document.getElementById('evo-continue');
+    if(evb)evb.addEventListener('click',()=>fireEvolutionForReady(step.narration,advanceStep));
+  }
+}
+
+// ============== SCREENS ==============
+const SCREENS=["api-key-screen","intake-screen","loading-screen","game"];
+function showScreen(id){
+  SCREENS.forEach(s=>{const el=document.getElementById(s);if(el)el.style.display=s===id?"block":"none";});
+}
+
+function backToIntake(){
+  S=mkState();
+  STORY=null;PKM={};STORY_TITLE="Pokémon Learning Adventure";
+  showScreen("intake-screen");
+}
+
+async function onIntakeSubmit(){
+  const name=document.getElementById("intake-name").value.trim();
+  const region=document.getElementById("intake-region").value;
+  const goal=document.getElementById("intake-goal").value.trim();
+
+  const errEl=document.getElementById("intake-error");
+  errEl.style.display="none";
+  const missing=[];
+  if(!name)missing.push("your name");
+  if(!region)missing.push("a region");
+  if(!goal)missing.push("a goal");
+  if(missing.length){errEl.textContent="Please fill in: "+missing.join(", ");errEl.style.display="block";return;}
+
+  // Initialize state for a new adventure
+  S=mkState();
+  S.gen.intake={name,region,goal};
+  preloadRegionPKM(region);
+  STORY={chapters:[{id:1,title:"Chapter 1",scenes:[]}]};
+  STORY_TITLE=`${name}'s ${region} Adventure`;
+
+  showScreen("loading-screen");
+  document.getElementById("loading-active").style.display="block";
+  document.getElementById("loading-failed").style.display="none";
+
+  try{
+    const payload=await generateNextScene();
+    if(payload.title)STORY_TITLE=payload.title;
+    STORY.chapters[0].scenes.push(payload.scene);
+    S.gen.scenes.push({summary:payload.summary||"",isFinal:!!payload.isFinal});
+    if(payload.isFinal)S.gen.isFinalScene=true;
+    recordSceneStats(payload.scene);
+    S.phase="story";S.ch=0;S.sc=0;S.st=-1;
+    showScreen("game");
+    advanceStep();
+  }catch(e){
+    document.getElementById("loading-active").style.display="none";
+    document.getElementById("loading-failed").style.display="block";
+    document.getElementById("loading-error").textContent=String(e.message||e);
+    document.getElementById("loading-retry").onclick=onIntakeSubmit;
+    document.getElementById("loading-back").onclick=()=>showScreen("intake-screen");
+  }
+}
+
+function init(){
+  document.getElementById("api-key-save").addEventListener("click",()=>{
+    const key=document.getElementById("api-key-input").value.trim();
+    const errEl=document.getElementById("api-key-error");
+    errEl.style.display="none";
+    if(!key||!key.startsWith("sk-")){errEl.textContent="That doesn't look like an Anthropic API key. Keys start with 'sk-ant-'.";errEl.style.display="block";return;}
+    localStorage.setItem("pkmn_api_key",key);
+    document.getElementById("api-key-input").value="";
+    showScreen("intake-screen");
+  });
+
+  document.getElementById("intake-submit").addEventListener("click",onIntakeSubmit);
+  document.getElementById("change-key-btn").addEventListener("click",()=>{
+    localStorage.removeItem("pkmn_api_key");
+    showScreen("api-key-screen");
+  });
+
+  if(localStorage.getItem("pkmn_api_key"))showScreen("intake-screen");
+  else showScreen("api-key-screen");
+}
+
+init();
+</script>
+</body>
+</html>
