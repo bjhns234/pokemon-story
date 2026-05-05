@@ -344,175 +344,212 @@ textarea.intake-input{resize:vertical;min-height:64px;line-height:1.45}
 // ============== POKEMON DATA ==============
 const BASE="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/";
 
+function typeArr(t){return Array.isArray(t)?t:[t];}
+function typeLabel(t){return typeArr(t).join(" / ");}
+
 const POKEMON_DB={
-  // ===== KANTO =====
-  Bulbasaur:{num:1,type:"Grass",evolvesTo:"Ivysaur",xpTo:40},
-  Ivysaur:{num:2,type:"Grass",evolvesTo:"Venusaur",xpTo:80},
-  Venusaur:{num:3,type:"Grass",evolvesTo:null,xpTo:null},
-  Charmander:{num:4,type:"Fire",evolvesTo:"Charmeleon",xpTo:40},
-  Charmeleon:{num:5,type:"Fire",evolvesTo:"Charizard",xpTo:80},
-  Charizard:{num:6,type:"Fire",evolvesTo:null,xpTo:null},
-  Squirtle:{num:7,type:"Water",evolvesTo:"Wartortle",xpTo:40},
-  Wartortle:{num:8,type:"Water",evolvesTo:"Blastoise",xpTo:80},
-  Blastoise:{num:9,type:"Water",evolvesTo:null,xpTo:null},
-  Caterpie:{num:10,type:"Bug",evolvesTo:null,xpTo:null},
-  Weedle:{num:13,type:"Bug",evolvesTo:null,xpTo:null},
-  Pidgey:{num:16,type:"Normal",evolvesTo:null,xpTo:null},
-  Rattata:{num:19,type:"Normal",evolvesTo:null,xpTo:null},
-  Spearow:{num:21,type:"Normal",evolvesTo:null,xpTo:null},
-  Pikachu:{num:25,type:"Electric",evolvesTo:null,xpTo:null},
-  Geodude:{num:74,type:"Rock",evolvesTo:null,xpTo:null},
-  Magikarp:{num:129,type:"Water",evolvesTo:null,xpTo:null},
-  Eevee:{num:133,type:"Normal",evolvesTo:null,xpTo:null},
+  // ===== KANTO STARTERS =====
+  Bulbasaur:{num:1,type:["Grass","Poison"],evolvesTo:"Ivysaur",evoAt:16},
+  Ivysaur:{num:2,type:["Grass","Poison"],evolvesTo:"Venusaur",evoAt:32},
+  Venusaur:{num:3,type:["Grass","Poison"],evolvesTo:null,evoAt:null},
+  Charmander:{num:4,type:"Fire",evolvesTo:"Charmeleon",evoAt:16},
+  Charmeleon:{num:5,type:"Fire",evolvesTo:"Charizard",evoAt:36},
+  Charizard:{num:6,type:["Fire","Flying"],evolvesTo:null,evoAt:null},
+  Squirtle:{num:7,type:"Water",evolvesTo:"Wartortle",evoAt:16},
+  Wartortle:{num:8,type:"Water",evolvesTo:"Blastoise",evoAt:36},
+  Blastoise:{num:9,type:"Water",evolvesTo:null,evoAt:null},
+  // KANTO WILD
+  Pikachu:{num:25,type:"Electric",evolvesTo:"Raichu",evoAt:16},
+  Raichu:{num:26,type:"Electric",evolvesTo:null,evoAt:null},
+  Eevee:{num:133,type:"Normal",evolvesTo:"Sylveon",evoAt:16},
+  Sylveon:{num:700,type:"Fairy",evolvesTo:null,evoAt:null},
+  Pidgey:{num:16,type:["Normal","Flying"],evolvesTo:"Pidgeotto",evoAt:18},
+  Pidgeotto:{num:17,type:["Normal","Flying"],evolvesTo:"Pidgeot",evoAt:36},
+  Pidgeot:{num:18,type:["Normal","Flying"],evolvesTo:null,evoAt:null},
+  Caterpie:{num:10,type:"Bug",evolvesTo:"Metapod",evoAt:7},
+  Metapod:{num:11,type:"Bug",evolvesTo:"Butterfree",evoAt:10},
+  Butterfree:{num:12,type:["Bug","Flying"],evolvesTo:null,evoAt:null},
 
-  // ===== JOHTO =====
-  Chikorita:{num:152,type:"Grass",evolvesTo:"Bayleef",xpTo:40},
-  Bayleef:{num:153,type:"Grass",evolvesTo:"Meganium",xpTo:80},
-  Meganium:{num:154,type:"Grass",evolvesTo:null,xpTo:null},
-  Cyndaquil:{num:155,type:"Fire",evolvesTo:"Quilava",xpTo:40},
-  Quilava:{num:156,type:"Fire",evolvesTo:"Typhlosion",xpTo:80},
-  Typhlosion:{num:157,type:"Fire",evolvesTo:null,xpTo:null},
-  Totodile:{num:158,type:"Water",evolvesTo:"Croconaw",xpTo:40},
-  Croconaw:{num:159,type:"Water",evolvesTo:"Feraligatr",xpTo:80},
-  Feraligatr:{num:160,type:"Water",evolvesTo:null,xpTo:null},
-  Sentret:{num:161,type:"Normal",evolvesTo:null,xpTo:null},
-  Hoothoot:{num:163,type:"Normal",evolvesTo:null,xpTo:null},
-  Mareep:{num:179,type:"Electric",evolvesTo:null,xpTo:null},
-  Marill:{num:183,type:"Water",evolvesTo:null,xpTo:null},
-  Wooper:{num:194,type:"Water",evolvesTo:null,xpTo:null},
-  Phanpy:{num:231,type:"Ground",evolvesTo:null,xpTo:null},
+  // ===== JOHTO STARTERS =====
+  Chikorita:{num:152,type:"Grass",evolvesTo:"Bayleef",evoAt:16},
+  Bayleef:{num:153,type:"Grass",evolvesTo:"Meganium",evoAt:32},
+  Meganium:{num:154,type:"Grass",evolvesTo:null,evoAt:null},
+  Cyndaquil:{num:155,type:"Fire",evolvesTo:"Quilava",evoAt:14},
+  Quilava:{num:156,type:"Fire",evolvesTo:"Typhlosion",evoAt:36},
+  Typhlosion:{num:157,type:"Fire",evolvesTo:null,evoAt:null},
+  Totodile:{num:158,type:"Water",evolvesTo:"Croconaw",evoAt:18},
+  Croconaw:{num:159,type:"Water",evolvesTo:"Feraligatr",evoAt:30},
+  Feraligatr:{num:160,type:"Water",evolvesTo:null,evoAt:null},
+  // JOHTO WILD
+  Pichu:{num:172,type:"Electric",evolvesTo:null,evoAt:null},
+  Hoothoot:{num:163,type:["Normal","Flying"],evolvesTo:"Noctowl",evoAt:20},
+  Noctowl:{num:164,type:["Normal","Flying"],evolvesTo:null,evoAt:null},
+  Marill:{num:183,type:["Water","Fairy"],evolvesTo:"Azumarill",evoAt:18},
+  Azumarill:{num:184,type:["Water","Fairy"],evolvesTo:null,evoAt:null},
+  Sentret:{num:161,type:"Normal",evolvesTo:"Furret",evoAt:15},
+  Furret:{num:162,type:"Normal",evolvesTo:null,evoAt:null},
 
-  // ===== HOENN =====
-  Treecko:{num:252,type:"Grass",evolvesTo:"Grovyle",xpTo:40},
-  Grovyle:{num:253,type:"Grass",evolvesTo:"Sceptile",xpTo:80},
-  Sceptile:{num:254,type:"Grass",evolvesTo:null,xpTo:null},
-  Torchic:{num:255,type:"Fire",evolvesTo:"Combusken",xpTo:40},
-  Combusken:{num:256,type:"Fire",evolvesTo:"Blaziken",xpTo:80},
-  Blaziken:{num:257,type:"Fire",evolvesTo:null,xpTo:null},
-  Mudkip:{num:258,type:"Water",evolvesTo:"Marshtomp",xpTo:40},
-  Marshtomp:{num:259,type:"Water",evolvesTo:"Swampert",xpTo:80},
-  Swampert:{num:260,type:"Water",evolvesTo:null,xpTo:null},
-  Poochyena:{num:261,type:"Dark",evolvesTo:null,xpTo:null},
-  Zigzagoon:{num:263,type:"Normal",evolvesTo:null,xpTo:null},
-  Taillow:{num:276,type:"Flying",evolvesTo:null,xpTo:null},
-  Wingull:{num:278,type:"Water",evolvesTo:null,xpTo:null},
-  Ralts:{num:280,type:"Psychic",evolvesTo:null,xpTo:null},
-  Skitty:{num:300,type:"Normal",evolvesTo:null,xpTo:null},
-  Aron:{num:304,type:"Steel",evolvesTo:null,xpTo:null},
+  // ===== HOENN STARTERS =====
+  Treecko:{num:252,type:"Grass",evolvesTo:"Grovyle",evoAt:16},
+  Grovyle:{num:253,type:"Grass",evolvesTo:"Sceptile",evoAt:36},
+  Sceptile:{num:254,type:"Grass",evolvesTo:null,evoAt:null},
+  Torchic:{num:255,type:"Fire",evolvesTo:"Combusken",evoAt:16},
+  Combusken:{num:256,type:["Fire","Fighting"],evolvesTo:"Blaziken",evoAt:36},
+  Blaziken:{num:257,type:["Fire","Fighting"],evolvesTo:null,evoAt:null},
+  Mudkip:{num:258,type:"Water",evolvesTo:"Marshtomp",evoAt:16},
+  Marshtomp:{num:259,type:["Water","Ground"],evolvesTo:"Swampert",evoAt:36},
+  Swampert:{num:260,type:["Water","Ground"],evolvesTo:null,evoAt:null},
+  // HOENN WILD
+  Zigzagoon:{num:263,type:"Normal",evolvesTo:"Linoone",evoAt:20},
+  Linoone:{num:264,type:"Normal",evolvesTo:null,evoAt:null},
+  Skitty:{num:300,type:"Normal",evolvesTo:"Delcatty",evoAt:20},
+  Delcatty:{num:301,type:"Normal",evolvesTo:null,evoAt:null},
+  Whismur:{num:293,type:"Normal",evolvesTo:"Loudred",evoAt:20},
+  Loudred:{num:294,type:"Normal",evolvesTo:"Exploud",evoAt:40},
+  Exploud:{num:295,type:"Normal",evolvesTo:null,evoAt:null},
+  Wurmple:{num:265,type:"Bug",evolvesTo:"Silcoon",evoAt:7},
+  Silcoon:{num:266,type:"Bug",evolvesTo:"Beautifly",evoAt:10},
+  Beautifly:{num:267,type:["Bug","Flying"],evolvesTo:null,evoAt:null},
 
-  // ===== SINNOH =====
-  Turtwig:{num:387,type:"Grass",evolvesTo:"Grotle",xpTo:40},
-  Grotle:{num:388,type:"Grass",evolvesTo:"Torterra",xpTo:80},
-  Torterra:{num:389,type:"Grass",evolvesTo:null,xpTo:null},
-  Chimchar:{num:390,type:"Fire",evolvesTo:"Monferno",xpTo:40},
-  Monferno:{num:391,type:"Fire",evolvesTo:"Infernape",xpTo:80},
-  Infernape:{num:392,type:"Fire",evolvesTo:null,xpTo:null},
-  Piplup:{num:393,type:"Water",evolvesTo:"Prinplup",xpTo:40},
-  Prinplup:{num:394,type:"Water",evolvesTo:"Empoleon",xpTo:80},
-  Empoleon:{num:395,type:"Water",evolvesTo:null,xpTo:null},
-  Starly:{num:396,type:"Normal",evolvesTo:null,xpTo:null},
-  Bidoof:{num:399,type:"Normal",evolvesTo:null,xpTo:null},
-  Shinx:{num:403,type:"Electric",evolvesTo:null,xpTo:null},
-  Pachirisu:{num:417,type:"Electric",evolvesTo:null,xpTo:null},
-  Buizel:{num:418,type:"Water",evolvesTo:null,xpTo:null},
-  Cherubi:{num:420,type:"Grass",evolvesTo:null,xpTo:null},
+  // ===== SINNOH STARTERS =====
+  Turtwig:{num:387,type:"Grass",evolvesTo:"Grotle",evoAt:18},
+  Grotle:{num:388,type:"Grass",evolvesTo:"Torterra",evoAt:32},
+  Torterra:{num:389,type:["Grass","Ground"],evolvesTo:null,evoAt:null},
+  Chimchar:{num:390,type:"Fire",evolvesTo:"Monferno",evoAt:14},
+  Monferno:{num:391,type:["Fire","Fighting"],evolvesTo:"Infernape",evoAt:36},
+  Infernape:{num:392,type:["Fire","Fighting"],evolvesTo:null,evoAt:null},
+  Piplup:{num:393,type:"Water",evolvesTo:"Prinplup",evoAt:16},
+  Prinplup:{num:394,type:"Water",evolvesTo:"Empoleon",evoAt:36},
+  Empoleon:{num:395,type:["Water","Steel"],evolvesTo:null,evoAt:null},
+  // SINNOH WILD
+  Bidoof:{num:399,type:"Normal",evolvesTo:"Bibarel",evoAt:15},
+  Bibarel:{num:400,type:["Normal","Water"],evolvesTo:null,evoAt:null},
+  Starly:{num:396,type:["Normal","Flying"],evolvesTo:"Staravia",evoAt:14},
+  Staravia:{num:397,type:["Normal","Flying"],evolvesTo:"Staraptor",evoAt:34},
+  Staraptor:{num:398,type:["Normal","Flying"],evolvesTo:null,evoAt:null},
+  Shinx:{num:403,type:"Electric",evolvesTo:"Luxio",evoAt:15},
+  Luxio:{num:404,type:"Electric",evolvesTo:"Luxray",evoAt:30},
+  Luxray:{num:405,type:"Electric",evolvesTo:null,evoAt:null},
+  Buneary:{num:427,type:"Normal",evolvesTo:"Lopunny",evoAt:20},
+  Lopunny:{num:428,type:"Normal",evolvesTo:null,evoAt:null},
 
-  // ===== UNOVA =====
-  Snivy:{num:495,type:"Grass",evolvesTo:"Servine",xpTo:40},
-  Servine:{num:496,type:"Grass",evolvesTo:"Serperior",xpTo:80},
-  Serperior:{num:497,type:"Grass",evolvesTo:null,xpTo:null},
-  Tepig:{num:498,type:"Fire",evolvesTo:"Pignite",xpTo:40},
-  Pignite:{num:499,type:"Fire",evolvesTo:"Emboar",xpTo:80},
-  Emboar:{num:500,type:"Fire",evolvesTo:null,xpTo:null},
-  Oshawott:{num:501,type:"Water",evolvesTo:"Dewott",xpTo:40},
-  Dewott:{num:502,type:"Water",evolvesTo:"Samurott",xpTo:80},
-  Samurott:{num:503,type:"Water",evolvesTo:null,xpTo:null},
-  Patrat:{num:504,type:"Normal",evolvesTo:null,xpTo:null},
-  Lillipup:{num:506,type:"Normal",evolvesTo:null,xpTo:null},
-  Purrloin:{num:509,type:"Dark",evolvesTo:null,xpTo:null},
-  Munna:{num:517,type:"Psychic",evolvesTo:null,xpTo:null},
-  Pidove:{num:519,type:"Normal",evolvesTo:null,xpTo:null},
-  Sewaddle:{num:540,type:"Bug",evolvesTo:null,xpTo:null},
+  // ===== UNOVA STARTERS =====
+  Snivy:{num:495,type:"Grass",evolvesTo:"Servine",evoAt:17},
+  Servine:{num:496,type:"Grass",evolvesTo:"Serperior",evoAt:36},
+  Serperior:{num:497,type:"Grass",evolvesTo:null,evoAt:null},
+  Tepig:{num:498,type:"Fire",evolvesTo:"Pignite",evoAt:17},
+  Pignite:{num:499,type:["Fire","Fighting"],evolvesTo:"Emboar",evoAt:36},
+  Emboar:{num:500,type:["Fire","Fighting"],evolvesTo:null,evoAt:null},
+  Oshawott:{num:501,type:"Water",evolvesTo:"Dewott",evoAt:17},
+  Dewott:{num:502,type:"Water",evolvesTo:"Samurott",evoAt:36},
+  Samurott:{num:503,type:"Water",evolvesTo:null,evoAt:null},
+  // UNOVA WILD
+  Lillipup:{num:506,type:"Normal",evolvesTo:"Herdier",evoAt:16},
+  Herdier:{num:507,type:"Normal",evolvesTo:"Stoutland",evoAt:32},
+  Stoutland:{num:508,type:"Normal",evolvesTo:null,evoAt:null},
+  Patrat:{num:504,type:"Normal",evolvesTo:"Watchog",evoAt:20},
+  Watchog:{num:505,type:"Normal",evolvesTo:null,evoAt:null},
+  Pidove:{num:519,type:["Normal","Flying"],evolvesTo:"Tranquill",evoAt:21},
+  Tranquill:{num:520,type:["Normal","Flying"],evolvesTo:"Unfezant",evoAt:32},
+  Unfezant:{num:521,type:["Normal","Flying"],evolvesTo:null,evoAt:null},
+  Audino:{num:531,type:"Normal",evolvesTo:null,evoAt:null},
 
-  // ===== KALOS =====
-  Chespin:{num:650,type:"Grass",evolvesTo:"Quilladin",xpTo:40},
-  Quilladin:{num:651,type:"Grass",evolvesTo:"Chesnaught",xpTo:80},
-  Chesnaught:{num:652,type:"Grass",evolvesTo:null,xpTo:null},
-  Fennekin:{num:653,type:"Fire",evolvesTo:"Braixen",xpTo:40},
-  Braixen:{num:654,type:"Fire",evolvesTo:"Delphox",xpTo:80},
-  Delphox:{num:655,type:"Fire",evolvesTo:null,xpTo:null},
-  Froakie:{num:656,type:"Water",evolvesTo:"Frogadier",xpTo:40},
-  Frogadier:{num:657,type:"Water",evolvesTo:"Greninja",xpTo:80},
-  Greninja:{num:658,type:"Water",evolvesTo:null,xpTo:null},
-  Bunnelby:{num:659,type:"Normal",evolvesTo:null,xpTo:null},
-  Fletchling:{num:661,type:"Normal",evolvesTo:null,xpTo:null},
-  Litleo:{num:667,type:"Fire",evolvesTo:null,xpTo:null},
-  Skiddo:{num:672,type:"Grass",evolvesTo:null,xpTo:null},
-  Pancham:{num:674,type:"Fighting",evolvesTo:null,xpTo:null},
-  Pumpkaboo:{num:710,type:"Ghost",evolvesTo:null,xpTo:null},
+  // ===== KALOS STARTERS =====
+  Chespin:{num:650,type:"Grass",evolvesTo:"Quilladin",evoAt:16},
+  Quilladin:{num:651,type:"Grass",evolvesTo:"Chesnaught",evoAt:36},
+  Chesnaught:{num:652,type:["Grass","Fighting"],evolvesTo:null,evoAt:null},
+  Fennekin:{num:653,type:"Fire",evolvesTo:"Braixen",evoAt:16},
+  Braixen:{num:654,type:"Fire",evolvesTo:"Delphox",evoAt:36},
+  Delphox:{num:655,type:["Fire","Psychic"],evolvesTo:null,evoAt:null},
+  Froakie:{num:656,type:"Water",evolvesTo:"Frogadier",evoAt:16},
+  Frogadier:{num:657,type:"Water",evolvesTo:"Greninja",evoAt:36},
+  Greninja:{num:658,type:["Water","Dark"],evolvesTo:null,evoAt:null},
+  // KALOS WILD
+  Bunnelby:{num:659,type:"Normal",evolvesTo:"Diggersby",evoAt:20},
+  Diggersby:{num:660,type:"Normal",evolvesTo:null,evoAt:null},
+  Fletchling:{num:661,type:["Normal","Flying"],evolvesTo:"Fletchinder",evoAt:17},
+  Fletchinder:{num:662,type:["Fire","Flying"],evolvesTo:"Talonflame",evoAt:35},
+  Talonflame:{num:663,type:["Fire","Flying"],evolvesTo:null,evoAt:null},
+  Litleo:{num:667,type:["Fire","Normal"],evolvesTo:"Pyroar",evoAt:35},
+  Pyroar:{num:668,type:["Fire","Normal"],evolvesTo:null,evoAt:null},
+  Skiddo:{num:672,type:"Grass",evolvesTo:"Gogoat",evoAt:32},
+  Gogoat:{num:673,type:"Grass",evolvesTo:null,evoAt:null},
 
-  // ===== ALOLA =====
-  Rowlet:{num:722,type:"Grass",evolvesTo:"Dartrix",xpTo:40},
-  Dartrix:{num:723,type:"Grass",evolvesTo:"Decidueye",xpTo:80},
-  Decidueye:{num:724,type:"Grass",evolvesTo:null,xpTo:null},
-  Litten:{num:725,type:"Fire",evolvesTo:"Torracat",xpTo:40},
-  Torracat:{num:726,type:"Fire",evolvesTo:"Incineroar",xpTo:80},
-  Incineroar:{num:727,type:"Fire",evolvesTo:null,xpTo:null},
-  Popplio:{num:728,type:"Water",evolvesTo:"Brionne",xpTo:40},
-  Brionne:{num:729,type:"Water",evolvesTo:"Primarina",xpTo:80},
-  Primarina:{num:730,type:"Water",evolvesTo:null,xpTo:null},
-  Pikipek:{num:731,type:"Normal",evolvesTo:null,xpTo:null},
-  Yungoos:{num:734,type:"Normal",evolvesTo:null,xpTo:null},
-  Grubbin:{num:736,type:"Bug",evolvesTo:null,xpTo:null},
-  Crabrawler:{num:739,type:"Fighting",evolvesTo:null,xpTo:null},
-  Cutiefly:{num:742,type:"Bug",evolvesTo:null,xpTo:null},
-  Mudbray:{num:749,type:"Ground",evolvesTo:null,xpTo:null},
+  // ===== ALOLA STARTERS =====
+  Rowlet:{num:722,type:["Grass","Flying"],evolvesTo:"Dartrix",evoAt:17},
+  Dartrix:{num:723,type:["Grass","Flying"],evolvesTo:"Decidueye",evoAt:34},
+  Decidueye:{num:724,type:["Grass","Ghost"],evolvesTo:null,evoAt:null},
+  Litten:{num:725,type:"Fire",evolvesTo:"Torracat",evoAt:17},
+  Torracat:{num:726,type:"Fire",evolvesTo:"Incineroar",evoAt:34},
+  Incineroar:{num:727,type:["Fire","Dark"],evolvesTo:null,evoAt:null},
+  Popplio:{num:728,type:"Water",evolvesTo:"Brionne",evoAt:17},
+  Brionne:{num:729,type:"Water",evolvesTo:"Primarina",evoAt:34},
+  Primarina:{num:730,type:["Water","Fairy"],evolvesTo:null,evoAt:null},
+  // ALOLA WILD
+  Yungoos:{num:734,type:"Normal",evolvesTo:"Gumshoos",evoAt:20},
+  Gumshoos:{num:735,type:"Normal",evolvesTo:null,evoAt:null},
+  Pikipek:{num:731,type:["Normal","Flying"],evolvesTo:"Trumbeak",evoAt:14},
+  Trumbeak:{num:732,type:["Normal","Flying"],evolvesTo:"Toucannon",evoAt:28},
+  Toucannon:{num:733,type:["Normal","Flying"],evolvesTo:null,evoAt:null},
+  Rockruff:{num:744,type:"Rock",evolvesTo:"Lycanroc",evoAt:25},
+  Lycanroc:{num:745,type:"Rock",evolvesTo:null,evoAt:null},
+  Stufful:{num:759,type:["Normal","Fighting"],evolvesTo:"Bewear",evoAt:27},
+  Bewear:{num:760,type:["Normal","Fighting"],evolvesTo:null,evoAt:null},
 
-  // ===== GALAR =====
-  Grookey:{num:810,type:"Grass",evolvesTo:"Thwackey",xpTo:40},
-  Thwackey:{num:811,type:"Grass",evolvesTo:"Rillaboom",xpTo:80},
-  Rillaboom:{num:812,type:"Grass",evolvesTo:null,xpTo:null},
-  Scorbunny:{num:813,type:"Fire",evolvesTo:"Raboot",xpTo:40},
-  Raboot:{num:814,type:"Fire",evolvesTo:"Cinderace",xpTo:80},
-  Cinderace:{num:815,type:"Fire",evolvesTo:null,xpTo:null},
-  Sobble:{num:816,type:"Water",evolvesTo:"Drizzile",xpTo:40},
-  Drizzile:{num:817,type:"Water",evolvesTo:"Inteleon",xpTo:80},
-  Inteleon:{num:818,type:"Water",evolvesTo:null,xpTo:null},
-  Skwovet:{num:819,type:"Normal",evolvesTo:null,xpTo:null},
-  Rookidee:{num:821,type:"Flying",evolvesTo:null,xpTo:null},
-  Blipbug:{num:824,type:"Bug",evolvesTo:null,xpTo:null},
-  Nickit:{num:827,type:"Dark",evolvesTo:null,xpTo:null},
-  Wooloo:{num:831,type:"Normal",evolvesTo:null,xpTo:null},
-  Chewtle:{num:833,type:"Water",evolvesTo:null,xpTo:null},
-  Yamper:{num:835,type:"Electric",evolvesTo:null,xpTo:null},
+  // ===== GALAR STARTERS =====
+  Grookey:{num:810,type:"Grass",evolvesTo:"Thwackey",evoAt:16},
+  Thwackey:{num:811,type:"Grass",evolvesTo:"Rillaboom",evoAt:35},
+  Rillaboom:{num:812,type:"Grass",evolvesTo:null,evoAt:null},
+  Scorbunny:{num:813,type:"Fire",evolvesTo:"Raboot",evoAt:16},
+  Raboot:{num:814,type:"Fire",evolvesTo:"Cinderace",evoAt:35},
+  Cinderace:{num:815,type:"Fire",evolvesTo:null,evoAt:null},
+  Sobble:{num:816,type:"Water",evolvesTo:"Drizzile",evoAt:16},
+  Drizzile:{num:817,type:"Water",evolvesTo:"Inteleon",evoAt:35},
+  Inteleon:{num:818,type:"Water",evolvesTo:null,evoAt:null},
+  // GALAR WILD
+  Wooloo:{num:831,type:"Normal",evolvesTo:"Dubwool",evoAt:24},
+  Dubwool:{num:832,type:"Normal",evolvesTo:null,evoAt:null},
+  Yamper:{num:835,type:"Electric",evolvesTo:"Boltund",evoAt:25},
+  Boltund:{num:836,type:"Electric",evolvesTo:null,evoAt:null},
+  Skwovet:{num:819,type:"Normal",evolvesTo:"Greedent",evoAt:24},
+  Greedent:{num:820,type:"Normal",evolvesTo:null,evoAt:null},
+  Rookidee:{num:821,type:"Flying",evolvesTo:"Corvisquire",evoAt:18},
+  Corvisquire:{num:822,type:"Flying",evolvesTo:"Corviknight",evoAt:38},
+  Corviknight:{num:823,type:"Flying",evolvesTo:null,evoAt:null},
 
-  // ===== PALDEA =====
-  Sprigatito:{num:906,type:"Grass",evolvesTo:"Floragato",xpTo:40},
-  Floragato:{num:907,type:"Grass",evolvesTo:"Meowscarada",xpTo:80},
-  Meowscarada:{num:908,type:"Grass",evolvesTo:null,xpTo:null},
-  Fuecoco:{num:909,type:"Fire",evolvesTo:"Crocalor",xpTo:40},
-  Crocalor:{num:910,type:"Fire",evolvesTo:"Skeledirge",xpTo:80},
-  Skeledirge:{num:911,type:"Fire",evolvesTo:null,xpTo:null},
-  Quaxly:{num:912,type:"Water",evolvesTo:"Quaxwell",xpTo:40},
-  Quaxwell:{num:913,type:"Water",evolvesTo:"Quaquaval",xpTo:80},
-  Quaquaval:{num:914,type:"Water",evolvesTo:null,xpTo:null},
-  Lechonk:{num:915,type:"Normal",evolvesTo:null,xpTo:null},
-  Tarountula:{num:917,type:"Bug",evolvesTo:null,xpTo:null},
-  Pawmi:{num:921,type:"Electric",evolvesTo:null,xpTo:null},
-  Fidough:{num:926,type:"Fairy",evolvesTo:null,xpTo:null},
-  Smoliv:{num:928,type:"Grass",evolvesTo:null,xpTo:null},
+  // ===== PALDEA STARTERS =====
+  Sprigatito:{num:906,type:"Grass",evolvesTo:"Floragato",evoAt:16},
+  Floragato:{num:907,type:"Grass",evolvesTo:"Meowscarada",evoAt:36},
+  Meowscarada:{num:908,type:["Grass","Dark"],evolvesTo:null,evoAt:null},
+  Fuecoco:{num:909,type:"Fire",evolvesTo:"Crocalor",evoAt:16},
+  Crocalor:{num:910,type:"Fire",evolvesTo:"Skeledirge",evoAt:36},
+  Skeledirge:{num:911,type:["Fire","Ghost"],evolvesTo:null,evoAt:null},
+  Quaxly:{num:912,type:"Water",evolvesTo:"Quaxwell",evoAt:16},
+  Quaxwell:{num:913,type:"Water",evolvesTo:"Quaquaval",evoAt:36},
+  Quaquaval:{num:914,type:["Water","Fighting"],evolvesTo:null,evoAt:null},
+  // PALDEA WILD
+  Lechonk:{num:915,type:"Normal",evolvesTo:"Oinkologne",evoAt:18},
+  Oinkologne:{num:916,type:"Normal",evolvesTo:null,evoAt:null},
+  Pawmi:{num:921,type:"Electric",evolvesTo:"Pawmo",evoAt:18},
+  Pawmo:{num:922,type:"Electric",evolvesTo:"Pawmot",evoAt:32},
+  Pawmot:{num:923,type:"Electric",evolvesTo:null,evoAt:null},
+  Smoliv:{num:928,type:["Grass","Normal"],evolvesTo:"Dolliv",evoAt:25},
+  Dolliv:{num:929,type:["Grass","Normal"],evolvesTo:"Arboliva",evoAt:35},
+  Arboliva:{num:930,type:["Grass","Normal"],evolvesTo:null,evoAt:null},
+  Fidough:{num:926,type:"Fairy",evolvesTo:"Dachsbun",evoAt:26},
+  Dachsbun:{num:927,type:"Fairy",evolvesTo:null,evoAt:null},
 };
 
 const REGIONS={
-  Kanto:{professor:"Professor Oak",starters:["Bulbasaur","Charmander","Squirtle"],wildPool:["Pidgey","Rattata","Caterpie","Weedle","Pikachu","Eevee","Geodude","Magikarp","Spearow"]},
-  Johto:{professor:"Professor Elm",starters:["Chikorita","Cyndaquil","Totodile"],wildPool:["Hoothoot","Sentret","Mareep","Wooper","Marill","Phanpy"]},
-  Hoenn:{professor:"Professor Birch",starters:["Treecko","Torchic","Mudkip"],wildPool:["Poochyena","Zigzagoon","Taillow","Wingull","Ralts","Skitty","Aron"]},
-  Sinnoh:{professor:"Professor Rowan",starters:["Turtwig","Chimchar","Piplup"],wildPool:["Starly","Bidoof","Shinx","Buizel","Pachirisu","Cherubi"]},
-  Unova:{professor:"Professor Juniper",starters:["Snivy","Tepig","Oshawott"],wildPool:["Patrat","Lillipup","Purrloin","Pidove","Sewaddle","Munna"]},
-  Kalos:{professor:"Professor Sycamore",starters:["Chespin","Fennekin","Froakie"],wildPool:["Bunnelby","Fletchling","Litleo","Pancham","Skiddo","Pumpkaboo"]},
-  Alola:{professor:"Professor Kukui",starters:["Rowlet","Litten","Popplio"],wildPool:["Yungoos","Pikipek","Grubbin","Crabrawler","Cutiefly","Mudbray"]},
-  Galar:{professor:"Professor Magnolia",starters:["Grookey","Scorbunny","Sobble"],wildPool:["Skwovet","Rookidee","Nickit","Wooloo","Yamper","Blipbug","Chewtle"]},
-  Paldea:{professor:"Professor Sada",starters:["Sprigatito","Fuecoco","Quaxly"],wildPool:["Lechonk","Pawmi","Tarountula","Fidough","Smoliv"]},
+  Kanto:{professor:"Professor Oak",starters:["Bulbasaur","Charmander","Squirtle"],wildPool:["Pikachu","Eevee","Pidgey","Caterpie"]},
+  Johto:{professor:"Professor Elm",starters:["Chikorita","Cyndaquil","Totodile"],wildPool:["Pichu","Hoothoot","Marill","Sentret"]},
+  Hoenn:{professor:"Professor Birch",starters:["Treecko","Torchic","Mudkip"],wildPool:["Zigzagoon","Skitty","Whismur","Wurmple"]},
+  Sinnoh:{professor:"Professor Rowan",starters:["Turtwig","Chimchar","Piplup"],wildPool:["Bidoof","Starly","Shinx","Buneary"]},
+  Unova:{professor:"Professor Juniper",starters:["Snivy","Tepig","Oshawott"],wildPool:["Lillipup","Patrat","Pidove","Audino"]},
+  Kalos:{professor:"Professor Sycamore",starters:["Chespin","Fennekin","Froakie"],wildPool:["Bunnelby","Fletchling","Litleo","Skiddo"]},
+  Alola:{professor:"Professor Kukui",starters:["Rowlet","Litten","Popplio"],wildPool:["Yungoos","Pikipek","Rockruff","Stufful"]},
+  Galar:{professor:"Professor Magnolia",starters:["Grookey","Scorbunny","Sobble"],wildPool:["Wooloo","Yamper","Skwovet","Rookidee"]},
+  Paldea:{professor:"Professor Sada",starters:["Sprigatito","Fuecoco","Quaxly"],wildPool:["Lechonk","Pawmi","Smoliv","Fidough"]},
 };
 
 const REGION_ORDER=["Kanto","Johto","Hoenn","Sinnoh","Unova","Kalos","Alola","Galar","Paldea"];
@@ -621,13 +658,16 @@ const MODULES=[
 
 const TARGET_SCENES=6;
 const PARTY_MAX=6;
-const SAVE_KEY="pkmn_adventure_save_v2";
+const SAVE_KEY="pkmn_adventure_save_v3";
+const STARTER_LEVEL=5;
+const WILD_CATCH_LEVEL=3;
+const XP_PER_ANSWER=15;
+function xpToNext(level){return 20+level*2;}
 
 function starterLine(name){const out=[];let cur=name;while(cur){out.push(cur);cur=POKEMON_DB[cur]?.evolvesTo;}return out;}
 function pkImg(id,s){return`<img src="${BASE}${id}.png" width="${s}" height="${s}" alt="" style="object-fit:contain;display:block">`}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
 
-// PKM is the runtime sprite/data lookup — preloaded with ALL pokemon since the party persists across regions
 let PKM={};
 let STORY=null;
 let STORY_TITLE="Pokémon Learning Adventure";
@@ -635,12 +675,13 @@ let STORY_TITLE="Pokémon Learning Adventure";
 function preloadAllPKM(){
   PKM={};
   for(const[n,d]of Object.entries(POKEMON_DB)){
-    PKM[n]={n,num:d.num,type:d.type,xpTo:d.xpTo,evolvesTo:d.evolvesTo};
+    PKM[n]={n,num:d.num,type:d.type,evoAt:d.evoAt,evolvesTo:d.evolvesTo};
   }
 }
 function preloadRegionImages(region){
   const r=REGIONS[region];
-  const all=new Set([...r.wildPool]);
+  const all=new Set();
+  r.wildPool.forEach(w=>starterLine(w).forEach(n=>all.add(n)));
   r.starters.forEach(s=>starterLine(s).forEach(n=>all.add(n)));
   for(const n of all){const d=POKEMON_DB[n];if(!d)continue;const im=new Image();im.src=`${BASE}${d.num}.png`;}
 }
@@ -651,7 +692,7 @@ function mkSave(){return{
   characterName:"",
   characterGoal:"",
   completedRegions:[],         // ordered list, e.g. ["Kanto","Hoenn"]
-  party:[],                    // [{name,xp,xpTo,ready}]
+  party:[],                    // [{name,level,xp}]
   storage:[],                  // PC box
   moduleStats:{},              // {0:{cor:0,att:0}, 1:{...}, ...}
 };}
@@ -673,7 +714,7 @@ function persistSave(){try{localStorage.setItem(SAVE_KEY,JSON.stringify(SAVE));}
 function eraseSave(){try{localStorage.removeItem(SAVE_KEY);}catch(e){}SAVE=mkSave();}
 
 // ============== SESSION STATE (resets each region) ==============
-function mkPartyMember(name){return{name,xp:0,xpTo:POKEMON_DB[name]?.xpTo??null,ready:false};}
+function mkPartyMember(name,level){return{name,level:level||STARTER_LEVEL,xp:0};}
 function mkState(){return{
   phase:"story",
   ch:0,sc:0,st:0,
@@ -830,13 +871,16 @@ function buildScenePrompt(){
     ?"(none yet — starter is picked in scene 1)"
     :SAVE.party.map(m=>{
       const p=PKM[m.name];if(!p)return`- ${m.name}`;
-      const xp=p.xpTo?`${m.xp}/${p.xpTo} XP${m.ready?" (READY TO EVOLVE)":""}`:"MAX";
-      return `- ${m.name} (${p.type}, ${xp})`;
+      const evoReady=p.evoAt&&p.evolvesTo&&m.level>=p.evoAt;
+      return `- ${m.name} (${typeLabel(p.type)}, Lv. ${m.level}${evoReady?" — READY TO EVOLVE into "+p.evolvesTo:""})`;
     }).join("\n");
 
   const storageDesc=SAVE.storage.length===0
     ?"(empty)"
-    :SAVE.storage.map(m=>`- ${m.name}`).join("\n");
+    :SAVE.storage.map(m=>{
+      const p=PKM[m.name];
+      return `- ${m.name}${p?" ("+typeLabel(p.type)+", Lv. "+m.level+")":""}`;
+    }).join("\n");
 
   const conceptsList=mod.concepts.map((c,i)=>`  ${i+1}. ${c}`).join("\n");
   const conceptsTaughtSoFar=g.conceptsTaught.length?g.conceptsTaught.join("; "):"(none yet — this is the first teaching scene)";
@@ -980,7 +1024,7 @@ function validateScene(payload,sceneNum,region){
   // pkm (catch/partyAdd target) MUST be from current region only
   const currentRegionAllowed=new Set([
     ...REGIONS[region].starters.flatMap(s=>starterLine(s)),
-    ...REGIONS[region].wildPool,
+    ...REGIONS[region].wildPool.flatMap(w=>starterLine(w)),
   ]);
   const partyNames=new Set(SAVE.party.map(m=>m.name));
   const knownAll=new Set([...currentRegionAllowed,...partyNames,...Object.keys(POKEMON_DB)]);
@@ -1025,30 +1069,31 @@ function recordSceneStats(sceneObj,payloadConceptsTaught){
 }
 
 // ============== PARTY MANAGEMENT (with PC overflow & swap) ==============
-function tryAddPokemonToTeam(name,onDone){
+function tryAddPokemonToTeam(name,onDone,level){
   if(!POKEMON_DB[name]){onDone&&onDone();return;}
   if(partyByName(name)||storageByName(name)){onDone&&onDone();return;}
+  const lvl=level||WILD_CATCH_LEVEL;
   if(SAVE.party.length<PARTY_MAX){
-    SAVE.party.push(mkPartyMember(name));
+    SAVE.party.push(mkPartyMember(name,lvl));
     if(SAVE.party.length===1)S.activeIdx=0;
     persistSave();
     onDone&&onDone();
   }else{
-    showSwapOverlay(name,onDone);
+    showSwapOverlay(name,onDone,lvl);
   }
 }
-function showSwapOverlay(newPkmName,onDone){
+function showSwapOverlay(newPkmName,onDone,level){
   const ov=document.getElementById("swap-overlay");
   const card=document.getElementById("swap-card-content");
   const newSprite=pkSprite(newPkmName,110);
   let h=`<div class="swap-title">${escapeHtml(newPkmName)} wants to join your team!</div>`;
   h+=`<div class="swap-sub">Your team is full. Pick a Pokémon to send to the PC, or send ${escapeHtml(newPkmName)} to the PC instead.</div>`;
-  h+=`<div class="swap-newcomer">${newSprite}<div class="sw-name">${escapeHtml(newPkmName)} <span style="color:#9A3412;font-weight:500">(${POKEMON_DB[newPkmName].type})</span></div></div>`;
+  h+=`<div class="swap-newcomer">${newSprite}<div class="sw-name">${escapeHtml(newPkmName)} <span style="color:#9A3412;font-weight:500">(${typeLabel(POKEMON_DB[newPkmName].type)})</span></div></div>`;
   h+=`<div class="pc-section-title" style="text-align:center">Tap a Pokémon to send to PC</div>`;
   h+=`<div class="pc-grid">`;
   SAVE.party.forEach((m,i)=>{
     const p=PKM[m.name];
-    h+=`<button class="pc-card" data-swap-bench="${i}"><div class="pc-sprite">${pkSprite(m.name,46)}</div><div class="pc-name">${escapeHtml(m.name)}</div><div class="pc-meta">${p?.type||""}</div></button>`;
+    h+=`<button class="pc-card" data-swap-bench="${i}"><div class="pc-sprite">${pkSprite(m.name,46)}</div><div class="pc-name">${escapeHtml(m.name)}</div><div class="pc-meta">${p?typeLabel(p.type):""}</div></button>`;
   });
   h+=`</div>`;
   h+=`<button class="skip-btn" id="swap-store-newcomer" style="margin-top:14px">Send ${escapeHtml(newPkmName)} to PC instead</button>`;
@@ -1059,7 +1104,7 @@ function showSwapOverlay(newPkmName,onDone){
       const idx=+btn.dataset.swapBench;
       const benched=SAVE.party[idx];
       SAVE.storage.push(benched);
-      SAVE.party[idx]=mkPartyMember(newPkmName);
+      SAVE.party[idx]=mkPartyMember(newPkmName,level);
       if(S.activeIdx>=SAVE.party.length)S.activeIdx=SAVE.party.length-1;
       persistSave();
       hideSwapOverlay();
@@ -1067,7 +1112,7 @@ function showSwapOverlay(newPkmName,onDone){
     });
   });
   document.getElementById("swap-store-newcomer").addEventListener("click",()=>{
-    SAVE.storage.push(mkPartyMember(newPkmName));
+    SAVE.storage.push(mkPartyMember(newPkmName,level));
     persistSave();
     hideSwapOverlay();
     onDone&&onDone();
@@ -1124,11 +1169,21 @@ async function generateAndAppendScene(){
 // ============== ANSWER HANDLING ==============
 function awardXP(amount){
   const m=SAVE.party[S.activeIdx];
-  if(!m||m.xpTo===null)return;
-  const before=m.xp;
-  m.xp=Math.min(m.xpTo,m.xp+amount);
-  S.pendingXP=`+${m.xp-before} XP for ${m.name}!`;
-  if(!m.ready&&m.xp>=m.xpTo){m.ready=true;S.pendingReady=`${m.name} is glowing softly... something is about to happen!`;}
+  if(!m)return;
+  const p=PKM[m.name];
+  if(!p)return;
+  m.xp+=amount;
+  const needed=xpToNext(m.level);
+  if(m.xp>=needed){
+    m.xp-=needed;
+    m.level++;
+    S.pendingXP=`${m.name} grew to Lv. ${m.level}!`;
+    if(p.evoAt&&m.level>=p.evoAt&&p.evolvesTo){
+      S.pendingReady=`${m.name} is glowing softly... something is about to happen!`;
+    }
+  }else{
+    S.pendingXP=`+${amount} XP for ${m.name}!`;
+  }
   persistSave();
 }
 function onAnswer(correct){
@@ -1164,7 +1219,7 @@ function onStarterPicked(name){
   S.gen.starter=name;
   tryAddPokemonToTeam(name,()=>{
     playStarterCelebration(name,()=>advanceStep());
-  });
+  },STARTER_LEVEL);
 }
 
 function playStarterCelebration(name,onDone){
@@ -1174,7 +1229,7 @@ function playStarterCelebration(name,onDone){
   const sub=document.getElementById("starter-celebrate-sub");
   img.src=`${BASE}${PKM[name].num}.png`;
   lbl.textContent=`${name}, I choose you!`;
-  sub.textContent=`Type: ${PKM[name].type}`;
+  sub.textContent=`Type: ${typeLabel(PKM[name].type)}`;
   ov.classList.add("active");
   setTimeout(()=>{
     ov.style.transition="opacity 0.4s ease";ov.style.opacity="0";
@@ -1183,12 +1238,18 @@ function playStarterCelebration(name,onDone){
 }
 
 // ============== EVOLUTION ==============
+function findEvoReady(){
+  return SAVE.party.find(m=>{
+    const p=PKM[m.name];
+    return p&&p.evolvesTo&&p.evoAt&&m.level>=p.evoAt;
+  });
+}
 function fireEvolutionForReady(narration,onDone){
-  const ready=SAVE.party.find(m=>m.ready&&PKM[m.name]?.evolvesTo);
+  const ready=findEvoReady();
   if(!ready){onDone();return;}
   const fromName=ready.name,toName=PKM[ready.name].evolvesTo;
   if(!PKM[toName]){onDone();return;}
-  ready.name=toName;ready.xp=0;ready.xpTo=PKM[toName].xpTo;ready.ready=false;
+  ready.name=toName;ready.xp=0;
   if(S.gen.starter===fromName)S.gen.starter=toName;
   persistSave();
   playEvolution(fromName,toName,narration,onDone);
@@ -1274,11 +1335,13 @@ function partyRowHTML(){
   let h=`<div class="party-row">`;
   SAVE.party.forEach((m,i)=>{
     const p=PKM[m.name];if(!p)return;
-    const pct=p.xpTo?Math.round((m.xp/p.xpTo)*100):100;
-    const cls=`party-card${i===S.activeIdx?' active':''}${m.ready?' ready':''}`;
+    const needed=xpToNext(m.level);
+    const pct=Math.round((m.xp/needed)*100);
+    const evoReady=p.evoAt&&p.evolvesTo&&m.level>=p.evoAt;
+    const cls=`party-card${i===S.activeIdx?' active':''}${evoReady?' ready':''}`;
     h+=`<div class="${cls}"><div class="party-sprite">${pkSprite(m.name,46)}</div><div class="party-name">${escapeHtml(m.name)}</div>`;
-    if(p.xpTo)h+=`<div class="party-xp-row"><span>XP</span><span>${m.xp}/${p.xpTo}</span></div><div class="party-xp-track"><div class="party-xp-fill${m.ready?' ready':''}" style="width:${pct}%"></div></div>`;
-    else h+=`<div class="party-xp-row" style="justify-content:center"><span>MAX</span></div>`;
+    h+=`<div class="party-xp-row"><span>Lv. ${m.level}</span><span>${m.xp}/${needed} XP</span></div>`;
+    h+=`<div class="party-xp-track"><div class="party-xp-fill${evoReady?' ready':''}" style="width:${pct}%"></div></div>`;
     h+=`</div>`;
   });
   return h+`</div>`;
@@ -1315,10 +1378,10 @@ function renderStarterChoice(step){
   h+=`<div class="qtext">${step.prompt||"Which Pokémon will be your partner?"}</div>`;
   h+=`<div class="story-starter-grid">`;
   starters.forEach(s=>{
-    const num=POKEMON_DB[s].num;const type=POKEMON_DB[s].type;
+    const num=POKEMON_DB[s].num;
     h+=`<button class="story-starter-card" data-pick="${s}">
       <img src="${BASE}${num}.png" width="86" height="86" alt="${s}">
-      <div class="ssc-name">${s}</div><div class="ssc-type">${type}</div>
+      <div class="ssc-name">${s}</div><div class="ssc-type">${typeLabel(POKEMON_DB[s].type)}</div>
     </button>`;
   });
   h+=`</div></div>`;
@@ -1424,7 +1487,7 @@ function renderEvolutionEligible(step){
   let h=`<div class="scene-card">`;
   const loc=curScene().loc||"";
   if(loc)h+=`<div class="scene-loc">${escapeHtml(loc)}</div>`;
-  const ready=SAVE.party.find(m=>m.ready&&PKM[m.name]?.evolvesTo);
+  const ready=findEvoReady();
   if(ready){
     h+=`<div style="display:flex;justify-content:center;margin-bottom:14px">${pkSprite(ready.name,100)}</div>`;
     h+=`<div class="scene-text">${step.narration||""}</div>`;
@@ -1573,7 +1636,7 @@ function renderPCBox(){
     let h="";
     SAVE.party.forEach((m,i)=>{
       const p=PKM[m.name];
-      h+=`<button class="pc-card" data-party-idx="${i}"><div class="pc-sprite">${pkSprite(m.name,46)}</div><div class="pc-name">${escapeHtml(m.name)}</div><div class="pc-meta">${p?.type||""}</div></button>`;
+      h+=`<button class="pc-card" data-party-idx="${i}"><div class="pc-sprite">${pkSprite(m.name,46)}</div><div class="pc-name">${escapeHtml(m.name)}</div><div class="pc-meta">Lv. ${m.level} · ${p?typeLabel(p.type):""}</div></button>`;
     });
     partyGrid.innerHTML=h;
   }
@@ -1586,7 +1649,7 @@ function renderPCBox(){
     SAVE.storage.forEach((m,i)=>{
       const p=PKM[m.name];
       const sel=S.pcSelected===i?" selected":"";
-      h+=`<button class="pc-card${sel}" data-storage-idx="${i}"><div class="pc-sprite">${pkSprite(m.name,46)}</div><div class="pc-name">${escapeHtml(m.name)}</div><div class="pc-meta">${p?.type||""}</div></button>`;
+      h+=`<button class="pc-card${sel}" data-storage-idx="${i}"><div class="pc-sprite">${pkSprite(m.name,46)}</div><div class="pc-name">${escapeHtml(m.name)}</div><div class="pc-meta">Lv. ${m.level} · ${p?typeLabel(p.type):""}</div></button>`;
     });
     h+=`</div>`;
     storageArea.innerHTML=h;
