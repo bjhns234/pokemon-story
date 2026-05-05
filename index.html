@@ -28,6 +28,17 @@ textarea.intake-input{resize:vertical;min-height:64px;line-height:1.45}
 .api-help a{color:#FF5722;text-decoration:underline}
 .form-error{margin-top:14px;padding:10px 12px;border-radius:10px;background:#FEF2F2;color:#991B1B;font-size:13px;text-align:left;line-height:1.5}
 
+/* Chip selectors (intake) */
+.chip-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.chip-row.cols-2 .chip{flex:1 1 calc(50% - 4px)}
+.chip{flex:1 1 auto;background:#F9FAFB;border:2px solid #E5E7EB;border-radius:999px;padding:8px 14px;font-size:13px;font-weight:600;color:#374151;cursor:pointer;font-family:inherit;transition:all 0.15s;text-align:center;line-height:1.2;white-space:nowrap}
+.chip:hover:not(.selected){border-color:#FED7AA;background:#FFF8F0;color:#9A3412}
+.chip.selected{background:#FFF3E0;border-color:#FF5722;color:#9A3412;box-shadow:0 0 0 2px rgba(255,87,34,0.12)}
+.chip-blurb{font-size:11px;color:#6B7280;margin-top:6px;text-align:center;min-height:14px;line-height:1.3}
+
+.text-link{display:block;margin-top:14px;background:none;border:none;color:#9CA3AF;font-size:12px;font-weight:500;text-decoration:underline;cursor:pointer;font-family:inherit;padding:4px}
+.text-link:hover{color:#6B7280}
+
 .loading-spinner{width:48px;height:48px;border:4px solid #E5E7EB;border-top-color:#FF5722;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 18px}
 .loading-spinner.small{width:28px;height:28px;border-width:3px;margin-bottom:12px}
 
@@ -36,6 +47,7 @@ textarea.intake-input{resize:vertical;min-height:64px;line-height:1.45}
 .app-name{font-size:14px;font-weight:600;color:#1A1A2E;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .hdr-right{display:flex;gap:8px;align-items:center;flex-shrink:0}
 .streak-badge{background:#FEF3C7;color:#B45309;font-size:13px;font-weight:600;padding:4px 12px;border-radius:20px}
+.type-badge{background:#EDE9FE;color:#5B21B6;font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:0.02em}
 .pc-btn{background:#EDE9FE;color:#5B21B6;font-size:12px;font-weight:700;padding:5px 11px;border-radius:20px;border:none;cursor:pointer;font-family:inherit;transition:all 0.15s}
 .pc-btn:hover{background:#DDD6FE}
 .chapter-tag{font-size:11px;color:#9CA3AF;font-weight:600;letter-spacing:0.05em;text-transform:uppercase}
@@ -138,6 +150,19 @@ textarea.intake-input{resize:vertical;min-height:64px;line-height:1.45}
 .chapter-end-title{font-size:22px;font-weight:700;color:#1A1A2E;margin-bottom:8px}
 .chapter-end-sub{font-size:14px;color:#6B7280;margin-bottom:18px;line-height:1.5}
 
+/* Dream payoff card */
+.payoff-card{background:linear-gradient(180deg,#FFF8F0 0%,#FFE4CC 100%);border-radius:16px;padding:26px 22px;margin-bottom:12px;text-align:center;box-shadow:0 2px 12px rgba(255,87,34,0.18);border:2px solid #FED7AA;animation:fade-in 0.4s ease}
+.payoff-icon{font-size:42px;margin-bottom:8px;display:block}
+.payoff-title{font-size:20px;font-weight:700;color:#9A3412;margin-bottom:6px;line-height:1.25}
+.payoff-sub{font-size:13px;color:#9A3412;opacity:0.85;margin-bottom:14px;line-height:1.5}
+.payoff-spotlight{display:flex;justify-content:center;margin:8px 0 14px}
+.type-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:14px 0}
+.type-cell{background:#fff;border:2px solid #FED7AA;border-radius:8px;padding:7px 4px;font-size:10px;font-weight:700;color:#9A3412;letter-spacing:0.02em;text-transform:uppercase;text-align:center;line-height:1.2}
+.type-cell.missed{background:rgba(255,255,255,0.4);border-color:#E5E7EB;color:#9CA3AF;text-decoration:line-through}
+.payoff-team{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:8px 0 14px}
+.payoff-team-pkm{text-align:center;width:60px}
+.payoff-team-name{font-size:10px;font-weight:700;color:#9A3412;margin-top:2px}
+
 .transition-card{background:#fff;border-radius:16px;padding:36px 22px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
 .transition-text{font-size:15px;color:#374151;font-weight:500;line-height:1.5}
 .gen-error-card{background:#fff;border-radius:16px;padding:24px 22px;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
@@ -235,7 +260,7 @@ textarea.intake-input{resize:vertical;min-height:64px;line-height:1.45}
   </div>
 </div>
 
-<!-- Intake screen (first launch only — name + goal) -->
+<!-- Intake screen (first launch only) -->
 <div id="intake-screen" style="display:none">
   <div class="intake-card">
     <svg class="logo-ball" viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg">
@@ -246,18 +271,31 @@ textarea.intake-input{resize:vertical;min-height:64px;line-height:1.45}
       <circle cx="36" cy="36" r="5" fill="#F3F4F6"/>
     </svg>
     <div class="app-title">Pokémon Learning Adventure</div>
-    <div class="app-sub">A 9-region journey that teaches kindergarten skills. Travel from one region to the next, build your team, and master each module to graduate to 1st grade.</div>
+    <div class="app-sub">Travel 9 regions, build your team, and chase your trainer dream.</div>
 
     <label class="intake-label" for="intake-name">What's your name?</label>
     <input type="text" class="intake-input" id="intake-name" placeholder="Your name" maxlength="20" autocomplete="off">
 
-    <label class="intake-label" for="intake-goal">What's your big dream as a trainer?</label>
-    <textarea class="intake-input" id="intake-goal" rows="2" placeholder="e.g., Become a Champion. Find a legendary Pokémon. Catch every type."></textarea>
+    <label class="intake-label">Which words should the story use for you?</label>
+    <div class="chip-row" id="intake-pronoun-row"></div>
+    <div class="chip-blurb" id="intake-pronoun-blurb"></div>
+
+    <label class="intake-label">What kind of trainer are you?</label>
+    <div class="chip-row cols-2" id="intake-style-row"></div>
+    <div class="chip-blurb" id="intake-style-blurb"></div>
+
+    <label class="intake-label">Favorite Pokémon type?</label>
+    <div class="chip-row" id="intake-type-row"></div>
+
+    <label class="intake-label">What's your big dream?</label>
+    <div class="chip-row cols-2" id="intake-dream-row"></div>
+    <div class="chip-blurb" id="intake-dream-blurb"></div>
+    <input type="text" class="intake-input" id="intake-dream-custom" placeholder="Your own dream..." maxlength="80" autocomplete="off" style="display:none;margin-top:8px">
 
     <div id="intake-error" class="form-error" style="display:none"></div>
 
     <button class="start-btn" id="intake-submit">Start the Journey &#8594;</button>
-    <button class="skip-btn" id="change-key-btn">Change API key</button>
+    <button class="text-link" id="change-key-btn">Change API key</button>
   </div>
 </div>
 
@@ -540,28 +578,76 @@ const POKEMON_DB={
   Arboliva:{num:930,type:["Grass","Normal"],evolvesTo:null,evoAt:null},
   Fidough:{num:926,type:"Fairy",evolvesTo:"Dachsbun",evoAt:26},
   Dachsbun:{num:927,type:"Fairy",evolvesTo:null,evoAt:null},
+
+  // ===== LEGENDARIES (region-9 capstone only) =====
+  Mewtwo:{num:150,type:"Psychic",evolvesTo:null,evoAt:null},
+  Lugia:{num:249,type:["Psychic","Flying"],evolvesTo:null,evoAt:null},
+  Rayquaza:{num:384,type:["Dragon","Flying"],evolvesTo:null,evoAt:null},
+  Dialga:{num:483,type:["Steel","Dragon"],evolvesTo:null,evoAt:null},
+  Reshiram:{num:643,type:["Dragon","Fire"],evolvesTo:null,evoAt:null},
+  Xerneas:{num:716,type:"Fairy",evolvesTo:null,evoAt:null},
+  Solgaleo:{num:791,type:["Psychic","Steel"],evolvesTo:null,evoAt:null},
+  Zacian:{num:888,type:"Fairy",evolvesTo:null,evoAt:null},
+  Koraidon:{num:1007,type:["Fighting","Dragon"],evolvesTo:null,evoAt:null},
 };
 
 const REGIONS={
-  Kanto:{professor:"Professor Oak",starters:["Bulbasaur","Charmander","Squirtle"],wildPool:["Pikachu","Eevee","Pidgey","Caterpie"]},
-  Johto:{professor:"Professor Elm",starters:["Chikorita","Cyndaquil","Totodile"],wildPool:["Pichu","Hoothoot","Marill","Sentret"]},
-  Hoenn:{professor:"Professor Birch",starters:["Treecko","Torchic","Mudkip"],wildPool:["Zigzagoon","Skitty","Whismur","Wurmple"]},
-  Sinnoh:{professor:"Professor Rowan",starters:["Turtwig","Chimchar","Piplup"],wildPool:["Bidoof","Starly","Shinx","Buneary"]},
-  Unova:{professor:"Professor Juniper",starters:["Snivy","Tepig","Oshawott"],wildPool:["Lillipup","Patrat","Pidove","Audino"]},
-  Kalos:{professor:"Professor Sycamore",starters:["Chespin","Fennekin","Froakie"],wildPool:["Bunnelby","Fletchling","Litleo","Skiddo"]},
-  Alola:{professor:"Professor Kukui",starters:["Rowlet","Litten","Popplio"],wildPool:["Yungoos","Pikipek","Rockruff","Stufful"]},
-  Galar:{professor:"Professor Magnolia",starters:["Grookey","Scorbunny","Sobble"],wildPool:["Wooloo","Yamper","Skwovet","Rookidee"]},
-  Paldea:{professor:"Professor Sada",starters:["Sprigatito","Fuecoco","Quaxly"],wildPool:["Lechonk","Pawmi","Smoliv","Fidough"]},
+  Kanto:{professor:"Professor Oak",starters:["Bulbasaur","Charmander","Squirtle"],wildPool:["Pikachu","Eevee","Pidgey","Caterpie"],legendary:"Mewtwo"},
+  Johto:{professor:"Professor Elm",starters:["Chikorita","Cyndaquil","Totodile"],wildPool:["Pichu","Hoothoot","Marill","Sentret"],legendary:"Lugia"},
+  Hoenn:{professor:"Professor Birch",starters:["Treecko","Torchic","Mudkip"],wildPool:["Zigzagoon","Skitty","Whismur","Wurmple"],legendary:"Rayquaza"},
+  Sinnoh:{professor:"Professor Rowan",starters:["Turtwig","Chimchar","Piplup"],wildPool:["Bidoof","Starly","Shinx","Buneary"],legendary:"Dialga"},
+  Unova:{professor:"Professor Juniper",starters:["Snivy","Tepig","Oshawott"],wildPool:["Lillipup","Patrat","Pidove","Audino"],legendary:"Reshiram"},
+  Kalos:{professor:"Professor Sycamore",starters:["Chespin","Fennekin","Froakie"],wildPool:["Bunnelby","Fletchling","Litleo","Skiddo"],legendary:"Xerneas"},
+  Alola:{professor:"Professor Kukui",starters:["Rowlet","Litten","Popplio"],wildPool:["Yungoos","Pikipek","Rockruff","Stufful"],legendary:"Solgaleo"},
+  Galar:{professor:"Professor Magnolia",starters:["Grookey","Scorbunny","Sobble"],wildPool:["Wooloo","Yamper","Skwovet","Rookidee"],legendary:"Zacian"},
+  Paldea:{professor:"Professor Sada",starters:["Sprigatito","Fuecoco","Quaxly"],wildPool:["Lechonk","Pawmi","Smoliv","Fidough"],legendary:"Koraidon"},
 };
+
+// Standard 18 Pokémon types — used for type tracker and chip selectors
+const TRACKED_TYPES=["Normal","Fire","Water","Electric","Grass","Ice","Fighting","Poison","Ground","Flying","Psychic","Bug","Rock","Ghost","Dragon","Dark","Steel","Fairy"];
+// Subset of types offered as "favorite type" in intake (kid-friendly)
+const FAVORITE_TYPE_OPTIONS=["Fire","Water","Grass","Electric","Bug","Psychic","Dragon","Fairy"];
+const TRAINER_STYLES=[
+  {id:"brave",label:"Brave",blurb:"Charges in headfirst"},
+  {id:"curious",label:"Curious",blurb:"Asks a thousand questions"},
+  {id:"kind",label:"Kind",blurb:"Looks after every Pokémon"},
+  {id:"clever",label:"Clever",blurb:"Solves the puzzle"},
+];
+const PRONOUN_OPTIONS=[
+  {id:"he",label:"He",blurb:"he / him / his"},
+  {id:"she",label:"She",blurb:"she / her / hers"},
+  {id:"they",label:"They",blurb:"they / them / theirs"},
+];
+const PRONOUN_DETAILS={
+  he:{subject:"he",object:"him",possessive:"his",reflexive:"himself",isPlural:false},
+  she:{subject:"she",object:"her",possessive:"her",reflexive:"herself",isPlural:false},
+  they:{subject:"they",object:"them",possessive:"their",reflexive:"themself",isPlural:true},
+};
+const DREAM_OPTIONS=[
+  {id:"champion",label:"Become Champion",blurb:"Beat the Elite Four"},
+  {id:"legendary",label:"Catch a Legendary",blurb:"Find a one-of-a-kind Pokémon"},
+  {id:"everyType",label:"Catch Every Type",blurb:"Collect all 18 types"},
+  {id:"custom",label:"Something else",blurb:"Tell us your own dream"},
+];
 
 const REGION_ORDER=["Kanto","Johto","Hoenn","Sinnoh","Unova","Kalos","Alola","Galar","Paldea"];
 
 const SPECIAL_SCENES=["rival","rescue","mystery","festival"];
-function generateArc(){
+// Returns the arc role names for one region. opts.isFinalRegion + opts.dreamKind
+// drive the capstone scene for region 9.
+function generateArc(opts){
+  opts=opts||{};
   const special=SPECIAL_SCENES[Math.floor(Math.random()*SPECIAL_SCENES.length)];
   const middle=[special,"catch","teach","teach"];
   for(let i=middle.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[middle[i],middle[j]]=[middle[j],middle[i]];}
-  return["starter",...middle,"assessment","final"];
+  let capstone="final";
+  if(opts.isFinalRegion){
+    if(opts.dreamKind==="champion")capstone="championBattle";
+    else if(opts.dreamKind==="legendary")capstone="legendaryEncounter";
+    else if(opts.dreamKind==="everyType")capstone="typeFinal";
+    else capstone="dreamFinal"; // custom dream — narrative payoff
+  }
+  return["starter",...middle,"assessment",capstone];
 }
 
 // ============== KINDERGARTEN MODULES (Utah core, sequenced) ==============
@@ -700,11 +786,18 @@ function pkSprite(name,size){return PKM[name]?pkImg(PKM[name].num,size):"";}
 // ============== SAVE STATE (persists across regions) ==============
 function mkSave(){return{
   characterName:"",
-  characterGoal:"",
+  characterGoal:"",            // free text fallback when dreamKind="custom"
+  characterStyle:"",           // "brave" | "curious" | "kind" | "clever"
+  pronoun:"they",              // "he" | "she" | "they" — drives narrator pronouns
+  favoriteType:"",             // one of TRACKED_TYPES
+  dreamKind:"",                // "champion" | "legendary" | "everyType" | "custom"
   completedRegions:[],         // ordered list, e.g. ["Kanto","Hoenn"]
   party:[],                    // [{name,level,xp}]
   storage:[],                  // PC box
   moduleStats:{},              // {0:{cor:0,att:0}, 1:{...}, ...}
+  typesCaught:{},              // {Fire:true, Water:true, ...} — set on ownership + evolution
+  legendaryCaught:null,        // name of legendary if dream=legendary and earned
+  championWon:false,           // true if champion arc completed
 };}
 let SAVE=mkSave();
 function loadSave(){
@@ -717,6 +810,12 @@ function loadSave(){
       if(!Array.isArray(SAVE.party))SAVE.party=[];
       if(!Array.isArray(SAVE.storage))SAVE.storage=[];
       if(!SAVE.moduleStats||typeof SAVE.moduleStats!=="object")SAVE.moduleStats={};
+      if(!SAVE.typesCaught||typeof SAVE.typesCaught!=="object")SAVE.typesCaught={};
+      // Backfill types from any party/storage Pokémon already owned (for old saves)
+      [...SAVE.party,...SAVE.storage].forEach(m=>{
+        const p=POKEMON_DB[m.name];
+        if(p)typeArr(p.type).forEach(t=>{SAVE.typesCaught[t]=true;});
+      });
     }
   }catch(e){SAVE=mkSave();}
 }
@@ -922,6 +1021,63 @@ function buildScenePrompt(){
 - End with EXACTLY ONE "chapterEnd" step. The subtitle should hint at the journey continuing on to the next region.
 - Set "isFinal": true at the top level.
 - Aim for 4–7 steps total.`;
+  }else if(role==="championBattle"){
+    sceneGuidance=`SCENE ${sceneNum} (FINAL CAPSTONE) — CHAMPIONSHIP BATTLE:
+- This is the climactic last scene of ${SAVE.characterName}'s entire 9-region journey. Their lifelong dream — Becoming Champion — is on the line tonight.
+- Open with arrival at a grand championship arena (Pokémon League, Paldea Tournament, etc.). Crowd, lights, ${r.professor} watching from the stands proudly.
+- Include EXACTLY 4 "question" steps, each framed as a single-round battle against a different Elite challenger. Give each elite a name and a type theme (e.g., "Elite Marisa, the Dragon Tamer"). Their type theme should color the question's flavor.
+- Each question MUST test a DIFFERENT concept from this region's module. Use 4 DIFFERENT formats: mc, numpad, lettertap, sequence (one each).
+- Pre-teach each concept in 1 short narrative beat right before its question (a quick remembered lesson — keep it tight, this is high-energy).
+- After all 4 questions, include 1–2 narrative beats: ${SAVE.characterName} is crowned Champion. Their team is celebrated. Reference their trainer style and how it carried them.
+- Include a "dreamPayoff" step right before the chapterEnd (the engine renders the championship trophy + final team).
+- End with EXACTLY ONE "chapterEnd" step — title celebrates the championship, subtitle reflects on the entire journey.
+- DO NOT include: catch, partyAdd, starterChoice, evolutionEligible.
+- Set "isFinal": true at the top level.
+- Aim for 11–14 steps total.`;
+  }else if(role==="legendaryEncounter"){
+    const legendary=r.legendary;
+    sceneGuidance=`SCENE ${sceneNum} (FINAL CAPSTONE) — LEGENDARY ENCOUNTER:
+- This is the climactic last scene of ${SAVE.characterName}'s entire 9-region journey. Their lifelong dream — Catching a Legendary — is finally within reach.
+- Open with ${SAVE.characterName} following clues / a mentor's tip / a strange phenomenon to a remote, awe-inspiring location in ${region} (mountaintop, ancient ruin, hidden grove, storm-cloud sky — your choice).
+- The legendary Pokémon ${legendary} appears. Build genuine awe — describe its presence, the air shifting, ${SAVE.characterName}'s team falling silent.
+- Include EXACTLY ONE "catch" step with pkm:"${legendary}". Frame the question as the toughest challenge yet — but the question itself stays kindergarten-appropriate, just with high-stakes narrative framing.
+- Pre-teach the concept in 1–2 narrative beats before the catch.
+- Include a "partyAdd" step with pkm:"${legendary}" immediately after the catch.
+- After the catch, 1–2 narrative beats: ${legendary} accepts ${SAVE.characterName} as their trainer. Reference the dream coming true.
+- Include a "dreamPayoff" step right before the chapterEnd (the engine renders the legendary spotlight).
+- End with EXACTLY ONE "chapterEnd" step — title names the legendary catch, subtitle reflects on the journey.
+- DO NOT include: starterChoice, evolutionEligible, regular question (only the catch question).
+- Set "isFinal": true at the top level.
+- Aim for 9–12 steps total.`;
+  }else if(role==="typeFinal"){
+    const caughtTypes=Object.keys(SAVE.typesCaught||{});
+    const missingTypes=TRACKED_TYPES.filter(t=>!SAVE.typesCaught||!SAVE.typesCaught[t]);
+    sceneGuidance=`SCENE ${sceneNum} (FINAL CAPSTONE) — TYPE COLLECTOR'S DREAM:
+- This is the climactic last scene of ${SAVE.characterName}'s entire 9-region journey. Their lifelong dream — Catching Every Type — culminates here.
+- Types caught so far (${caughtTypes.length}/18): ${caughtTypes.join(", ")||"(none)"}.
+- Types still missing (${missingTypes.length}): ${missingTypes.join(", ")||"none — they did it!"}.
+- Open with ${SAVE.characterName} taking stock of their journey at a Type Sanctuary or Trainer Hall (your invention) where ${r.professor} reveals a "Type Master" honor.
+- Optionally include 1 reflective easy question (a celebration, not an obstacle). If you include it, pre-teach lightly.
+- Reference SPECIFIC types they caught — pick 3–4 standout ones from the list above and tie them to memorable journey moments.
+- ${missingTypes.length===0?`They've caught ALL 18 types — celebrate this fully.`:`They're missing ${missingTypes.length} type(s). Acknowledge this with grace — a Type Master is honored for the breadth of their team, not perfection. ${r.professor} or another character notes the missing types as "a reason to keep adventuring."`}
+- Include a "dreamPayoff" step right before the chapterEnd (the engine renders the types-caught grid).
+- End with EXACTLY ONE "chapterEnd" step — title celebrates the type collector dream, subtitle reflects on the journey.
+- DO NOT include: catch, partyAdd, starterChoice, evolutionEligible.
+- Set "isFinal": true at the top level.
+- Aim for 7–10 steps total.`;
+  }else if(role==="dreamFinal"){
+    sceneGuidance=`SCENE ${sceneNum} (FINAL CAPSTONE) — DREAM REALIZED:
+- This is the climactic last scene of ${SAVE.characterName}'s entire 9-region journey.
+- ${SAVE.characterName}'s big trainer dream is: "${SAVE.characterGoal}". This scene must NARRATIVELY FULFILL that dream in a vivid, kid-friendly way. Build the imagery and the moment of triumph around it.
+- Open by setting the stage for the dream's payoff (the location, the moment ${SAVE.characterName} has been working toward).
+- Optionally include 1 reflective easy question framed as the final challenge. If you include it, pre-teach lightly.
+- Reference 2–3 SPECIFIC moments from the journey — companions caught, regions traveled — and tie them back to the dream.
+- The dream's fulfillment should be tangible: a moment, a person, a Pokémon, a sight, an honor — whatever fits the dream. Don't be abstract.
+- Include a "dreamPayoff" step right before the chapterEnd (the engine renders a journey-summary card — narrative carries the emotional weight).
+- End with EXACTLY ONE "chapterEnd" step — title names the dream coming true, subtitle reflects on the journey.
+- DO NOT include: catch, partyAdd, starterChoice, evolutionEligible.
+- Set "isFinal": true at the top level.
+- Aim for 7–10 steps total.`;
   }
 
   const story=g.scenes.length===0
@@ -946,12 +1102,33 @@ function buildScenePrompt(){
   const conceptsList=mod.concepts.map((c,i)=>`  ${i+1}. ${c}`).join("\n");
   const conceptsTaughtSoFar=g.conceptsTaught.length?g.conceptsTaught.join("; "):"(none yet — this is the first teaching scene)";
 
+  const styleProfile=({
+    brave:"BRAVE — charges into challenges without flinching. Narrator voice should celebrate boldness and forward motion.",
+    curious:"CURIOUS — asks questions, examines details. Narrator voice should reward observation and noticing.",
+    kind:"KIND — looks after Pokémon and people. Narrator voice should highlight care, gentleness, and helping others.",
+    clever:"CLEVER — figures things out. Narrator voice should reward problem-solving moments.",
+  })[SAVE.characterStyle]||"";
+  const dreamLine=({
+    champion:`Become Champion — defeat the toughest trainers and earn the championship title. The journey is building toward a championship battle in the FINAL region.`,
+    legendary:`Catch a Legendary Pokémon — find a one-of-a-kind partner. The journey is building toward a legendary encounter in the FINAL region.`,
+    everyType:`Catch every type — collect all 18 Pokémon types across the journey. Currently caught: ${Object.keys(SAVE.typesCaught||{}).length}/18.`,
+    custom:`A personal dream: "${SAVE.characterGoal||"(unspecified)"}". Honor the spirit of this dream in narrative beats.`,
+  })[SAVE.dreamKind]||"(no dream specified)";
+  const typesCaughtList=Object.keys(SAVE.typesCaught||{}).join(", ")||"(none yet)";
+
   return `You are writing Scene ${sceneNum} of ${TARGET_SCENES} in an interactive Pokémon educational adventure for a 5-year-old child who is starting kindergarten in 4 months and is a strong reader for their age.
 
-THE CHILD-PROTAGONIST:
+TRAINER PROFILE — weave these into the story (each line has a job, not just flavor):
 - Name: ${SAVE.characterName} (the protagonist — use this exact name throughout)
-- Big trainer dream: ${SAVE.characterGoal}
-- Current region of adventure: ${region}
+- Pronouns: ${(PRONOUN_DETAILS[SAVE.pronoun]||PRONOUN_DETAILS.they).subject}/${(PRONOUN_DETAILS[SAVE.pronoun]||PRONOUN_DETAILS.they).object}/${(PRONOUN_DETAILS[SAVE.pronoun]||PRONOUN_DETAILS.they).possessive}. Use these EXACT pronouns when referring to ${SAVE.characterName} — never default to "they" if a different pronoun is given here. ${SAVE.pronoun==="they"?'Use plural verb agreement ("they were"), not singular.':'Use singular verb agreement ("she was" / "he was").'}
+- Trainer style: ${styleProfile}
+- Favorite Pokémon type: ${SAVE.favoriteType||"(unspecified)"} — when you have any choice (foreshadowed encounters, nicknames, mentor cameos, descriptive details), gravitate toward this type. Reference it by name occasionally.
+- Big dream: ${dreamLine}
+  - Reference the dream lightly 1–2 times across the region (an offhand mention, a mentor's encouragement). Don't ham it up — it's a quiet through-line until the final region's capstone scene.
+- Types caught so far: ${typesCaughtList}.
+
+JOURNEY CONTEXT:
+- Current region of adventure: ${region}${S.gen.isFinalRegion?" (THIS IS THE FINAL REGION — capstone scene incoming)":""}
 - Regions previously completed: ${traveled.length?traveled.join(", "):"(this is their very first adventure)"}
 
 EDUCATIONAL OBJECTIVE — REGION ${SAVE.completedRegions.length+1} OF 9 — MODULE: "${mod.name}"
@@ -1004,7 +1181,7 @@ ${role==="starter"?'  "title": "Adventure title shown in the header for this reg
   },
   "summary": "1–2 sentence recap of what happened in this scene (used to brief the writer of the next scene)",
   "conceptsTaught": ["short label of each concept pre-taught in this scene's narrative"],
-  "isFinal": ${role==="final"?"true":"false"}
+  "isFinal": ${["final","championBattle","legendaryEncounter","typeFinal","dreamFinal"].includes(role)?"true":"false"}
 }
 
 STEP OBJECT TYPES:
@@ -1033,6 +1210,9 @@ STEP OBJECT TYPES:
 
 7) Chapter end (final step of final scene):
    {"type":"chapterEnd","title":"End of the ${region} chapter","subtitle":"One-sentence teaser hinting at the journey to the next region"}
+
+8) Dream payoff (capstone scenes ONLY — championBattle / legendaryEncounter / typeFinal / dreamFinal). Engine renders a deterministic celebration card based on the dream kind; you don't need to populate it with content. Place it AS THE STEP IMMEDIATELY BEFORE the chapterEnd:
+   {"type":"dreamPayoff"}
 
 TONE:
 - Sentences are short. The reader is 5.
@@ -1084,11 +1264,15 @@ function extractJSON(text){
 function validateScene(payload,sceneNum,region){
   if(!payload?.scene?.steps||!Array.isArray(payload.scene.steps))throw new Error("Scene payload missing scene.steps.");
   // pkmReveal can be ANY known pokemon (current region OR party from previous regions)
-  // pkm (catch/partyAdd target) MUST be from current region only
+  // pkm (catch/partyAdd target) MUST be from current region only (plus the legendary, on legendaryEncounter)
+  const arcRoleHere=(S.gen.arc&&S.gen.arc[sceneNum-1])||"teach";
   const currentRegionAllowed=new Set([
     ...REGIONS[region].starters.flatMap(s=>starterLine(s)),
     ...REGIONS[region].wildPool.flatMap(w=>starterLine(w)),
   ]);
+  if(arcRoleHere==="legendaryEncounter"&&REGIONS[region].legendary){
+    currentRegionAllowed.add(REGIONS[region].legendary);
+  }
   const partyNames=new Set(SAVE.party.map(m=>m.name));
   const knownAll=new Set([...currentRegionAllowed,...partyNames,...Object.keys(POKEMON_DB)]);
   let starterChoiceCount=0,catchCount=0,endCount=0,evoCount=0,questionCount=0;
@@ -1130,6 +1314,19 @@ function validateScene(payload,sceneNum,region){
     if(questionCount<3)throw new Error(`Assessment scene must contain at least 3 question steps (got ${questionCount}).`);
   }else if(role==="final"){
     if(endCount!==1)throw new Error(`Final scene must end with chapterEnd.`);
+  }else if(role==="championBattle"){
+    if(questionCount<4)throw new Error(`Champion battle must contain at least 4 question steps (got ${questionCount}).`);
+    if(catchCount>0)throw new Error(`Champion battle must not contain catch steps.`);
+    if(endCount!==1)throw new Error(`Champion battle must end with chapterEnd.`);
+  }else if(role==="legendaryEncounter"){
+    if(catchCount!==1)throw new Error(`Legendary encounter must contain exactly 1 catch (got ${catchCount}).`);
+    if(endCount!==1)throw new Error(`Legendary encounter must end with chapterEnd.`);
+    const legendary=REGIONS[region].legendary;
+    const hasLegendaryCatch=payload.scene.steps.some(s=>s.type==="catch"&&s.pkm===legendary);
+    if(!hasLegendaryCatch)throw new Error(`Legendary encounter must catch the regional legendary (${legendary}).`);
+  }else if(role==="typeFinal"||role==="dreamFinal"){
+    if(catchCount>0)throw new Error(`Final scene must not contain catch steps.`);
+    if(endCount!==1)throw new Error(`Final scene must end with chapterEnd.`);
   }
 }
 
@@ -1156,9 +1353,18 @@ function recordSceneStats(sceneObj,payloadConceptsTaught){
 }
 
 // ============== PARTY MANAGEMENT (with PC overflow & swap) ==============
+function recordOwnership(name){
+  const p=POKEMON_DB[name];
+  if(!p)return;
+  typeArr(p.type).forEach(t=>{SAVE.typesCaught[t]=true;});
+  // If this is any region's legendary, record it for dream payoff.
+  const legendaries=Object.values(REGIONS).map(r=>r.legendary);
+  if(legendaries.includes(name))SAVE.legendaryCaught=name;
+}
 function tryAddPokemonToTeam(name,onDone,level){
   if(!POKEMON_DB[name]){onDone&&onDone();return;}
   if(partyByName(name)||storageByName(name)){onDone&&onDone();return;}
+  recordOwnership(name);
   const lvl=level||WILD_CATCH_LEVEL;
   if(SAVE.party.length<PARTY_MAX){
     SAVE.party.push(mkPartyMember(name,lvl));
@@ -1472,6 +1678,7 @@ function fireEvolutionForReady(narration,onDone){
   if(!PKM[toName]){onDone();return;}
   ready.name=toName;ready.xp=0;
   if(S.gen.starter===fromName)S.gen.starter=toName;
+  recordOwnership(toName);
   persistSave();
   playEvolution(fromName,toName,narration,onDone);
 }
@@ -1721,6 +1928,53 @@ function renderEvolutionEligible(step){
   return h;
 }
 
+function renderDreamPayoff(step){
+  const role=(S.gen.arc&&S.gen.arc[S.sc])||"";
+  const region=S.gen.region;
+  let h=`<div class="payoff-card">`;
+  if(role==="championBattle"){
+    h+=`<span class="payoff-icon">&#127942;</span>`;
+    h+=`<div class="payoff-title">Champion of all 9 Regions!</div>`;
+    h+=`<div class="payoff-sub">${escapeHtml(SAVE.characterName)} stood against the best — and won.</div>`;
+    if(SAVE.party.length>0){
+      h+=`<div class="payoff-team">`;
+      SAVE.party.forEach(m=>{h+=`<div class="payoff-team-pkm">${pkSprite(m.name,52)}<div class="payoff-team-name">${escapeHtml(m.name)}</div></div>`;});
+      h+=`</div>`;
+    }
+  }else if(role==="legendaryEncounter"){
+    const legendary=SAVE.legendaryCaught||REGIONS[region].legendary;
+    h+=`<span class="payoff-icon">&#10024;</span>`;
+    h+=`<div class="payoff-title">${escapeHtml(legendary)} chose ${escapeHtml(SAVE.characterName)}.</div>`;
+    h+=`<div class="payoff-sub">A legendary bond, made for a lifetime.</div>`;
+    if(legendary)h+=`<div class="payoff-spotlight">${pkSprite(legendary,140)}</div>`;
+  }else if(role==="typeFinal"){
+    const caught=SAVE.typesCaught||{};
+    const num=Object.keys(caught).length;
+    h+=`<span class="payoff-icon">&#127919;</span>`;
+    h+=`<div class="payoff-title">Type Master — ${num}/${TRACKED_TYPES.length}</div>`;
+    h+=`<div class="payoff-sub">${num===TRACKED_TYPES.length?"Every single type. Unbelievable.":`Every type ${escapeHtml(SAVE.characterName)} caught is honored here.`}</div>`;
+    h+=`<div class="type-grid">`;
+    TRACKED_TYPES.forEach(t=>{
+      const got=!!caught[t];
+      h+=`<div class="type-cell${got?"":" missed"}">${escapeHtml(t)}</div>`;
+    });
+    h+=`</div>`;
+  }else{
+    // dreamFinal / fallback
+    h+=`<span class="payoff-icon">&#127775;</span>`;
+    h+=`<div class="payoff-title">Dream realized.</div>`;
+    if(SAVE.characterGoal)h+=`<div class="payoff-sub">"${escapeHtml(SAVE.characterGoal)}"</div>`;
+    if(SAVE.party.length>0){
+      h+=`<div class="payoff-team">`;
+      SAVE.party.forEach(m=>{h+=`<div class="payoff-team-pkm">${pkSprite(m.name,52)}<div class="payoff-team-name">${escapeHtml(m.name)}</div></div>`;});
+      h+=`</div>`;
+    }
+  }
+  h+=`<button class="continue-btn" id="continue-btn">Continue &#8594;</button>`;
+  h+=`</div>`;
+  return h;
+}
+
 function renderChapterEnd(step){
   let h=`<div class="chapter-end-card">`;
   h+=`<div class="chapter-end-icon">&#127775;</div>`;
@@ -1751,7 +2005,9 @@ function render(){
   const ch=curChapter();
   const pcBtn=SAVE.storage.length>0?`<button class="pc-btn" id="pc-btn">PC (${SAVE.storage.length})</button>`:"";
   const streakBadge=S.streak>1?`<span class="streak-badge">Streak: ${S.streak}</span>`:"";
-  const hdr=`<div class="hdr"><span class="app-name">${escapeHtml(STORY_TITLE)}</span><div class="hdr-right">${pcBtn}${streakBadge}</div></div>`;
+  const typeCount=Object.keys(SAVE.typesCaught||{}).length;
+  const typeBadge=typeCount>0?`<span class="type-badge" title="Types caught">${typeCount}/${TRACKED_TYPES.length}</span>`:"";
+  const hdr=`<div class="hdr"><span class="app-name">${escapeHtml(STORY_TITLE)}</span><div class="hdr-right">${pcBtn}${typeBadge}${streakBadge}</div></div>`;
   let h=hdr;
   const mod=curModule();
   h+=`<div class="module-banner">Region ${SAVE.completedRegions.length+1} of 9 &middot; <strong>Module ${S.gen.moduleIndex+1}: ${escapeHtml(mod.name)}</strong></div>`;
@@ -1777,6 +2033,7 @@ function render(){
   else if(step.type==="starterChoice")h+=renderStarterChoice(step);
   else if(step.type==="question"||step.type==="catch")h+=renderQuestion(step);
   else if(step.type==="evolutionEligible")h+=renderEvolutionEligible(step);
+  else if(step.type==="dreamPayoff")h+=renderDreamPayoff(step);
   else if(step.type==="chapterEnd")h+=renderChapterEnd(step);
 
   if(SAVE.party.length>0)h+=moduleProgressHTML();
@@ -1979,8 +2236,10 @@ function showRegionSelect(){
 function onRegionChosen(region){
   S=mkState();
   S.gen.region=region;
-  S.gen.arc=generateArc();
   S.gen.moduleIndex=SAVE.completedRegions.length;
+  const isFinalRegion=SAVE.completedRegions.length===8; // 9th region (0-indexed)
+  S.gen.isFinalRegion=isFinalRegion;
+  S.gen.arc=generateArc({isFinalRegion,dreamKind:SAVE.dreamKind});
   preloadRegionImages(region);
   STORY={chapters:[{id:1,title:`Chapter ${SAVE.completedRegions.length+1}`,scenes:[]}]};
   STORY_TITLE=`${SAVE.characterName}'s ${region} Chapter`;
@@ -2018,6 +2277,11 @@ async function generateScene1ForRegion(){
 function completeCurrentRegion(){
   const region=S.gen.region;
   if(!SAVE.completedRegions.includes(region))SAVE.completedRegions.push(region);
+  // Capstone bookkeeping (final region only)
+  if(S.gen.isFinalRegion){
+    const capstone=S.gen.arc[S.gen.arc.length-1];
+    if(capstone==="championBattle")SAVE.championWon=true;
+  }
   persistSave();
   showRegionEnd();
 }
@@ -2083,11 +2347,50 @@ function showRegionEnd(){
 }
 
 // ============== ENDGAME ==============
+function endgameDreamSummary(){
+  const dk=SAVE.dreamKind;
+  if(dk==="champion"){
+    return SAVE.championWon
+      ?{icon:"&#127942;",title:`Champion ${escapeHtml(SAVE.characterName)}!`,sub:"You stood against the best — and won."}
+      :{icon:"&#127942;",title:`${escapeHtml(SAVE.characterName)}, you've done it!`,sub:"A champion's journey, complete."};
+  }
+  if(dk==="legendary"){
+    return SAVE.legendaryCaught
+      ?{icon:"&#10024;",title:`${escapeHtml(SAVE.legendaryCaught)} chose you.`,sub:"A legendary bond, made for a lifetime."}
+      :{icon:"&#10024;",title:`${escapeHtml(SAVE.characterName)}, you've done it!`,sub:"A journey worthy of legend."};
+  }
+  if(dk==="everyType"){
+    const num=Object.keys(SAVE.typesCaught||{}).length;
+    return{icon:"&#127919;",title:`Type Master — ${num}/${TRACKED_TYPES.length}`,sub:num===TRACKED_TYPES.length?"Every single type. Unbelievable.":`A breadth of types few trainers ever match.`};
+  }
+  if(dk==="custom"&&SAVE.characterGoal){
+    return{icon:"&#127775;",title:`Dream realized.`,sub:`"${escapeHtml(SAVE.characterGoal)}"`};
+  }
+  return{icon:"&#127881;",title:`${escapeHtml(SAVE.characterName)}, you've done it!`,sub:"You journeyed through all 9 regions."};
+}
+
 function showEndgame(){
   const card=document.getElementById("endgame-card");
-  let h=`<div style="font-size:64px;margin-bottom:8px">&#127881;</div>`;
-  h+=`<div class="app-title">${escapeHtml(SAVE.characterName)}, you've done it!</div>`;
-  h+=`<div class="app-sub">You journeyed through all 9 regions and mastered every kindergarten module. You're ready for 1st grade!</div>`;
+  const ds=endgameDreamSummary();
+  const caught=SAVE.typesCaught||{};
+  const numTypes=Object.keys(caught).length;
+  let h=`<div style="font-size:64px;margin-bottom:8px">${ds.icon}</div>`;
+  h+=`<div class="app-title">${ds.title}</div>`;
+  h+=`<div class="app-sub">${ds.sub}</div>`;
+  h+=`<div class="app-sub" style="margin-top:8px">All 9 regions mastered. You're ready for 1st grade!</div>`;
+
+  if(SAVE.dreamKind==="legendary"&&SAVE.legendaryCaught){
+    h+=`<div style="display:flex;justify-content:center;margin:14px 0">${pkSprite(SAVE.legendaryCaught,140)}</div>`;
+  }
+
+  h+=`<div class="pc-section-title" style="text-align:center;margin-top:18px">Types Caught (${numTypes}/${TRACKED_TYPES.length})</div>`;
+  h+=`<div class="type-grid" style="background:transparent">`;
+  TRACKED_TYPES.forEach(t=>{
+    const got=!!caught[t];
+    h+=`<div class="type-cell${got?"":" missed"}">${escapeHtml(t)}</div>`;
+  });
+  h+=`</div>`;
+
   h+=`<div class="pc-section-title" style="text-align:center;margin-top:18px">Modules Mastered</div>`;
   h+=`<div style="text-align:left;margin-bottom:14px">`;
   SAVE.completedRegions.forEach((rn,i)=>{
@@ -2113,6 +2416,7 @@ function showEndgame(){
   document.getElementById("endgame-reset").addEventListener("click",()=>{
     if(confirm("This will erase your save and start a brand-new journey. Continue?")){
       eraseSave();
+      resetIntakeForm();
       showScreen("intake-screen");
     }
   });
@@ -2124,26 +2428,91 @@ function showScreen(id){
   SCREENS.forEach(s=>{const el=document.getElementById(s);if(el)el.style.display=s===id?"block":"none";});
 }
 
+// Chip selector state for intake (transient — committed to SAVE on submit)
+const INTAKE_PICKS={pronoun:"",style:"",favoriteType:"",dream:""};
+
+function buildIntakeChip(group,opt){
+  const id=opt.id||opt;
+  const label=opt.label||opt;
+  return `<button type="button" class="chip" data-group="${group}" data-val="${escapeHtml(id)}">${escapeHtml(label)}</button>`;
+}
+
+function renderIntakeChips(){
+  const pronounRow=document.getElementById("intake-pronoun-row");
+  pronounRow.innerHTML=PRONOUN_OPTIONS.map(p=>buildIntakeChip("pronoun",p)).join("");
+  const styleRow=document.getElementById("intake-style-row");
+  styleRow.innerHTML=TRAINER_STYLES.map(s=>buildIntakeChip("style",s)).join("");
+  const typeRow=document.getElementById("intake-type-row");
+  typeRow.innerHTML=FAVORITE_TYPE_OPTIONS.map(t=>buildIntakeChip("favoriteType",t)).join("");
+  const dreamRow=document.getElementById("intake-dream-row");
+  dreamRow.innerHTML=DREAM_OPTIONS.map(d=>buildIntakeChip("dream",d)).join("");
+
+  document.querySelectorAll("#intake-screen .chip").forEach(chip=>{
+    chip.addEventListener("click",()=>onIntakeChipPicked(chip));
+  });
+}
+
+function onIntakeChipPicked(chip){
+  const group=chip.dataset.group;
+  const val=chip.dataset.val;
+  INTAKE_PICKS[group]=val;
+  document.querySelectorAll(`#intake-screen .chip[data-group="${group}"]`).forEach(c=>{
+    c.classList.toggle("selected",c.dataset.val===val);
+  });
+  if(group==="pronoun"){
+    const opt=PRONOUN_OPTIONS.find(p=>p.id===val);
+    document.getElementById("intake-pronoun-blurb").textContent=opt?opt.blurb:"";
+  }else if(group==="style"){
+    const opt=TRAINER_STYLES.find(s=>s.id===val);
+    document.getElementById("intake-style-blurb").textContent=opt?opt.blurb:"";
+  }else if(group==="dream"){
+    const opt=DREAM_OPTIONS.find(d=>d.id===val);
+    document.getElementById("intake-dream-blurb").textContent=opt?opt.blurb:"";
+    document.getElementById("intake-dream-custom").style.display=val==="custom"?"block":"none";
+  }
+}
+
 async function onIntakeSubmit(){
   const name=document.getElementById("intake-name").value.trim();
-  const goal=document.getElementById("intake-goal").value.trim();
+  const dreamCustom=document.getElementById("intake-dream-custom").value.trim();
 
   const errEl=document.getElementById("intake-error");
   errEl.style.display="none";
   const missing=[];
   if(!name)missing.push("your name");
-  if(!goal)missing.push("a dream");
-  if(missing.length){errEl.textContent="Please fill in: "+missing.join(", ");errEl.style.display="block";return;}
+  if(!INTAKE_PICKS.pronoun)missing.push("which words to use for you");
+  if(!INTAKE_PICKS.style)missing.push("a trainer style");
+  if(!INTAKE_PICKS.favoriteType)missing.push("a favorite type");
+  if(!INTAKE_PICKS.dream)missing.push("a dream");
+  if(INTAKE_PICKS.dream==="custom"&&!dreamCustom)missing.push("your dream in your own words");
+  if(missing.length){errEl.textContent="Please pick: "+missing.join(", ");errEl.style.display="block";return;}
 
   SAVE.characterName=name;
-  SAVE.characterGoal=goal;
+  SAVE.pronoun=INTAKE_PICKS.pronoun;
+  SAVE.characterStyle=INTAKE_PICKS.style;
+  SAVE.favoriteType=INTAKE_PICKS.favoriteType;
+  SAVE.dreamKind=INTAKE_PICKS.dream;
+  SAVE.characterGoal=INTAKE_PICKS.dream==="custom"?dreamCustom:"";
   persistSave();
   showRegionSelect();
+}
+
+function resetIntakeForm(){
+  INTAKE_PICKS.pronoun="";INTAKE_PICKS.style="";INTAKE_PICKS.favoriteType="";INTAKE_PICKS.dream="";
+  document.querySelectorAll("#intake-screen .chip.selected").forEach(c=>c.classList.remove("selected"));
+  document.getElementById("intake-pronoun-blurb").textContent="";
+  document.getElementById("intake-style-blurb").textContent="";
+  document.getElementById("intake-dream-blurb").textContent="";
+  document.getElementById("intake-dream-custom").style.display="none";
+  document.getElementById("intake-dream-custom").value="";
+  document.getElementById("intake-name").value="";
+  document.getElementById("intake-error").style.display="none";
 }
 
 function init(){
   preloadAllPKM();
   loadSave();
+  renderIntakeChips();
 
   document.getElementById("api-key-save").addEventListener("click",()=>{
     const key=document.getElementById("api-key-input").value.trim();
@@ -2164,6 +2533,7 @@ function init(){
   document.getElementById("region-reset-btn").addEventListener("click",()=>{
     if(confirm("This will erase your saved progress, party, and PC storage. Are you sure?")){
       eraseSave();
+      resetIntakeForm();
       showScreen("intake-screen");
     }
   });
