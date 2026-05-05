@@ -678,7 +678,7 @@ function mkState(){return{
   phase:"story",
   ch:0,sc:0,st:0,
   activeIdx:0,
-  qDone:false,qCor:false,qAnswer:null,
+  qDone:false,qCor:false,qAnswer:null,qAttempt:0,qHint:null,
   seqOrder:[],
   starterPicked:null,
   streak:0,
@@ -722,6 +722,48 @@ function updModuleStats(ok){
 const MODULE_TAG_CLASS=["tagm","tagr","tagm","tagr","tagc","tagr","tagm","tagr","tagm"];
 
 // ============== LLM CALL ==============
+function buildDifficultyGuidance(){
+  const mi=S.gen.moduleIndex;
+  const cur=SAVE.moduleStats[mi]||{cor:0,att:0};
+  let totalCor=0,totalAtt=0;
+  for(const k in SAVE.moduleStats){const s=SAVE.moduleStats[k];totalCor+=s.cor;totalAtt+=s.att;}
+  const curPct=cur.att>=2?Math.round(cur.cor/cur.att*100):-1;
+  const totalPct=totalAtt>=3?Math.round(totalCor/totalAtt*100):-1;
+  const pct=curPct>=0?curPct:totalPct;
+  if(pct<0)return`DIFFICULTY CALIBRATION:\nNo performance data yet — use standard kindergarten difficulty. Keep questions straightforward and encouraging.`;
+  let level,guidance;
+  if(pct>=90){
+    level="ADVANCED";
+    guidance=`The child is acing questions (${pct}% correct). Increase challenge:
+- Use trickier distractors that require careful thinking (e.g., visually similar letters, off-by-one numbers)
+- Ask multi-step questions when the format allows (e.g., "first count, then compare")
+- For mc: make 2–3 options plausible, not just 1
+- For sequence: use 4+ items
+- For numpad: use numbers in the 5–9 range or require a simple operation
+- Still keep it achievable for a bright 5-year-old — challenge, not frustrate`;
+  }else if(pct>=65){
+    level="ON TRACK";
+    guidance=`The child is doing well (${pct}% correct). Use standard kindergarten difficulty:
+- Clear, unambiguous correct answers
+- 1–2 plausible distractors and 1–2 clearly wrong ones for mc
+- Questions that directly test the concept just taught in the narrative`;
+  }else{
+    level="NEEDS SUPPORT";
+    guidance=`The child is struggling (${pct}% correct). Simplify and scaffold more:
+- Spend extra narrative beats teaching before the question — be very explicit
+- Use the easiest variant of the concept (e.g., initial sounds not medial, numbers under 5 not under 10)
+- For mc: make the correct answer stand out more (only 1 plausible distractor, others clearly wrong)
+- For sequence: use only 2–3 items
+- Make the hint field especially helpful — nearly give away the answer
+- The "encouragement" should be warm and specific about what they did right`;
+  }
+  const statsLine=cur.att>0?`This module so far: ${cur.cor}/${cur.att} (${curPct}%).`:"No questions answered in this module yet.";
+  const overallLine=totalAtt>0?`Overall across all modules: ${totalCor}/${totalAtt} (${totalPct}%).`:"";
+  return`DIFFICULTY CALIBRATION — ${level}:
+${statsLine}${overallLine?" "+overallLine:""}
+${guidance}`;
+}
+
 function buildScenePrompt(){
   const g=S.gen;
   const region=g.region;
@@ -835,6 +877,8 @@ ${story}
 FORMAT TRACKING:
 - Question formats used so far this region: ${g.formatsUsed.length?g.formatsUsed.join(", "):"(none)"}
 - Formats not yet used: ${fmtRemaining.length?fmtRemaining.join(", "):"all four covered"}
+
+${buildDifficultyGuidance()}
 
 ${sceneGuidance}
 
@@ -1036,7 +1080,7 @@ function accPctParty(s){return s.att===0?0:Math.min(100,Math.round(s.cor/s.att*1
 
 // ============== STORY ADVANCE ==============
 function advanceStep(){
-  S.qDone=false;S.qCor=false;S.qAnswer=null;S.seqOrder=[];S.lvc=null;S.pendingXP=null;S.pendingReady=null;S.starterPicked=null;
+  S.qDone=false;S.qCor=false;S.qAnswer=null;S.qAttempt=0;S.qHint=null;S.seqOrder=[];S.lvc=null;S.pendingXP=null;S.pendingReady=null;S.starterPicked=null;
   const sc=curScene();
   if(!sc){endOrGenerate();return;}
   S.st++;
@@ -1089,11 +1133,22 @@ function awardXP(amount){
 }
 function onAnswer(correct){
   if(S.qDone)return;
-  S.qDone=true;S.qCor=correct;
+  S.qAttempt++;
   const step=curStep();
-  updModuleStats(correct);
-  if(correct){S.streak++;if(step.xpReward)awardXP(step.xpReward);}
-  else{S.streak=0;}
+  const isCatch=step.type==="catch";
+  if(correct){
+    S.qDone=true;S.qCor=true;
+    updModuleStats(true);
+    S.streak++;if(step.xpReward)awardXP(step.xpReward);
+  }else if(S.qAttempt>=2||isCatch){
+    S.qDone=true;S.qCor=false;
+    updModuleStats(false);
+    S.streak=0;
+  }else{
+    S.qHint=step.hint||"Try again!";
+    S.qAnswer=null;S.seqOrder=[];
+    S.streak=0;
+  }
   render();
 }
 function onContinueAfterQuestion(){
@@ -1277,6 +1332,7 @@ function renderQuestionShell(step,inner){
   const loc=curScene().loc||"";
   let h=`<div class="scene-card">`;
   if(loc)h+=`<div class="scene-loc">${escapeHtml(loc)}</div>`;
+  if(S.qHint&&!S.qDone)h+=`<div class="result-msg no" style="margin-bottom:12px">${escapeHtml(S.qHint)} Try again!</div>`;
   h+=subjLabel+`<div class="qtext">${step.prompt}</div>${inner}`;
   if(S.qDone){
     const msg=S.qCor?(step.onCorrect||step.encouragement):(step.onWrong||step.hint);
@@ -1687,10 +1743,32 @@ function showRegionEnd(){
   if(!SAVE.completedRegions.includes(region)){
     SAVE.completedRegions.push(region);persistSave();
   }
+  const pct=stats.att?Math.round(stats.cor/stats.att*100):0;
+  const encouragement=pct>=90?"Amazing work — you really know this stuff!"
+    :pct>=65?"Great job — you learned a lot on this adventure!"
+    :"Good effort — every question helps you learn!";
+
   let h=`<div class="chapter-end-icon" style="font-size:48px;margin-bottom:8px">&#127942;</div>`;
   h+=`<div class="app-title">${escapeHtml(region)} complete!</div>`;
   h+=`<div class="app-sub">You mastered <strong>Module ${S.gen.moduleIndex+1}: ${escapeHtml(mod.name)}</strong>.</div>`;
-  h+=`<div style="font-size:14px;color:#374151;margin:10px 0;font-weight:600">${stats.cor} of ${stats.att} questions correct</div>`;
+  h+=`<div style="font-size:14px;color:#374151;margin:10px 0;font-weight:600">${stats.cor} of ${stats.att} questions correct — ${encouragement}</div>`;
+  h+=`<div class="pc-section-title" style="text-align:center">What You Learned</div>`;
+  h+=`<div style="text-align:left;margin-bottom:14px">`;
+  const taught=S.gen.conceptsTaught||[];
+  const conceptWords=w=>w.toLowerCase().replace(/[^a-z0-9 ]/g,"").split(/\s+/).filter(x=>x.length>2);
+  mod.concepts.forEach(c=>{
+    const cw=conceptWords(c);
+    const covered=taught.some(t=>{
+      const tw=conceptWords(t);
+      const overlap=tw.filter(w=>cw.includes(w)).length;
+      return overlap>=2||(tw.length===1&&cw.includes(tw[0]));
+    });
+    h+=`<div style="display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid #F3F4F6;font-size:13px;line-height:1.4">`;
+    h+=`<span style="flex-shrink:0;color:${covered?'#10B981':'#D1D5DB'};font-size:16px">${covered?'&#10003;':'&#9675;'}</span>`;
+    h+=`<span style="color:#374151">${escapeHtml(c)}</span>`;
+    h+=`</div>`;
+  });
+  h+=`</div>`;
   if(SAVE.party.length>0){
     h+=`<div class="pc-section-title" style="text-align:center">Your Team</div>`;
     h+=`<div style="display:flex;justify-content:center;gap:10px;margin-bottom:10px;flex-wrap:wrap">`;
