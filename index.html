@@ -148,6 +148,9 @@ textarea.intake-input{resize:vertical;min-height:64px;line-height:1.45}
 .region-card:hover:not(.done){border-color:#FF5722;background:#FFF3E0;transform:translateY(-2px);box-shadow:0 4px 12px rgba(255,87,34,0.18)}
 .region-card.done{opacity:0.55;cursor:default;background:#F3F4F6}
 .region-card .rc-img{width:64px;height:64px;margin:0 auto 4px;object-fit:contain}
+.region-card .rc-trio{display:flex;justify-content:center;align-items:center;gap:2px;margin-bottom:4px;height:48px}
+.region-card .rc-trio img{width:38px;height:38px;object-fit:contain}
+.region-card .rc-trio img:nth-child(2){width:46px;height:46px}
 .region-card .rc-name{font-size:13px;font-weight:700;color:#1A1A2E;margin-top:2px}
 .region-card .rc-prof{font-size:10px;color:#6B7280;margin-top:2px;font-weight:600;letter-spacing:0.02em}
 .region-card .rc-check{position:absolute;top:6px;right:6px;font-size:18px;color:#10B981}
@@ -182,15 +185,15 @@ textarea.intake-input{resize:vertical;min-height:64px;line-height:1.45}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes evo-spin{to{transform:rotate(360deg)}}
 @keyframes evo-label-in{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}
-@keyframes ball-fly{0%{transform:translateX(-50%) translateY(170px) scale(0.3) rotate(-540deg);opacity:0}65%{opacity:1}100%{transform:translateX(-50%) translateY(0) scale(1) rotate(0deg);opacity:1}}
-@keyframes ball-wobble{0%,100%{transform:translateX(-50%) rotate(0deg)}20%{transform:translateX(-50%) rotate(-22deg)}40%{transform:translateX(-50%) rotate(22deg)}60%{transform:translateX(-50%) rotate(-14deg)}80%{transform:translateX(-50%) rotate(14deg)}}
+@keyframes ball-fly{0%{transform:translate(-50%,calc(-50% + 220px)) scale(0.3) rotate(-540deg);opacity:0}65%{opacity:1}100%{transform:translate(-50%,-50%) scale(1) rotate(0deg);opacity:1}}
+@keyframes ball-wobble{0%,100%{transform:translate(-50%,-50%) rotate(0deg)}20%{transform:translate(-50%,-50%) rotate(-22deg)}40%{transform:translate(-50%,-50%) rotate(22deg)}60%{transform:translate(-50%,-50%) rotate(-14deg)}80%{transform:translate(-50%,-50%) rotate(14deg)}}
 @keyframes starter-pop{0%{transform:scale(0.2);opacity:0}60%{transform:scale(1.1);opacity:1}100%{transform:scale(1);opacity:1}}
 
 #catch-overlay{display:none;position:fixed;inset:0;background:linear-gradient(180deg,#0d2b0d,#1a4a1a 55%,#2a5e2a);z-index:999;flex-direction:column;align-items:center;justify-content:center}
 #catch-overlay.active{display:flex}
 #catch-pkm{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;width:200px;height:200px}
 #catch-pkm img{display:block;object-fit:contain;width:180px;height:180px}
-#catch-ball{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);z-index:3;display:none}
+#catch-ball{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:3;display:none}
 #catch-lbl{position:relative;z-index:2;color:white;font-size:18px;font-weight:700;margin-top:24px;text-align:center;padding:0 28px;text-shadow:0 0 20px rgba(255,255,255,0.4);animation:evo-label-in 0.3s ease}
 
 #evo-overlay{display:none;position:fixed;inset:0;background:#06061a;z-index:999;flex-direction:column;align-items:center;justify-content:center}
@@ -317,8 +320,7 @@ textarea.intake-input{resize:vertical;min-height:64px;line-height:1.45}
 </div>
 
 <div id="catch-overlay">
-  <div id="catch-pkm"><img id="catch-pkm-img" src="" alt=""></div>
-  <div id="catch-ball"></div>
+  <div id="catch-pkm"><img id="catch-pkm-img" src="" alt=""><div id="catch-ball"></div></div>
   <div id="catch-lbl"></div>
 </div>
 
@@ -554,6 +556,14 @@ const REGIONS={
 
 const REGION_ORDER=["Kanto","Johto","Hoenn","Sinnoh","Unova","Kalos","Alola","Galar","Paldea"];
 
+const SPECIAL_SCENES=["rival","rescue","mystery","festival"];
+function generateArc(){
+  const special=SPECIAL_SCENES[Math.floor(Math.random()*SPECIAL_SCENES.length)];
+  const middle=[special,"catch","teach","teach"];
+  for(let i=middle.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[middle[i],middle[j]]=[middle[j],middle[i]];}
+  return["starter",...middle,"assessment","final"];
+}
+
 // ============== KINDERGARTEN MODULES (Utah core, sequenced) ==============
 const MODULES=[
   {
@@ -656,7 +666,7 @@ const MODULES=[
   },
 ];
 
-const TARGET_SCENES=6;
+const TARGET_SCENES=7;
 const PARTY_MAX=6;
 const SAVE_KEY="pkmn_adventure_save_v3";
 const STARTER_LEVEL=5;
@@ -730,6 +740,7 @@ function mkState(){return{
   pcSelected:null,             // pc box selected storage idx
   gen:{
     region:"",
+    arc:[],                    // generated per-region scene role sequence
     moduleIndex:0,             // 0..8
     starter:null,              // starter chosen this region
     scenes:[],                 // [{summary,isFinal}]
@@ -816,51 +827,101 @@ function buildScenePrompt(){
   const isFirstRegion=SAVE.completedRegions.length===0;
   const traveled=SAVE.completedRegions;
 
+  const arc=S.gen.arc;
+  const role=arc[sceneNum-1]||"teach";
+
   let sceneGuidance="";
-  if(sceneNum===1){
+  if(role==="starter"){
     if(isFirstRegion){
-      sceneGuidance=`SCENE 1 REQUIREMENTS (very first adventure ever):
+      sceneGuidance=`SCENE ${sceneNum} — STARTER CHOICE (very first adventure ever):
 - Open at ${r.professor}'s lab in ${region}. Brief setup of who ${SAVE.characterName} is and the day ahead.
 - Include EXACTLY ONE step of type "starterChoice" near the end of the scene. The engine renders the three starter options and handles the choice — you do NOT pick.
-- DO NOT add any "question" or "catch" steps in scene 1.
+- DO NOT add any "question" or "catch" steps.
 - DO NOT add a "partyAdd" step for the starter — the engine adds it after the choice automatically.
 - After "starterChoice" you may include 0–1 closing narrative beats. Refer to the chosen Pokémon generically (e.g., "their new partner") since you don't know which one was picked.
 - Aim for 6–10 steps total.
 - Output a "title" field at the top — a short evocative title for THIS REGION's chapter (e.g., "${SAVE.characterName}'s ${region} Journey").`;
     }else{
-      sceneGuidance=`SCENE 1 REQUIREMENTS (arriving in a new region — ${SAVE.characterName} is an experienced trainer):
+      sceneGuidance=`SCENE ${sceneNum} — STARTER CHOICE (arriving in a new region — ${SAVE.characterName} is an experienced trainer):
 - Open with ${SAVE.characterName} ARRIVING in ${region} (by boat, train, plane, or other travel — your choice). They have already journeyed through: ${traveled.join(", ")}.
 - ${SAVE.characterName} meets ${r.professor} for the first time. The professor is delighted to meet a trainer of their reputation and offers a starter Pokémon as a welcome gift.
 - Include EXACTLY ONE step of type "starterChoice" — the professor presents the three regional starters. The engine handles the pick and adding to the team.
-- DO NOT add any "question" or "catch" steps in scene 1.
+- DO NOT add any "question" or "catch" steps.
 - DO NOT add a "partyAdd" step for the starter — the engine handles it.
 - Reference the existing party warmly: their first partner is now visible/named, and the new starter joins the team.
 - Aim for 6–10 steps total.
 - Output a "title" field — a short evocative title for THIS REGION's chapter (e.g., "${SAVE.characterName} in ${region}").`;
     }
-  }else if(sceneNum>=2&&sceneNum<=4){
-    sceneGuidance=`SCENE ${sceneNum} REQUIREMENTS:
+  }else if(role==="teach"){
+    sceneGuidance=`SCENE ${sceneNum} — TEACHING & EXPLORATION:
 - ${SAVE.characterName} travels to a new location within ${region}. The chosen starter (${g.starter||"their new partner"}) is now their visible partner — name it.
-- Include EXACTLY ONE "question" step. NO catch, NO evolutionEligible, NO chapterEnd.
+- Include EXACTLY ONE "question" step. NO catch, NO chapterEnd.
 - The question MUST test a concept from this region's module (see MODULE OBJECTIVES below).
 - Format preference (not yet used first): ${fmtRemaining.length?fmtRemaining.join(", "):"any"}.
 - Pre-teach the concept in 1–3 narrative beats BEFORE the question. The teaching should be diegetic — a remembered lesson from ${r.professor}, a note ${SAVE.characterName} recalls, or something a Pokémon shows them.
 - Aim for 5–8 steps total.`;
-  }else if(sceneNum===5){
-    sceneGuidance=`SCENE 5 REQUIREMENTS:
+  }else if(role==="catch"){
+    sceneGuidance=`SCENE ${sceneNum} — WILD ENCOUNTER & CATCH:
 - ${SAVE.characterName} (with their team) encounters a wild Pokémon from this region's wildPool.
 - Include EXACTLY ONE "catch" step. The catch's question must test a concept from this region's module.
+- Pre-teach the concept in 1–2 narrative beats before the catch question.
 - Add a "partyAdd" step for the caught Pokémon immediately after the catch.
 - NO regular "question" steps in this scene.
 - Aim for 6–9 steps total.`;
-  }else{
-    sceneGuidance=`SCENE ${sceneNum} (FINAL) REQUIREMENTS:
-- A reflective scene at sundown / quiet moment. ${SAVE.characterName} reviews the day with their team and prepares to move on.
+  }else if(role==="rival"){
+    sceneGuidance=`SCENE ${sceneNum} — RIVAL BATTLE:
+- A young trainer around ${SAVE.characterName}'s age appears and challenges them to a friendly Pokémon battle! Invent a rival with a name and personality — they're confident but kind.
+- The "battle" is framed as back-and-forth rounds. Include EXACTLY TWO "question" steps, each framed as a battle round (e.g., "Round 1! ${SAVE.characterName}'s Pokémon uses a move — solve this to land it!").
+- Each question tests a DIFFERENT concept from this region's module. Pre-teach each concept in 1–2 narrative beats before its question.
+- Format preference (not yet used first): ${fmtRemaining.length?fmtRemaining.join(", "):"any"}. Use two different formats.
+- After the battle, the rival congratulates ${SAVE.characterName} regardless of outcome — no shaming.
+- NO catch, NO chapterEnd, NO partyAdd.
+- Aim for 7–10 steps total.`;
+  }else if(role==="rescue"){
+    sceneGuidance=`SCENE ${sceneNum} — RESCUE:
+- ${SAVE.characterName} discovers a Pokémon (from this region's wildPool) that is in trouble — lost, stuck, scared, or hurt. NOT a catch — the Pokémon is helped and goes free (or was already someone's partner).
+- Include EXACTLY TWO "question" steps, each framed as a challenge to overcome while helping (figuring out what the Pokémon needs, solving a problem to reach it, calming it down, etc.).
+- Each question tests a DIFFERENT concept from this region's module. Pre-teach each concept in 1–2 narrative beats before its question.
+- Format preference (not yet used first): ${fmtRemaining.length?fmtRemaining.join(", "):"any"}. Use two different formats.
+- End with a warm, emotional moment — the Pokémon is safe and grateful.
+- NO catch, NO chapterEnd, NO partyAdd.
+- Aim for 7–10 steps total.`;
+  }else if(role==="mystery"){
+    sceneGuidance=`SCENE ${sceneNum} — MYSTERY:
+- Something strange is happening in ${region} — a missing item, mysterious tracks, a locked door, strange sounds, or an unusual occurrence. ${SAVE.characterName} investigates!
+- Include EXACTLY TWO "question" steps, each framed as a clue or puzzle that brings ${SAVE.characterName} closer to solving the mystery.
+- Each question tests a DIFFERENT concept from this region's module. Pre-teach each concept in 1–2 narrative beats before its question.
+- Format preference (not yet used first): ${fmtRemaining.length?fmtRemaining.join(", "):"any"}. Use two different formats.
+- The mystery should have a satisfying, kid-friendly resolution — the cause is discovered and everything is set right.
+- NO catch, NO chapterEnd, NO partyAdd.
+- Aim for 7–10 steps total.`;
+  }else if(role==="festival"){
+    sceneGuidance=`SCENE ${sceneNum} — FESTIVAL / CONTEST:
+- A local festival, contest, tournament, or community event is happening in ${region}! ${SAVE.characterName} joins in the fun.
+- Include EXACTLY TWO "question" steps, each framed as a contest round, event challenge, or activity (e.g., a trivia stage, a scavenger hunt clue, a cooking challenge ingredient puzzle).
+- Each question tests a DIFFERENT concept from this region's module. Pre-teach each concept in 1–2 narrative beats before its question.
+- Format preference (not yet used first): ${fmtRemaining.length?fmtRemaining.join(", "):"any"}. Use two different formats.
+- The atmosphere should be fun and celebratory — colorful decorations, cheering crowds, excited Pokémon. End on a high note.
+- NO catch, NO chapterEnd, NO partyAdd.
+- Aim for 7–10 steps total.`;
+  }else if(role==="assessment"){
+    sceneGuidance=`SCENE ${sceneNum} — END-OF-MODULE ASSESSMENT (NOT a regular story scene):
+- Frame this as ${r.professor} (or another mentor in ${region}) asking ${SAVE.characterName} to show what they've learned in this module before moving on.
+- This is a CHECKPOINT, not a story arc. Structure: 1 short framing narrative → 4 question steps in a row (no narrative between) → 1 short closing narrative.
+- The 4 questions MUST test FOUR DIFFERENT concepts from the module's concept list above. Spread coverage — do not test the same concept twice.
+- Use FOUR DIFFERENT formats if possible: pick from mc, numpad, lettertap, sequence. Vary them.
+- Pre-teaching is NOT required for these assessment questions — this scene tests prior learning. Keep question prompts concise (one sentence + the question).
+- Difficulty: same as other scenes, not harder. The point is to verify mastery, not to trip the kid up.
+- DO NOT include: catch, chapterEnd, partyAdd, starterChoice, pkmReveal.
+- Aim for 6 steps total: framing + 4 questions + closing.`;
+  }else if(role==="final"){
+    sceneGuidance=`SCENE ${sceneNum} (FINAL) — WRAP-UP:
+- A reflective scene at sundown / quiet moment. ${SAVE.characterName} reviews the day with their team and prepares to move on. The professor can comment on how well the assessment went.
 - Optionally one final easy "question" step (or no question — your call). If you include one, pre-teach.
-- Include EXACTLY ONE "evolutionEligible" step (the engine animates evolution if XP is full; otherwise it's just a quiet moment).
+- DO NOT include evolutionEligible — evolution is handled automatically by the engine when XP is full.
 - End with EXACTLY ONE "chapterEnd" step. The subtitle should hint at the journey continuing on to the next region.
 - Set "isFinal": true at the top level.
-- Aim for 5–8 steps total.`;
+- Aim for 4–7 steps total.`;
   }
 
   const story=g.scenes.length===0
@@ -896,7 +957,7 @@ THE CHILD-PROTAGONIST:
 EDUCATIONAL OBJECTIVE — REGION ${SAVE.completedRegions.length+1} OF 9 — MODULE: "${mod.name}"
 This region of the journey teaches the kindergarten module: "${mod.name}" (${mod.short}).
 
-CONCEPTS TO COVER ACROSS THIS REGION (the 6 scenes here together teach ALL of these):
+CONCEPTS TO COVER ACROSS THIS REGION (the ${TARGET_SCENES} scenes here together teach ALL of these):
 ${conceptsList}
 
 Concepts already pre-taught in this region: ${conceptsTaughtSoFar}
@@ -924,23 +985,26 @@ FORMAT TRACKING:
 
 ${buildDifficultyGuidance()}
 
+REGION ARC (the sequence of scene types for this region):
+${arc.map((rl,i)=>`  ${i+1}. ${rl}${i===sceneNum-1?" ← YOU ARE HERE":""}`).join("\n")}
+
 ${sceneGuidance}
 
-PEDAGOGICAL RULE — CRITICAL:
+PEDAGOGICAL RULE — CRITICAL (except assessment scenes, which test prior learning):
 Every "question" or "catch" step MUST be preceded by 1–3 narrative steps that explicitly TEACH the concept being assessed. Frame the teaching diegetically — as a remembered lesson from ${r.professor}, a note ${SAVE.characterName} recalls, or a moment of observation. NEVER assess a concept that wasn't first introduced in the story this same scene.
 
 OUTPUT FORMAT: a single JSON object inside \`\`\`json fences. NO prose outside the fences.
 
 JSON SHAPE:
 {
-${sceneNum===1?'  "title": "Adventure title shown in the header for this region",\n':""}  "scene": {
+${role==="starter"?'  "title": "Adventure title shown in the header for this region",\n':""}  "scene": {
     "id": "short-scene-id",
     "loc": "LOCATION LABEL",
     "steps": [ ...step objects... ]
   },
   "summary": "1–2 sentence recap of what happened in this scene (used to brief the writer of the next scene)",
   "conceptsTaught": ["short label of each concept pre-taught in this scene's narrative"],
-  "isFinal": ${sceneNum===TARGET_SCENES?"true":"false"}
+  "isFinal": ${role==="final"?"true":"false"}
 }
 
 STEP OBJECT TYPES:
@@ -950,7 +1014,7 @@ STEP OBJECT TYPES:
 2) Narrative with sprite reveal (shows the Pokémon's image alongside the text):
    {"type":"narrative","text":"...","pkmReveal":"PokémonName"}
 
-3) Starter choice (scene 1 only — engine renders the three region starter cards and handles party add):
+3) Starter choice (starter scene only — engine renders the three region starter cards and handles party add):
    {"type":"starterChoice","intro":"Optional setup beat","prompt":"Professor's words inviting the choice"}
 
 4) Party add (silent — adds Pokémon to party). Use ONLY after a "catch" step (do NOT use after starterChoice).
@@ -967,10 +1031,7 @@ STEP OBJECT TYPES:
 6) Catch (same as question + pkm + preCatch + postCatch):
    {"type":"catch","pkm":"NameFromWildPool","subject":"module","format":"mc","prompt":"...","encouragement":"...","hint":"...","xpReward":10,"preCatch":"Sentence right before throwing the ball","postCatch":"Sentence after the catch animation", ...formatFields...}
 
-7) Evolution eligible:
-   {"type":"evolutionEligible","narration":"Lead-in story beat — gentle, reflective"}
-
-8) Chapter end (final step of final scene):
+7) Chapter end (final step of final scene):
    {"type":"chapterEnd","title":"End of the ${region} chapter","subtitle":"One-sentence teaser hinting at the journey to the next region"}
 
 TONE:
@@ -982,9 +1043,11 @@ TONE:
 NOW GENERATE SCENE ${sceneNum}.`;
 }
 
-async function callClaude(prompt){
+async function callClaude(prompt,opts){
   const apiKey=localStorage.getItem("pkmn_api_key");
   if(!apiKey)throw new Error("No API key set");
+  const model=opts?.model||"claude-sonnet-4-6";
+  const max_tokens=opts?.max_tokens||6000;
   const res=await fetch("https://api.anthropic.com/v1/messages",{
     method:"POST",
     headers:{
@@ -994,8 +1057,8 @@ async function callClaude(prompt){
       "anthropic-dangerous-direct-browser-access":"true",
     },
     body:JSON.stringify({
-      model:"claude-sonnet-4-6",
-      max_tokens:6000,
+      model,
+      max_tokens,
       messages:[{role:"user",content:prompt}],
     }),
   });
@@ -1028,7 +1091,7 @@ function validateScene(payload,sceneNum,region){
   ]);
   const partyNames=new Set(SAVE.party.map(m=>m.name));
   const knownAll=new Set([...currentRegionAllowed,...partyNames,...Object.keys(POKEMON_DB)]);
-  let starterChoiceCount=0,catchCount=0,endCount=0,evoCount=0;
+  let starterChoiceCount=0,catchCount=0,endCount=0,evoCount=0,questionCount=0;
   for(const step of payload.scene.steps){
     if(step.pkmReveal&&!knownAll.has(step.pkmReveal))throw new Error(`Story references "${step.pkmReveal}" which isn't a known Pokémon.`);
     if(step.pkm&&!currentRegionAllowed.has(step.pkm))throw new Error(`Story references "${step.pkm}" for catch/party-add — must be from ${region}.`);
@@ -1036,13 +1099,37 @@ function validateScene(payload,sceneNum,region){
     if(step.type==="catch")catchCount++;
     if(step.type==="chapterEnd")endCount++;
     if(step.type==="evolutionEligible")evoCount++;
+    if(step.type==="question")questionCount++;
   }
-  if(sceneNum===1&&starterChoiceCount!==1)throw new Error(`Scene 1 must have exactly 1 starterChoice (got ${starterChoiceCount}).`);
-  if(sceneNum>1&&starterChoiceCount>0)throw new Error(`starterChoice only allowed in scene 1.`);
-  if(sceneNum===5&&catchCount!==1)throw new Error(`Scene 5 must have exactly 1 catch (got ${catchCount}).`);
-  if(sceneNum===TARGET_SCENES){
+  const arc=S.gen.arc;
+  const role=arc[sceneNum-1]||"teach";
+
+  if(role==="starter"){
+    if(starterChoiceCount!==1)throw new Error(`Starter scene must have exactly 1 starterChoice (got ${starterChoiceCount}).`);
+    if(catchCount>0)throw new Error(`Starter scene must not contain catch steps.`);
+    if(questionCount>0)throw new Error(`Starter scene must not contain question steps.`);
+  }else{
+    if(starterChoiceCount>0)throw new Error(`starterChoice only allowed in starter scene.`);
+  }
+
+  if(role==="teach"){
+    if(questionCount!==1)throw new Error(`Teaching scene must have exactly 1 question (got ${questionCount}).`);
+    if(catchCount>0)throw new Error(`Teaching scene must not contain catch steps.`);
+    if(endCount>0)throw new Error(`Teaching scene must not contain chapterEnd.`);
+  }else if(role==="catch"){
+    if(catchCount!==1)throw new Error(`Catch scene must have exactly 1 catch (got ${catchCount}).`);
+  }else if(role==="rival"||role==="rescue"||role==="mystery"||role==="festival"){
+    const rlbl={rival:"Rival",rescue:"Rescue",mystery:"Mystery",festival:"Festival"}[role];
+    if(questionCount<2)throw new Error(`${rlbl} scene must have at least 2 questions (got ${questionCount}).`);
+    if(catchCount>0)throw new Error(`${rlbl} scene must not contain catch steps.`);
+    if(endCount>0)throw new Error(`${rlbl} scene must not contain chapterEnd.`);
+  }else if(role==="assessment"){
+    if(catchCount>0)throw new Error(`Assessment scene must not contain catch steps.`);
+    if(evoCount>0)throw new Error(`Assessment scene must not contain evolutionEligible.`);
+    if(endCount>0)throw new Error(`Assessment scene must not contain chapterEnd.`);
+    if(questionCount<3)throw new Error(`Assessment scene must contain at least 3 question steps (got ${questionCount}).`);
+  }else if(role==="final"){
     if(endCount!==1)throw new Error(`Final scene must end with chapterEnd.`);
-    if(evoCount!==1)throw new Error(`Final scene must include evolutionEligible.`);
   }
 }
 
@@ -1206,11 +1293,140 @@ function onAnswer(correct){
   }
   render();
 }
-function onContinueAfterQuestion(){
+async function onContinueAfterQuestion(){
   const step=curStep();
-  if(step.type==="catch"&&S.qCor){playCatch(step.pkm,()=>advanceStep());return;}
-  if(step.type==="catch"&&!S.qCor){S.qDone=false;S.qCor=false;S.qAnswer=null;S.seqOrder=[];render();return;}
-  advanceStep();
+  // Correct answer paths
+  if(S.qCor){
+    if(step.type==="catch"){playCatch(step.pkm,()=>checkAndFireEvolution(advanceStep));return;}
+    if(step._catchAfter){playCatch(step._catchAfter,()=>checkAndFireEvolution(advanceStep));return;}
+    checkAndFireEvolution(advanceStep);return;
+  }
+  // Wrong answer — if this question is itself a remediation question, just continue (no infinite re-teach)
+  if(step._remediation){
+    if(step._catchAfter){playCatch(step._catchAfter,()=>advanceStep());return;}
+    advanceStep();return;
+  }
+  // Wrong answer on a regular/catch question — trigger re-teach
+  await runRemediation(step);
+}
+
+async function runRemediation(originalStep){
+  S.phase="remediating";render();
+  try{
+    const remSteps=await generateRemediation(originalStep);
+    spliceRemediationAfterCurrent(remSteps,originalStep);
+    S.phase="story";
+    advanceStep();
+  }catch(e){
+    console.error("Remediation failed",e);
+    S.phase="story";
+    // Fallback: just continue without re-teach so the kid isn't stuck
+    if(originalStep.type==="catch"){playCatch(originalStep.pkm,()=>advanceStep());return;}
+    advanceStep();
+  }
+}
+
+function spliceRemediationAfterCurrent(remSteps,originalStep){
+  const sc=curScene();
+  const tagged=remSteps.map((s,i,arr)=>{
+    const out={...s,_remediation:true};
+    // Mark the final remediation question with the catch-after pkm so the catch animation plays after
+    if(originalStep.type==="catch"&&i===arr.length-1&&s.type==="question"){
+      out._catchAfter=originalStep.pkm;
+    }
+    return out;
+  });
+  sc.steps.splice(S.st+1,0,...tagged);
+}
+
+function correctAnswerLabel(step){
+  if(step.format==="mc")return step.options?.[step.correctIndex]??"";
+  if(step.format==="numpad")return String(step.correctValue??"");
+  if(step.format==="lettertap")return step.correctLetter??"";
+  if(step.format==="sequence")return Array.isArray(step.correctOrder)?step.correctOrder.join(" → "):"";
+  return "";
+}
+function userAnswerLabel(step,answer,seqOrder){
+  if(step.format==="mc"&&typeof answer==="number")return step.options?.[answer]??"(no answer)";
+  if(step.format==="numpad"&&typeof answer==="number")return String(answer);
+  if(step.format==="lettertap"&&answer)return String(answer);
+  if(step.format==="sequence"&&Array.isArray(seqOrder)&&seqOrder.length)return seqOrder.join(" → ");
+  return "(no answer)";
+}
+
+function buildRemediationPrompt(originalStep){
+  const region=S.gen.region;
+  const mod=MODULES[S.gen.moduleIndex];
+  const conceptsList=mod.concepts.map((c,i)=>`  ${i+1}. ${c}`).join("\n");
+  const correctLbl=correctAnswerLabel(originalStep);
+  const userLbl=userAnswerLabel(originalStep,S.qAnswer,S.seqOrder);
+  return `You are a warm, encouraging kindergarten tutor inside an interactive Pokémon adventure for a 5-year-old. The child just got a question wrong. Write a brief re-teach moment.
+
+CONTEXT
+- Region: ${region}
+- Module: "${mod.name}" (${mod.short})
+- Concepts in this module:
+${conceptsList}
+- Character (the child): ${SAVE.characterName} adventuring with their team
+
+THE QUESTION THEY JUST GOT WRONG
+- Prompt: ${JSON.stringify(originalStep.prompt)}
+- Format: ${originalStep.format}
+- Correct answer: ${JSON.stringify(correctLbl)}
+- What the child answered: ${JSON.stringify(userLbl)}
+- Original hint: ${JSON.stringify(originalStep.hint||"")}
+
+YOUR JOB
+Return THREE steps, in order:
+1) A narrative beat that gently acknowledges the miss WITHOUT shame and re-explains the underlying concept in a NEW way (different angle, simpler example).
+2) A second narrative beat that walks through the concept with a clear concrete example (still in-story — a Pokémon shows them, a memory of the professor, etc.).
+3) A NEW question testing the SAME concept with a different example/wording. NEVER repeat the original question.
+
+OUTPUT — a single JSON object inside \`\`\`json fences. NO prose outside.
+
+{
+  "steps": [
+    {"type":"narrative","text":"...HTML allowed: <strong>X</strong>, <em>X</em>, <span class=\\"dialog-line\\">\\"X\\"</span>..."},
+    {"type":"narrative","text":"..."},
+    {"type":"question","subject":"module","format":"mc|numpad|lettertap|sequence","prompt":"New question on the same concept","encouragement":"Short praise on correct","hint":"Short helpful nudge on wrong","xpReward":5,"onCorrect":"One sentence story continuation on correct","onWrong":"One sentence story continuation on wrong (still moves story forward — no failure)", ...format-specific fields...}
+  ]
+}
+
+FORMAT-SPECIFIC FIELDS (match the chosen "format" exactly):
+- mc: "options":[4 strings], "correctIndex":0..3
+- numpad: "correctValue":0..9, "maxDigits":1
+- lettertap: "word":"STA_" (uppercase, _ at the blank), "blankIndex":0-based index of the _, "choices":[4 single uppercase letters], "correctLetter": one of choices
+- sequence: "items":[{"id":"egg","label":"Tiny egg"},...], "correctOrder":["egg","larva","pupa","adult"]
+
+RULES
+- Tone: "Let's look at this together," never "you got it wrong."
+- Sentences are short. The reader is 5.
+- Same concept as the wrong question, but a NEW example.
+- DO NOT include catch / partyAdd / evolutionEligible / chapterEnd / starterChoice / pkm / pkmReveal.
+- Format may match the original (${originalStep.format}) or be different — pick whatever teaches best.
+
+Now generate the JSON.`;
+}
+
+async function generateRemediation(originalStep){
+  const prompt=buildRemediationPrompt(originalStep);
+  const text=await callClaude(prompt,{model:"claude-haiku-4-5-20251001",max_tokens:1500});
+  const json=extractJSON(text);
+  let payload;
+  try{payload=JSON.parse(json);}catch(e){throw new Error("Couldn't parse remediation JSON.");}
+  validateRemediation(payload);
+  return payload.steps;
+}
+
+function validateRemediation(payload){
+  if(!payload?.steps||!Array.isArray(payload.steps))throw new Error("Remediation missing steps array.");
+  if(payload.steps.length<2||payload.steps.length>4)throw new Error(`Remediation must have 2–4 steps (got ${payload.steps.length}).`);
+  const last=payload.steps[payload.steps.length-1];
+  if(!last||last.type!=="question")throw new Error("Last remediation step must be a question.");
+  for(const s of payload.steps){
+    if(!["narrative","question"].includes(s.type))throw new Error(`Disallowed remediation step type: ${s.type}`);
+    if(s.pkm||s.pkmReveal)throw new Error("Remediation steps must not reference Pokémon by name.");
+  }
 }
 
 // ============== STARTER CHOICE ==============
@@ -1243,6 +1459,11 @@ function findEvoReady(){
     const p=PKM[m.name];
     return p&&p.evolvesTo&&p.evoAt&&m.level>=p.evoAt;
   });
+}
+function checkAndFireEvolution(onDone){
+  const ready=findEvoReady();
+  if(ready){fireEvolutionForReady(null,()=>checkAndFireEvolution(onDone));}
+  else{onDone();}
 }
 function fireEvolutionForReady(narration,onDone){
   const ready=findEvoReady();
@@ -1402,7 +1623,7 @@ function renderQuestionShell(step,inner){
     h+=`<div class="result-msg ${S.qCor?'ok':'no'}">${msg}</div>`;
     if(S.pendingXP)h+=`<div class="xp-toast">${escapeHtml(S.pendingXP)}</div>`;
     if(S.pendingReady)h+=`<div class="ready-toast">&#9889; ${escapeHtml(S.pendingReady)}</div>`;
-    const btnLabel=step.type==="catch"&&!S.qCor?"Try again &#8594;":"Continue &#8594;";
+    const btnLabel=(!S.qCor&&!step._remediation)?"Let's look again &#8594;":"Continue &#8594;";
     h+=`<button class="nxt-btn" id="nxt-btn">${btnLabel}</button>`;
   }
   h+=`</div>`;
@@ -1519,6 +1740,9 @@ function renderChapterEnd(step){
 function renderGenerating(){
   return `<div class="transition-card"><div class="loading-spinner small"></div><div class="transition-text">Continuing the story...</div></div>`;
 }
+function renderRemediating(){
+  return `<div class="transition-card"><div class="loading-spinner small"></div><div class="transition-text">Let's look at this together...</div></div>`;
+}
 function renderGenError(){
   return `<div class="gen-error-card"><div style="font-size:15px;font-weight:700;color:#1A1A2E;margin-bottom:8px">Couldn't continue the story</div><div style="font-size:13px;color:#6B7280;margin-bottom:14px;line-height:1.5">${escapeHtml(S.genError||"Unknown error")}</div><button class="continue-btn" id="retry-gen">Try again</button><button class="skip-btn" id="back-to-region-from-error" style="margin-top:10px">Back to region select</button></div>`;
 }
@@ -1534,6 +1758,7 @@ function render(){
   h+=partyRowHTML();
 
   if(S.phase==="generating"){gameEl.innerHTML=h+renderGenerating();return;}
+  if(S.phase==="remediating"){gameEl.innerHTML=h+renderRemediating();return;}
   if(S.phase==="genError"){
     gameEl.innerHTML=h+renderGenError();
     document.getElementById('retry-gen').addEventListener('click',generateAndAppendScene);
@@ -1702,10 +1927,10 @@ function renderRegionSelect(){
     const r=REGIONS[rname];
     const moduleIdx=done?SAVE.completedRegions.indexOf(rname):SAVE.completedRegions.length;
     const moduleLabel=done?`Module ${moduleIdx+1} ✓`:"";
-    const starterPreview=POKEMON_DB[r.starters[0]].num;
+    const trioHTML=r.starters.map(s=>`<img src="${BASE}${POKEMON_DB[s].num}.png" alt="${s}">`).join("");
     h+=`<button class="${cls}" ${done?'disabled':''} data-region="${rname}">
       ${done?'<span class="rc-check">&#10004;</span>':''}
-      <img class="rc-img" src="${BASE}${starterPreview}.png" alt="">
+      <div class="rc-trio">${trioHTML}</div>
       <div class="rc-name">${rname}</div>
       <div class="rc-prof">${r.professor.replace("Professor ","Prof. ")}</div>
       ${moduleLabel?`<div class="rc-mod">${moduleLabel}</div>`:""}
@@ -1754,6 +1979,7 @@ function showRegionSelect(){
 function onRegionChosen(region){
   S=mkState();
   S.gen.region=region;
+  S.gen.arc=generateArc();
   S.gen.moduleIndex=SAVE.completedRegions.length;
   preloadRegionImages(region);
   STORY={chapters:[{id:1,title:`Chapter ${SAVE.completedRegions.length+1}`,scenes:[]}]};
